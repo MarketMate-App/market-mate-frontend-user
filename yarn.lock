@@ -4573,7 +4573,7 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-expo-asset@~11.0.1:
+expo-asset@^11.0.1, expo-asset@~11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-11.0.1.tgz#8608f5ea4639698553725b6690dd621f6f70f206"
   integrity sha512-WatvD7JVC89EsllXFYcS/rji3ajVzE2B/USo0TqedsETixwyVCQfrrvCdCPQyuKghrxVNEj8bQ/Qbea/RZLYjg==
@@ -4619,6 +4619,11 @@ expo-keep-awake@~14.0.1:
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-14.0.1.tgz#77c38feefa95c494aa167e6df5a6eacd17af2358"
   integrity sha512-c5mGCAIk2YM+Vsdy90BlEJ4ZX+KG5Au9EkJUIxXWlpnuKmDAJ3N+5nEZ7EUO1ZTheqoSBeAo4jJ8rTWPU+JXdw==
+
+expo-linear-gradient@~14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-14.0.1.tgz#f93c518014b6eb5ee17ed6562db716640ad27f3e"
+  integrity sha512-apGtUO9AZ52ZWvX9f6K9TamWw8XcUby7jZ0Pcvd5LxUO7pl7tDPx2VlKqpzbhhS4yfCiUwX58wqocwVnE/0ZVg==
 
 expo-linking@~7.0.3:
   version "7.0.3"
@@ -4693,7 +4698,7 @@ expo-router@~4.0.11:
     semver "~7.6.3"
     server-only "^0.0.1"
 
-expo-splash-screen@~0.29.13:
+expo-splash-screen@~0.29.16:
   version "0.29.16"
   resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.29.16.tgz#80b49af2605213e661a40022d724caa1ea48ccb3"
   integrity sha512-1WnExDA23hEJhz+djUthVUWxUvVtDT9sqRrpCgU4srG2OfBN0NryJ+Fbnoc1V2xw2uYc4Ij3ru0nH9a1TNvW9w==

@@ -83,6 +83,12 @@ const RootLayout = () => {
           headerShown: false,
         }}
       />
+      <Tabs.Screen
+        name="search"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 };
