@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { Link } from "expo-router";
 import React from "react";
-import { ImageBackground, Text, View } from "react-native";
+import { ImageBackground, Pressable, Text, View } from "react-native";
 
 export default function Index() {
   return (
@@ -9,21 +10,40 @@ export default function Index() {
       style={{ width: "100%", height: "100%" }}
     >
       <LinearGradient
-        colors={["rgba(0,0,0,0.5)", "transparent"]}
-        style={{ flex: 1 }}
+        colors={["transparent", "rgba(0,0,0,0.5)"]}
+        className="flex-1 p-8"
       >
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 32,
-              fontFamily: "Plus Jakarta Sans Bold",
-            }}
-          >
-            Welcome to Expo Router
-          </Text>
+        <View className="flex-1">
+          <View className="absolute bottom-0 w-full">
+            <Text
+              className="text-white text-5xl"
+              style={{ fontFamily: "Gilroy Medium" }}
+            >
+              Fast Delivery
+            </Text>
+            <Text
+              className="text-white text-5xl mb-2"
+              style={{ fontFamily: "Gilroy Bold" }}
+            >
+              of delicious food
+            </Text>
+            <Text
+              className="text-white text-xl mb-8"
+              style={{ fontFamily: "Gilroy Regular" }}
+            >
+              Order Food within 24 hours and get bonuses
+            </Text>
+            <Link href={"/auth"} asChild>
+              <Pressable className="w-full bg-slate-100 px-8 py-5 rounded-full">
+                <Text
+                  className="text-center text-xl"
+                  style={{ fontFamily: "Gilroy Bold" }}
+                >
+                  Get Started
+                </Text>
+              </Pressable>
+            </Link>
+          </View>
         </View>
       </LinearGradient>
     </ImageBackground>
