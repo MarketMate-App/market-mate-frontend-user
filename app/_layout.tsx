@@ -34,8 +34,30 @@ export default function RootLayout() {
         options={{
           headerShadowVisible: false,
           headerTitle: "",
+          statusBarBackgroundColor: "transparent",
         }}
       />
+      <Stack.Screen
+        name="login"
+        options={{
+          headerTitle: "Login",
+          headerTitleStyle: {
+            fontFamily: "Gilroy Bold",
+          },
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="registration"
+        options={{
+          headerTitle: "Create Account",
+          headerTitleStyle: {
+            fontFamily: "Gilroy Bold",
+          },
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   );
 }

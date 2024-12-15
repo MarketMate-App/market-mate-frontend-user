@@ -8,7 +8,7 @@ export default function Authentication() {
   return (
     <SafeAreaView className="bg-white flex-1 ">
       <ImageBackground
-        source={require("@/assets/images/logo-dark.png")}
+        source={require("@/assets/images/logo-dark (2).png")}
         className="flex-1"
       >
         <LinearGradient
@@ -32,18 +32,18 @@ export default function Authentication() {
             Fresh groceries delivered to your doorstep
           </Text>
           <View className="w-full px-8">
-            <Link href={"/"} asChild>
-              <Pressable className="w-92 m-auto bg-black px-8 py-6 rounded-full mb-4">
+            <Link href={"/registration"} asChild>
+              <Pressable className="w-92 m-auto bg-black px-8 py-5 rounded-full mb-4">
                 <Text
                   className="text-center text-xl text-white"
                   style={{ fontFamily: "Gilroy Bold" }}
                 >
-                  Create Account
+                  Create an Account
                 </Text>
               </Pressable>
             </Link>
-            <Link href={"/"} asChild>
-              <Pressable className="w-full bg-transparent px-8 py-6 rounded-full border-hairline ">
+            <Link href={"/login"} asChild>
+              <Pressable className="w-full bg-transparent px-8 py-5 rounded-full border-hairline ">
                 <Text
                   className="text-center text-lg"
                   style={{ fontFamily: "Gilroy Bold" }}

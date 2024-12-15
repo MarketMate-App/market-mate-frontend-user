@@ -25,13 +25,13 @@ export default function Index() {
               className="text-white text-5xl mb-2"
               style={{ fontFamily: "Gilroy Bold" }}
             >
-              of delicious food
+              of fresh groceries
             </Text>
             <Text
               className="text-white text-xl mb-8"
               style={{ fontFamily: "Gilroy Regular" }}
             >
-              Order Food within 24 hours and get bonuses
+              Order and pickup within 24 hours.
             </Text>
             <Link href={"/auth"} asChild>
               <Pressable className="w-full bg-slate-100 px-8 py-5 rounded-full">
