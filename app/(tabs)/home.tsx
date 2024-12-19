@@ -39,7 +39,10 @@ const HomePage = () => {
       <HeaderComponent />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* <CategoriesComponent /> */}
-        <Text className="text-xl mb-4" style={{ fontFamily: "Gilroy Bold" }}>
+        <Text
+          className="text-xl mb-4 text-green-900"
+          style={{ fontFamily: "Gilroy Bold" }}
+        >
           Featured Fruits
         </Text>
         <ScrollView
@@ -49,26 +52,29 @@ const HomePage = () => {
         >
           <GridcardComponent
             name={"Watermelon"}
-            price={22.09}
+            price={22}
             imageUrl={require("../../assets/images/watermelon.jpg")}
           />
           <GridcardComponent
             name={"Apple"}
-            price={22.09}
+            price={5.99}
             imageUrl={require("../../assets/images/apple.jpg")}
           />
           <GridcardComponent
             name={"Banana"}
-            price={22.09}
+            price={54}
             imageUrl={require("../../assets/images/banana.jpg")}
           />
           <GridcardComponent
             name={"Papaya"}
-            price={22.09}
+            price={2.55}
             imageUrl={require("../../assets/images/papaya.jpg")}
           />
         </ScrollView>
-        <Text className="text-xl mb-4" style={{ fontFamily: "Gilroy Bold" }}>
+        <Text
+          className="text-xl mb-4 text-green-900"
+          style={{ fontFamily: "Gilroy Bold" }}
+        >
           Fresh Veggies
         </Text>
         <ScrollView
@@ -78,36 +84,39 @@ const HomePage = () => {
         >
           <GridcardComponent
             name={"Tomato"}
-            price={22.09}
+            price={220}
             imageUrl={require("../../assets/images/tomato.jpg")}
           />
           <GridcardComponent
             name={"Cabbage"}
-            price={22.09}
+            price={40}
             imageUrl={require("../../assets/images/cabbage.jpg")}
           />
           <GridcardComponent
             name={"Lettuce"}
-            price={22.09}
+            price={22}
             imageUrl={require("../../assets/images/lettuce.jpg")}
           />
           <GridcardComponent
             name={"Red Pepper"}
-            price={22.09}
+            price={15}
             imageUrl={require("../../assets/images/redpepper.jpg")}
           />
           <GridcardComponent
             name={"Chilli Pepper"}
-            price={22.09}
+            price={42}
             imageUrl={require("../../assets/images/chillipepper.jpg")}
           />
           <GridcardComponent
             name={"Green Pepper"}
-            price={22.09}
+            price={5}
             imageUrl={require("../../assets/images/greenpepper.jpg")}
           />
         </ScrollView>
-        <Text className="text-xl mb-4" style={{ fontFamily: "Gilroy Bold" }}>
+        <Text
+          className="text-xl mb-4 text-green-900"
+          style={{ fontFamily: "Gilroy Bold" }}
+        >
           Grossing Meats
         </Text>
         <ScrollView
@@ -117,22 +126,22 @@ const HomePage = () => {
         >
           <GridcardComponent
             name={"Chicken"}
-            price={22.09}
+            price={43}
             imageUrl={require("../../assets/images/chicken.jpg")}
           />
           <GridcardComponent
             name={"Cow Beef"}
-            price={22.09}
+            price={60}
             imageUrl={require("../../assets/images/beef.jpg")}
           />
           <GridcardComponent
             name={"Pork"}
-            price={22.09}
+            price={77}
             imageUrl={require("../../assets/images/pork.jpg")}
           />
           <GridcardComponent
             name={"Mutton"}
-            price={22.09}
+            price={28}
             imageUrl={require("../../assets/images/mutton.jpg")}
           />
         </ScrollView>

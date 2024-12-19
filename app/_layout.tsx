@@ -58,6 +58,26 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="screens/search"
+        options={{
+          headerTitle: "",
+          headerTitleStyle: {
+            fontFamily: "Gilroy Bold",
+          },
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="screens/cart"
+        options={{
+          headerTitle: "Your Cart",
+          headerTitleStyle: {
+            fontFamily: "Gilroy Bold",
+          },
+          headerShadowVisible: false,
+        }}
+      />
     </Stack>
   );
 }

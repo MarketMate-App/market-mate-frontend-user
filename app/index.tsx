@@ -19,7 +19,7 @@ export default function Index() {
       >
         <LinearGradient
           colors={["transparent", "rgba(0,0,0,0.5)"]}
-          className="flex-1 p-8"
+          className="flex-1 p-4"
         >
           <View className="flex-1">
             <View className="absolute bottom-0 w-full">

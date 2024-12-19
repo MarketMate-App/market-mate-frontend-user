@@ -1,7 +1,13 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import { Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
+import {
+  Entypo,
+  Feather,
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 const RootLayout = () => {
   return (
@@ -19,16 +25,38 @@ const RootLayout = () => {
         options={{
           headerShown: false,
           tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "blue" : "black", fontSize: 12 }}>
+            <Text style={{ color: focused ? "green" : "gray", fontSize: 11 }}>
               Shop
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <Entypo name="shop" size={24} color={focused ? "blue" : "black"} />
+            <Entypo name="shop" size={24} color={focused ? "green" : "gray"} />
           ),
           title: "Shop",
           headerTitleStyle: {
-            fontFamily: "Gilroy Bold",
+            fontFamily: "Gilroy Medium",
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          headerShown: false,
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ color: focused ? "green" : "gray", fontSize: 11 }}>
+              Scan
+            </Text>
+          ),
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name="scan"
+              size={24}
+              color={focused ? "green" : "gray"}
+            />
+          ),
+          title: "Scan",
+          headerTitleStyle: {
+            fontFamily: "Gilroy Medium",
           },
         }}
       />
@@ -36,12 +64,17 @@ const RootLayout = () => {
         name="profile"
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="user" size={24} color={color} />
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ color: focused ? "green" : "gray", fontSize: 11 }}>
+              Profile
+            </Text>
+          ),
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="user" size={24} color={focused ? "green" : "gray"} />
           ),
           title: "Profile",
           headerTitleStyle: {
-            fontFamily: "Gilroy Bold",
+            fontFamily: "Gilroy Medium",
           },
         }}
       />

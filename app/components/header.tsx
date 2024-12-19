@@ -7,8 +7,13 @@ const HeaderComponent = () => {
   return (
     <View className="flex-row items-center justify-between w-full mb-4">
       <View>
-        <Text style={{ fontFamily: "Gilroy Regular" }}>Deliver now</Text>
-        <Text className="text-lg" style={{ fontFamily: "Gilroy Medium" }}>
+        <Text
+          style={{ fontFamily: "Gilroy Regular" }}
+          className="text-gray-500"
+        >
+          Deliver now
+        </Text>
+        <Text className="text-lg" style={{ fontFamily: "Gilroy Bold" }}>
           Justmoh Avenue
         </Text>
       </View>
