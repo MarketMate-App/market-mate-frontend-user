@@ -6,15 +6,20 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 import HeaderComponent from "../components/header";
 import SearchComponent from "../components/search";
 import CategoriesComponent from "../components/categories";
 import GridcardComponent from "../components/gridcard";
 
 const HomePage = () => {
+  const navigation = useNavigation();
+
   const handleBackPress = () => {
     Alert.alert("Exit", "Are you sure you want to exit?", [
       {
@@ -26,6 +31,7 @@ const HomePage = () => {
     ]);
     return true;
   };
+
   useFocusEffect(
     React.useCallback(() => {
       BackHandler.addEventListener("hardwareBackPress", handleBackPress);
@@ -34,6 +40,7 @@ const HomePage = () => {
       };
     }, [])
   );
+
   return (
     <SafeAreaView className="p-3 bg-white flex-1">
       <HeaderComponent />
@@ -145,8 +152,23 @@ const HomePage = () => {
             imageUrl={require("../../assets/images/mutton.jpg")}
           />
         </ScrollView>
+
         <CategoriesComponent />
       </ScrollView>
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          backgroundColor: "green",
+          borderRadius: 50,
+          padding: 15,
+          elevation: 5,
+        }}
+        onPress={() => router.push("/screens/scan")}
+      >
+        <Ionicons name="scan" size={24} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

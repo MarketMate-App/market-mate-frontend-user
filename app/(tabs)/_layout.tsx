@@ -38,28 +38,7 @@ const RootLayout = () => {
           },
         }}
       />
-      <Tabs.Screen
-        name="scan"
-        options={{
-          headerShown: false,
-          tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "green" : "gray", fontSize: 11 }}>
-              Scan
-            </Text>
-          ),
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name="scan"
-              size={24}
-              color={focused ? "green" : "gray"}
-            />
-          ),
-          title: "Scan",
-          headerTitleStyle: {
-            fontFamily: "Gilroy Medium",
-          },
-        }}
-      />
+
       <Tabs.Screen
         name="profile"
         options={{
