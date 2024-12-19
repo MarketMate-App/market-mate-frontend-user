@@ -18,12 +18,14 @@ const RegistrationScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [addressLine, setAddressLine] = useState("");
   const [error, setError] = useState<{
     firstName?: string;
     lastName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
+    addressLine?: String;
   }>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -101,6 +103,7 @@ const RegistrationScreen = () => {
       setPassword("");
       setConfirmPassword("");
       setError({});
+      setAddressLine("");
       console.log(firstName, lastName, email, password, confirmPassword);
       createAccount();
     }
@@ -110,7 +113,7 @@ const RegistrationScreen = () => {
     setIsPosting(true);
     try {
       const response = await fetch(
-        "http://192.168.43.155:8080/auth/v1/register",
+        "http://192.168.43.208:8080/auth/v1/register",
         {
           method: "POST",
           headers: {
@@ -122,6 +125,7 @@ const RegistrationScreen = () => {
             email,
             password,
             confirmPassword,
+            addressLine: addressLine.trim(),
           }),
         }
       );
@@ -130,6 +134,7 @@ const RegistrationScreen = () => {
         console.log("Account created successfully");
         if (data.jwt) {
           router.push("/login");
+        } else {
         }
       }
       console.log(data);
@@ -245,7 +250,21 @@ const RegistrationScreen = () => {
           {error.confirmPassword}
         </Text>
       )}
-
+      <TextInput
+        className="border-b-hairline p-1 border-gray-700 mb-10 text-xl text-gray-700"
+        style={{ fontFamily: "Gilroy Medium" }}
+        placeholder="Address line"
+        value={addressLine}
+        onChangeText={setAddressLine}
+      />
+      {error.addressLine && (
+        <Text
+          className="text-red-500 text-sm mb-2"
+          style={{ fontFamily: "Gilroy Regular" }}
+        >
+          {error.addressLine}
+        </Text>
+      )}
       <Pressable
         className="w-92 m-auto bg-black px-8 py-5 rounded-full mb-4"
         onPress={handleSubmit}
