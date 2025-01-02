@@ -8,12 +8,19 @@ interface GridcardProps {
   name: string;
   price: number;
   imageUrl: ImageSourcePropType;
+  discount?: number;
+  unitOfMeasure?: string;
+  category?: string;
+  tags?: string[];
+  productId?: number;
 }
 
 const GridcardComponent: React.FC<GridcardProps> = ({
   name,
   price,
   imageUrl,
+  discount,
+  unitOfMeasure,
 }) => {
   const [heartFilled, setHeartFilled] = React.useState(false);
   const [quantity, setQuantity] = React.useState(0);
@@ -32,6 +39,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           onPress={() => setHeartFilled(!heartFilled)}
         />
       </ImageBackground>
+
       <View>
         <Text
           className="text-black text-xl mb-4"
@@ -40,7 +48,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           {name}
         </Text>
         <Text className="text-gray-500" style={{ fontFamily: "Gilroy Medium" }}>
-          1kg
+          1 {unitOfMeasure}
         </Text>
         <View className="flex-row items-center justify-between">
           <Text
