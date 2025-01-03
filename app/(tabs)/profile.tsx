@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const UserPreferences = () => {
   const [name, setName] = useState("");
   const [storedName, setStoredName] = useState("");
-
+  // TODO Make this a real page
   // Load the name from AsyncStorage when the component mounts
   useEffect(() => {
     const loadName = async () => {
