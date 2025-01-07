@@ -1,23 +1,42 @@
-import { View, Text, Pressable } from "react-native";
+// CartComponent.js
 import React from "react";
+import { View, Text, Button, ScrollView } from "react-native";
+import { useCartStore } from "../store/cartStore";
 
-const CartScreen = () => {
+type CartState = {
+  cart: any[];
+  addToCart: (item: any) => void;
+  removeFromCart: (id: number) => void;
+  clearCart: () => void;
+  loadCart: () => void;
+};
+
+const CartComponent = () => {
+  const cart = useCartStore((state) => (state as CartState).cart);
+  const addToCart = useCartStore((state) => (state as CartState).addToCart);
+  const removeFromCart = useCartStore(
+    (state) => (state as CartState).removeFromCart
+  );
+  const clearCart = useCartStore((state) => (state as CartState).clearCart);
+  const loadCart = useCartStore((state) => (state as CartState).loadCart);
   return (
-    <View className="flex-1 items-center justify-center bg-white p-3">
-      <Text>CartScreen</Text>
-      <Pressable
-        className="bg-[green] px-8 py-5 rounded-full w-full"
-        onPress={() => alert("Checkout")}
-      >
-        <Text
-          className="text-white text-center text-lg"
-          style={{ fontFamily: "Gilroy Bold" }}
-        >
-          Checkout
-        </Text>
-      </Pressable>
-    </View>
+    <ScrollView>
+      <Text>Cart Items:</Text>
+      {cart.map((item) => (
+        <View key={item.id}>
+          <Text>{item.name}</Text>
+          <Text>{item.price}</Text>
+          <Text>{item.quantity}</Text>
+          <Text>{item.total}</Text>
+          <Button
+            title="Remove from Cart"
+            onPress={() => removeFromCart(item.id)}
+          />
+        </View>
+      ))}
+      <Button title="Clear Cart" onPress={() => clearCart()} />
+    </ScrollView>
   );
 };
 
-export default CartScreen;
+export default CartComponent;

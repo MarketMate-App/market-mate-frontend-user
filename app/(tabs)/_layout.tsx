@@ -1,7 +1,13 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import {Entypo, Feather, FontAwesome5, Ionicons, MaterialCommunityIcons,} from "@expo/vector-icons";
+import {
+  Entypo,
+  Feather,
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 const RootLayout = () => {
   return (
@@ -19,16 +25,20 @@ const RootLayout = () => {
         options={{
           headerShown: false,
           tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "green" : "gray", fontSize: 11 }}>
+            <Text style={{ color: focused ? "#014E3C" : "gray", fontSize: 11 }}>
               Shop
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <Entypo name="shop" size={24} color={focused ? "green" : "gray"} />
+            <Entypo
+              name="shop"
+              size={24}
+              color={focused ? "#014E3C" : "gray"}
+            />
           ),
           title: "Shop",
           headerTitleStyle: {
-            fontFamily: "Gilroy Medium",
+            fontFamily: "Unbounded Medium",
           },
         }}
       />
@@ -38,12 +48,16 @@ const RootLayout = () => {
         options={{
           headerShown: false,
           tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "green" : "gray", fontSize: 11 }}>
+            <Text style={{ color: focused ? "#014E3C" : "gray", fontSize: 11 }}>
               Profile
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="user" size={24} color={focused ? "green" : "gray"} />
+            <Feather
+              name="user"
+              size={24}
+              color={focused ? "#014E3C" : "gray"}
+            />
           ),
           title: "Profile",
           headerTitleStyle: {

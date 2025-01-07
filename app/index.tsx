@@ -19,32 +19,32 @@ export default function Index() {
       >
         <LinearGradient
           colors={["transparent", "rgba(0,0,0,0.5)"]}
-          className="flex-1 p-4"
+          className="flex-1 p-3"
         >
           <View className="flex-1">
             <View className="absolute bottom-0 w-full">
               <Text
                 className="text-white text-5xl"
-                style={{ fontFamily: "Gilroy Medium" }}
+                style={{ fontFamily: "Unbounded Light" }}
               >
                 Fast Delivery
               </Text>
               <Text
                 className="text-white text-5xl mb-2"
-                style={{ fontFamily: "Gilroy Bold" }}
+                style={{ fontFamily: "Unbounded SemiBold" }}
               >
                 of fresh groceries
               </Text>
               <Text
-                className="text-white text-xl mb-8"
+                className="text-gray-100 text-xl mb-8"
                 style={{ fontFamily: "Gilroy Regular" }}
               >
                 Order and pickup within 24 hours.
               </Text>
               <Link href={"/home"} asChild>
-                <Pressable className="w-full bg-slate-100 px-8 py-5 rounded-full">
+                <Pressable className="w-full bg-[#2BCC5A] px-8 py-5 rounded-[16px]">
                   <Text
-                    className="text-center text-xl"
+                    className="text-center text-xl text-white"
                     style={{ fontFamily: "Gilroy Bold" }}
                   >
                     Get Started

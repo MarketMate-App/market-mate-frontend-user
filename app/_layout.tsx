@@ -11,9 +11,11 @@ export default function RootLayout() {
     "Gilroy Regular": require("../assets/fonts/Gilroy-Regular.ttf"),
     "Gilroy Medium": require("../assets/fonts/Gilroy-Medium.ttf"),
     "Gilroy Bold": require("../assets/fonts/Gilroy-Bold.ttf"),
-    "Plus Jakarta Sans Regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
-    "Plus Jakarta Sans Medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
-    "Plus Jakarta Sans Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
+    "Unbounded Bold": require("../assets/fonts/Unbounded-Bold.ttf"),
+    "Unbounded Regular": require("../assets/fonts/Unbounded-Regular.ttf"),
+    "Unbounded Medium": require("../assets/fonts/Unbounded-Medium.ttf"),
+    "Unbounded SemiBold": require("../assets/fonts/Unbounded-SemiBold.ttf"),
+    "Unbounded Light": require("../assets/fonts/Unbounded-Light.ttf"),
   });
 
   useEffect(() => {
@@ -40,9 +42,9 @@ export default function RootLayout() {
       <Stack.Screen
         name="login"
         options={{
-          headerTitle: "Login",
+          headerTitle: "Welcome Back",
           headerTitleStyle: {
-            fontFamily: "Gilroy Bold",
+            fontFamily: "Unbounded Regular",
           },
           headerShadowVisible: false,
         }}
@@ -50,9 +52,9 @@ export default function RootLayout() {
       <Stack.Screen
         name="registration"
         options={{
-          headerTitle: "Create Account",
+          headerTitle: "Create an Account",
           headerTitleStyle: {
-            fontFamily: "Gilroy Bold",
+            fontFamily: "Unbounded Medium",
           },
           headerShadowVisible: false,
         }}

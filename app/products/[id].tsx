@@ -7,7 +7,7 @@ const DetailsPage = () => {
   const { id, name } = useGlobalSearchParams();
   return (
     <View>
-      <Stack.Screen options={{ headerShown: false }} />
+      <Stack.Screen options={{}} />
       <Text>
         Details Page for item with id: {id} and name: {name}
       </Text>
