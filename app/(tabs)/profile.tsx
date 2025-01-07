@@ -1,62 +1,192 @@
-// UserPreferences.js
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import React, { useState } from "react";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import SwitchComponent from "../components/switch";
 
-const UserPreferences = () => {
-  const [name, setName] = useState("");
-  const [storedName, setStoredName] = useState("");
-  // TODO Make this a real page
-  // Load the name from AsyncStorage when the component mounts
-  useEffect(() => {
-    const loadName = async () => {
-      try {
-        const value = await AsyncStorage.getItem("userName");
-        if (value !== null) {
-          setStoredName(value);
-        }
-      } catch (error) {
-        console.error("Failed to load name from AsyncStorage:", error);
-      }
-    };
+const ProfilePage = () => {
+  type FeatherIconName =
+    | "package"
+    | "map-pin"
+    | "credit-card"
+    | "heart"
+    | "settings"
+    | "help-circle"
+    | "log-out"
+    | "lock"
+    | "feather"
+    | "bell";
 
-    loadName();
-  }, []);
+  const menuItems = [
+    { title: "Orders", icon: "package" as FeatherIconName },
+    { title: "Favourites", icon: "heart" as FeatherIconName },
+  ];
 
-  // Function to save the name to AsyncStorage
-  const saveName = async () => {
-    try {
-      await AsyncStorage.setItem("userName", name);
-      setStoredName(name);
-      setName(""); // Clear the input field
-    } catch (error) {
-      console.error("Failed to save name to AsyncStorage:", error);
-    }
+  const importantItems = [
+    { title: "Address", icon: "map-pin" as FeatherIconName },
+    { title: "Payment Methods", icon: "credit-card" as FeatherIconName },
+  ];
+
+  const preferenceItems = [
+    { title: "Settings", icon: "settings" as FeatherIconName },
+    { title: "Help & Support", icon: "help-circle" as FeatherIconName },
+    { title: "Log Out", icon: "log-out" as FeatherIconName },
+  ];
+
+  const securityItems = [
+    {
+      title: "Allow Push Notifications",
+      icon: "bell" as FeatherIconName,
+      type: "toggle",
+    },
+    {
+      title: "Enable Biometrics",
+      icon: "lock" as FeatherIconName,
+      type: "toggle",
+    },
+    {
+      title: "Set PIN Code",
+      icon: "feather" as FeatherIconName,
+      type: "navigate",
+    },
+  ];
+
+  const [toggleStates, setToggleStates] = useState<Record<string, boolean>>({
+    "Allow Push Notifications": false,
+    "Enable Biometrics": false,
+  });
+
+  const handleToggle = (title: string) => {
+    setToggleStates((prevState) => ({
+      ...prevState,
+      [title]: !prevState[title],
+    }));
   };
 
-  // Function to remove the name from AsyncStorage
-  const removeName = async () => {
-    try {
-      await AsyncStorage.removeItem("userName");
-      setStoredName("");
-    } catch (error) {
-      console.error("Failed to remove name from AsyncStorage:", error);
-    }
-  };
-
-  return (
-    <View style={{ padding: 20 }}>
-      <Text>Stored Name: {storedName}</Text>
-      <TextInput
-        placeholder="Enter your name"
-        value={name}
-        onChangeText={setName}
-        style={{ borderWidth: 1, marginVertical: 10, padding: 10 }}
-      />
-      <Button title="Save Name" onPress={saveName} />
-      <Button title="Remove Name" onPress={removeName} />
+  const ItemList = ({
+    items,
+    isSecurity = false,
+  }: {
+    items: { title: string; icon: FeatherIconName; type?: string }[];
+    isSecurity?: boolean;
+  }) => (
+    <View className="bg-gray-50 p-3 mb-8 w-full rounded-2xl border-hairline border-gray-200">
+      {items.map((item, index) => (
+        <Pressable
+          key={index}
+          className={`flex-row justify-between items-center p-3 ${
+            index === items.length - 1
+              ? ""
+              : "border-b-hairline border-b-gray-200"
+          }`}
+          onPress={() =>
+            isSecurity && item.type === "navigate" && handleToggle(item.title)
+          }
+        >
+          <View className="flex-row justify-center items-center gap-2">
+            <Feather
+              name={item.icon}
+              size={20}
+              color={"gray"}
+              className="p-2 bg-white rounded-2xl"
+            />
+            <Text style={style.fontLight} className="text-sm text-gray-600">
+              {item.title}
+            </Text>
+          </View>
+          {isSecurity && item.type === "toggle" ? (
+            <SwitchComponent
+              value={toggleStates[item.title]}
+              onValueChange={() => handleToggle(item.title)}
+            />
+          ) : (
+            <AntDesign name="swapright" size={24} color={"gray"} />
+          )}
+        </Pressable>
+      ))}
     </View>
+  );
+  return (
+    <SafeAreaView>
+      <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
+        <View className="flex-1 items-center bg-white p-3">
+          <Image
+            source={require("@/assets/images/avatar.jpg")}
+            className="w-24 h-24 mb-8 mt-8 rounded-full"
+          />
+          <Text
+            className="text-xl mb-2"
+            style={{ fontFamily: "Unbounded Regular" }}
+          >
+            Coffestories
+          </Text>
+          <Text
+            className="text-sm text-gray-500 mb-4"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            mark.brock@icloud.com
+          </Text>
+
+          <Pressable className="py-4 px-14 bg-[#2BCC5A20] rounded-[16px] mb-8">
+            <Text
+              className="text-[#2BCC5A] text-sm"
+              style={{ fontFamily: "Unbounded Medium" }}
+            >
+              Edit Profile
+            </Text>
+          </Pressable>
+
+          <Text
+            className="text-right text-xs text-gray-500 mb-2"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            My Account
+          </Text>
+          <ItemList items={menuItems} />
+
+          <Text
+            className="text-right text-xs text-gray-500 mb-2"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            My Account
+          </Text>
+          <ItemList items={importantItems} />
+
+          <Text
+            className="text-right text-xs text-gray-500 mb-2"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            Security
+          </Text>
+          <ItemList items={securityItems} isSecurity />
+
+          <Text
+            className="text-right text-xs text-gray-500 mb-2"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            Preference
+          </Text>
+          <ItemList items={preferenceItems} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
-export default UserPreferences;
+const style = StyleSheet.create({
+  fontRegular: {
+    fontFamily: "Unbounded Regular",
+  },
+  fontLight: {
+    fontFamily: "Unbounded Light",
+  },
+});
+
+export default ProfilePage;

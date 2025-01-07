@@ -55,14 +55,17 @@ const RootLayout = () => {
           ),
           title: "Your Cart",
           headerTitleStyle: {
-            fontFamily: "Unbounded Medium",
+            fontFamily: "Unbounded Regular",
+            fontSize: 14,
           },
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          headerShown: false,
+          // headerShown: false,
+          headerTitleAlign: "center",
+          headerShadowVisible: false,
           tabBarLabel: ({ focused }) => (
             <Text style={{ color: focused ? "#014E3C" : "gray", fontSize: 11 }}>
               Account
@@ -75,9 +78,10 @@ const RootLayout = () => {
               color={focused ? "#014E3C" : "gray"}
             />
           ),
-          title: "Account",
+          title: "My Account",
           headerTitleStyle: {
-            fontFamily: "Gilroy Medium",
+            fontFamily: "Unbounded Regular",
+            fontSize: 14,
           },
         }}
       />

@@ -18,6 +18,7 @@ import CategoriesComponent from "../components/categories";
 import GridcardComponent from "../components/gridcard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { set } from "react-hook-form";
+import SwitchComponent from "../components/switch";
 
 const products = [
   {
@@ -381,5 +382,4 @@ const HomePage = () => {
     </SafeAreaView>
   );
 };
-
 export default HomePage;
