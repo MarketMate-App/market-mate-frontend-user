@@ -287,7 +287,7 @@ const HomePage = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* <CategoriesComponent /> */}
         <Text
-          className="text-lg mb-4 text-green-900"
+          className="text-lg mb-4 text-[#014E3C]"
           style={{ fontFamily: "Unbounded Medium" }}
         >
           Featured Fruits
@@ -312,7 +312,7 @@ const HomePage = () => {
             ))}
         </ScrollView>
         <Text
-          className="text-lg mb-4 text-green-900"
+          className="text-lg mb-4 text-[#014E3C]"
           style={{ fontFamily: "Unbounded Medium" }}
         >
           Fresh Veggies
@@ -337,7 +337,7 @@ const HomePage = () => {
             ))}
         </ScrollView>
         <Text
-          className="text-lg mb-4 text-green-900"
+          className="text-lg mb-4 text-[#014E3C]"
           style={{ fontFamily: "Unbounded Medium" }}
         >
           Grossing Meats
@@ -369,7 +369,7 @@ const HomePage = () => {
           position: "absolute",
           bottom: 20,
           right: 20,
-          backgroundColor: "green",
+          backgroundColor: "#2BCC5A",
           borderRadius: 50,
           padding: 15,
           elevation: 5,

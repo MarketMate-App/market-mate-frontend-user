@@ -70,16 +70,6 @@ export default function RootLayout() {
           headerShadowVisible: false,
         }}
       />
-      <Stack.Screen
-        name="screens/cart"
-        options={{
-          headerTitle: "Your Cart",
-          headerTitleStyle: {
-            fontFamily: "Gilroy Bold",
-          },
-          headerShadowVisible: false,
-        }}
-      />
 
       <Stack.Screen name="screens/scan" options={{ headerShown: false }} />
     </Stack>

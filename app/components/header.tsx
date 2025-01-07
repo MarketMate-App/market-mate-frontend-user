@@ -20,7 +20,7 @@ const HeaderComponent = () => {
             <Feather name="search" size={20} color="gray" />
           </View>
         </Link>
-        <Link href={"/screens/cart"}>
+        {/* <Link href={"/screens/cart"}>
           <View className="bg-black py-2 px-4 rounded-full flex-row items-center justify-center gap-3">
             <Feather name="shopping-bag" size={24} color="white" />
             <Text
@@ -30,7 +30,7 @@ const HeaderComponent = () => {
               0
             </Text>
           </View>
-        </Link>
+        </Link> */}
       </View>
     </View>
   );

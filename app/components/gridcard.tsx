@@ -1,6 +1,6 @@
 import { View, Text, ImageBackground } from "react-native";
 import React from "react";
-import { Entypo, AntDesign } from "@expo/vector-icons";
+import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
 import { useCartStore } from "../store/cartStore";
 import { ImageSourcePropType } from "react-native";
 import { Link } from "expo-router";
@@ -84,7 +84,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           {name}
         </Text>
         <Text
-          className="text-gray-500"
+          className="text-gray-500 text-sm"
           style={{ fontFamily: "Unbounded Light" }}
         >
           1 {unitOfMeasure}
@@ -105,13 +105,13 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           <View>
             {quantity === 0 ? (
               <View
-                className="p-3 rounded-full bg-gray-50"
+                className="p-3 rounded-full bg-[#2BCC5A20]"
                 onTouchEnd={() => {
                   setQuantity(1);
                   addToCart(product);
                 }}
               >
-                <Entypo name="plus" size={24} color={"gray"} />
+                <Ionicons name="basket" size={24} color={"#2BCC5A"} />
               </View>
             ) : (
               <View className="flex-row items-center bg-gray-50 p-2 rounded-full">
