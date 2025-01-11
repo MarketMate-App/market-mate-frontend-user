@@ -61,7 +61,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
   );
   return (
     <View className="p-4 border-hairline border-gray-300 rounded-3xl w-[180px] mr-3">
-      <Link href={`/products/${productId}`} asChild>
+      <Link href={`/products/${productId}`}>
         <ImageBackground
           source={{ uri: imageUrl }}
           className="h-[100px] w-full mb-4"

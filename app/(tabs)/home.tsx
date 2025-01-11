@@ -30,6 +30,8 @@ const products = [
     unitOfMeasure: "kg",
     category: "Fruits",
     tags: ["Fruits", "Watermelon", "Red"],
+    description:
+      "Enjoy the refreshing taste of our juicy watermelons, perfect for quenching your thirst on a hot Ghanaian day. Packed with vitamins A and C, this sweet fruit is a must-have for your fruit basket.",
   },
   {
     id: 2,
@@ -40,6 +42,8 @@ const products = [
     unitOfMeasure: "kg",
     category: "Fruits",
     tags: ["Fruits", "Apple", "Red"],
+    description:
+      "Crisp and sweet, our apples are perfect for a healthy snack. High in fiber and vitamin C, they are ideal for boosting your immune system and keeping you energized throughout the day.",
   },
   {
     id: 3,
@@ -50,6 +54,8 @@ const products = [
     discount: 0,
     category: "Fruits",
     tags: ["Fruits", "Banana", "Yellow"],
+    description:
+      "Rich in potassium, our bananas are perfect for a quick energy boost. Enjoy them on their own or add them to your favorite smoothie for a delicious and nutritious treat.",
   },
   {
     id: 4,
@@ -60,6 +66,8 @@ const products = [
     discount: 0,
     category: "Fruits",
     tags: ["Fruits", "Papaya", "Orange"],
+    description:
+      "Experience the tropical sweetness of our papayas. Rich in vitamins C and A, they are perfect for fruit salads, smoothies, or simply enjoying on their own.",
   },
   {
     id: 5,
@@ -70,8 +78,9 @@ const products = [
     discount: 0,
     category: "Vegetables",
     tags: ["Vegetables", "Tomato", "Red"],
+    description:
+      "Our tomatoes are perfect for adding a burst of flavor to your dishes. Whether in salads, soups, or stews, they are a versatile ingredient rich in antioxidants.",
   },
-
   {
     id: 6,
     name: "Cabbage",
@@ -81,8 +90,9 @@ const products = [
     discount: 0,
     category: "Vegetables",
     tags: ["Vegetables", "Cabbage", "Green"],
+    description:
+      "Crunchy and fresh, our cabbages are perfect for salads and cooking. High in vitamins K and C, they are a nutritious addition to any meal.",
   },
-
   {
     id: 7,
     name: "Lettuce",
@@ -92,6 +102,8 @@ const products = [
     discount: 0,
     category: "Vegetables",
     tags: ["Vegetables", "Lettuce", "Green"],
+    description:
+      "Add a refreshing crunch to your salads with our fresh lettuce. Low in calories and high in water content, it's perfect for a healthy diet.",
   },
   {
     id: 8,
@@ -102,8 +114,9 @@ const products = [
     discount: 0,
     category: "Vegetables",
     tags: ["Vegetables", "Red Pepper", "Red"],
+    description:
+      "Brighten up your dishes with our sweet red peppers. Rich in vitamins A and C, they add a vibrant color and sweet flavor to any meal.",
   },
-
   {
     id: 9,
     name: "Chilli Pepper",
@@ -114,6 +127,8 @@ const products = [
     discount: 0,
     category: "Vegetables",
     tags: ["Vegetables", "Chilli Pepper", "Red"],
+    description:
+      "Spice up your meals with our fiery chilli peppers. Perfect for sauces, salsas, and spicy dishes, they are rich in vitamins A and C.",
   },
   {
     id: 10,
@@ -124,6 +139,8 @@ const products = [
     discount: 0,
     category: "Vegetables",
     tags: ["Vegetables", "Green Pepper", "Green"],
+    description:
+      "Versatile and nutritious, our green peppers are perfect for a variety of dishes. They are a good source of vitamins A and C, adding both flavor and nutrition to your meals.",
   },
   {
     id: 11,
@@ -134,6 +151,8 @@ const products = [
     discount: 0,
     category: "Meats",
     tags: ["Meats", "Chicken", "White"],
+    description:
+      "Our chicken is a versatile protein that can be grilled, roasted, or fried. It's a staple in many Ghanaian dishes and is a good source of lean protein.",
   },
   {
     id: 12,
@@ -144,6 +163,8 @@ const products = [
     discount: 0,
     category: "Meats",
     tags: ["Meats", "Cow Beef", "Red"],
+    description:
+      "Rich in protein and iron, our beef is perfect for steaks, burgers, and traditional Ghanaian stews. Enjoy the rich flavor and tenderness in every bite.",
   },
   {
     id: 13,
@@ -154,6 +175,8 @@ const products = [
     discount: 0,
     category: "Meats",
     tags: ["Meats", "Pork", "Red"],
+    description:
+      "Our pork is known for its rich flavor and tenderness. Perfect for roasting, grilling, or frying, it's a delicious addition to any meal.",
   },
   {
     id: 14,
@@ -164,6 +187,8 @@ const products = [
     discount: 0,
     category: "Meats",
     tags: ["Meats", "Mutton", "Red"],
+    description:
+      "Enjoy the rich, gamey flavor of our mutton. Perfect for traditional stews and curries, it's high in protein and essential nutrients.",
   },
   {
     id: 15,
@@ -174,6 +199,8 @@ const products = [
     unitOfMeasure: "piece",
     category: "Fruits",
     tags: ["Fruits", "Citrus", "Fresh"],
+    description:
+      "Sweet and tangy, our pineapples are perfect for fruit salads, desserts, and as a garnish for drinks. Rich in vitamins C and B6, they are a tropical delight.",
   },
   {
     id: 16,
@@ -184,6 +211,8 @@ const products = [
     category: "Vegetables",
     unitOfMeasure: "kg",
     tags: ["Vegetables", "Fresh"],
+    description:
+      "Crunchy and sweet, our carrots are perfect for salads and cooking. Rich in beta-carotene, they are a nutritious addition to any meal.",
   },
   {
     id: 17,
@@ -194,6 +223,8 @@ const products = [
     unitOfMeasure: "piece",
     category: "Fruits",
     tags: ["Fruits", "Avocado", "Fresh", "Green", "Pear"],
+    description:
+      "Creamy and rich, our avocados are perfect for salads and guacamole. High in healthy fats, they are a nutritious addition to any meal.",
   },
   {
     id: 18,
@@ -204,6 +235,8 @@ const products = [
     unitOfMeasure: "kg",
     category: "Vegetables",
     tags: ["Vegetables", "Okra", "Green"],
+    description:
+      "Perfect for soups and stews, our okra is a staple in many Ghanaian dishes. Rich in vitamins C and K, it's a nutritious addition to any meal.",
   },
   {
     id: 19,
@@ -214,6 +247,8 @@ const products = [
     unitOfMeasure: "kg",
     category: "Fruits",
     tags: ["Fruits", "Orange", "Citrus"],
+    description:
+      "Juicy and sweet, our oranges are perfect for a healthy snack. Rich in vitamin C, they are a delicious way to boost your immune system.",
   },
 ];
 
@@ -242,6 +277,7 @@ const HomePage = () => {
       console.error("Failed to save products to local storage", e);
     }
   };
+
   const loadFromLocalStorage = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem("@products");
