@@ -134,7 +134,7 @@ const ProfilePage = () => {
             mark.brock@icloud.com
           </Text>
 
-          <Pressable className="py-4 px-14 bg-[#2BCC5A20] rounded-[16px] mb-8">
+          <Pressable className="py-4 px-14 rounded-[16px] mb-8 border-hairline border-[#2BCC5A]">
             <Text
               className="text-[#2BCC5A] text-sm"
               style={{ fontFamily: "Unbounded Medium" }}
@@ -155,7 +155,7 @@ const ProfilePage = () => {
             className="text-right text-xs text-gray-500 mb-2"
             style={{ fontFamily: "Unbounded Light" }}
           >
-            My Account
+            Address & Payment
           </Text>
           <ItemList items={importantItems} />
 

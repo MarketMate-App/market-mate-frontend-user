@@ -1,8 +1,15 @@
-import { View, Text, ActivityIndicator, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Pressable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import GridcardComponent from "../components/gridcard";
 
 interface Product {
@@ -24,6 +31,7 @@ const DetailsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [heartFilled, setHeartFilled] = useState(false);
   const [productsArray, setProductsArray] = useState<Product[]>([]);
+  const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -46,7 +54,6 @@ const DetailsPage = () => {
         );
 
         if (storedProduct) {
-          console.log("Product found in storage", storedProduct);
           setProduct(storedProduct);
         } else {
           console.log("Product not found in storage");
@@ -90,120 +97,183 @@ const DetailsPage = () => {
       ) : error ? (
         <Text className="text-red-500 text-center">{error}</Text>
       ) : product ? (
-        <ScrollView
-          className="flex-1"
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-        >
-          <View className="flex-1">
-            <Image
-              source={{ uri: product.imageUrl }}
-              className="h-[300px] mt-3 w-full"
-              resizeMode="cover"
-            />
-            <View className="flex-row flex-wrap mt-4">
-              {product.tags.map((tag, index) => {
-                const colors = [
-                  "#FF6347",
-                  "#4682B4",
-                  "#32CD32",
-                  "#FFD700",
-                  "#FF69B4",
-                  "#8A2BE2",
-                  "#5F9EA0",
-                  "#D2691E",
-                  "#DC143C",
-                  "#00FFFF",
-                  "#00008B",
-                  "#B8860B",
-                  "#006400",
-                  "#8B008B",
-                  "#FF8C00",
-                ].sort(() => Math.random() - 0.5);
-                const color = colors[index % colors.length];
-                const backgroundColor = color + "10"; // Adding transparency
+        <>
+          <ScrollView
+            className="flex-1"
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+          >
+            <View className="flex-1 mb-10">
+              <Image
+                source={{ uri: product.imageUrl }}
+                className="h-[300px] mt-3 w-full"
+                resizeMode="center"
+              />
+              <View className="flex-row flex-wrap mt-4">
+                {product.tags.map((tag, index) => {
+                  const colors = [
+                    "#FF6347",
+                    "#4682B4",
+                    "#32CD32",
+                    "#FFD700",
+                    "#FF69B4",
+                    "#8A2BE2",
+                    "#5F9EA0",
+                    "#D2691E",
+                    "#DC143C",
+                    "#00FFFF",
+                    "#00008B",
+                    "#B8860B",
+                    "#006400",
+                    "#8B008B",
+                    "#FF8C00",
+                  ];
+                  const color = colors[index % colors.length];
+                  const backgroundColor = color + "10"; // Adding transparency
 
-                return (
-                  <View
-                    key={tag}
-                    className="px-3 py-1 mr-2 mb-2 rounded-full"
-                    style={{
-                      backgroundColor,
-                      borderColor: color,
-                      borderWidth: 1,
-                    }}
-                  >
-                    <Text
+                  return (
+                    <View
+                      key={tag}
+                      className="px-3 py-1 mr-2 mb-2 rounded-full"
                       style={{
-                        color,
-                        fontFamily: "Unbounded Light",
+                        backgroundColor,
+                        borderColor: color,
+                        borderWidth: 1,
                       }}
-                      className="text-xs"
                     >
-                      {tag}
+                      <Text
+                        style={{
+                          color,
+                          fontFamily: "Unbounded Light",
+                        }}
+                        className="text-xs"
+                      >
+                        {tag}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+              <View className="p-4">
+                <View className="flex-row justify-between items-center">
+                  <Text
+                    className="text-black text-xl mb-4"
+                    style={{ fontFamily: "Unbounded Regular" }}
+                  >
+                    {product.name}
+                  </Text>
+                  <Text
+                    className="text-black text-2xl mb-4"
+                    style={{ fontFamily: "Unbounded Regular" }}
+                  >
+                    ₵{product.price}
+                    <Text className="text-sm text-gray-500">
+                      / {product.unitOfMeasure}
                     </Text>
-                  </View>
-                );
-              })}
-            </View>
-            <View className="p-4">
-              <View className="flex-row justify-between items-center">
+                  </Text>
+                </View>
                 <Text
-                  className="text-black text-xl mb-4"
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  className="text-gray-500 text-sm mb-4"
+                  style={{ fontFamily: "Unbounded Light" }}
                 >
-                  {product.name}
+                  {product.description}
                 </Text>
+              </View>
+              <View className="mt-6">
                 <Text
-                  className="text-black text-2xl mb-4"
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  className="text-gray-500 text-sm mb-4"
+                  style={{ fontFamily: "Unbounded Light" }}
                 >
-                  ₵{product.price}
-                  <Text className="text-sm text-gray-500">
-                    / {product.unitOfMeasure}
+                  Similar Products
+                </Text>
+                <ScrollView
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                  className="mb-10"
+                >
+                  {productsArray
+                    .filter(
+                      (p: Product) =>
+                        p.category === product.category && p.id !== product.id
+                    )
+                    .slice(0, 4)
+                    .map((similarProduct: Product) => (
+                      <GridcardComponent
+                        key={similarProduct.id}
+                        name={similarProduct.name}
+                        price={similarProduct.price}
+                        unitOfMeasure={similarProduct.unitOfMeasure}
+                        imageUrl={similarProduct.imageUrl}
+                        productId={similarProduct.id}
+                      />
+                    ))}
+                </ScrollView>
+              </View>
+            </View>
+          </ScrollView>
+          <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
+            {quantity === 0 ? (
+              <Pressable
+                className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center gap-2"
+                onPress={() => setQuantity(1)}
+              >
+                <Ionicons name="basket-outline" size={24} color={"black"} />
+                <Text
+                  style={{ fontFamily: "Unbounded Regular" }}
+                  className="text-xs text-black"
+                >
+                  Add to cart
+                </Text>
+              </Pressable>
+            ) : (
+              <View className="items-center justify-center">
+                <View className="flex-row items-center gap-2 mb-1">
+                  <Pressable
+                    className="px-4 py-2 rounded-full border-hairline border-gray-200"
+                    onPress={() => setQuantity(quantity - 1)}
+                  >
+                    <Ionicons name="remove" size={24} color={"black"} />
+                  </Pressable>
+                  <Text
+                    style={{ fontFamily: "Unbounded Regular" }}
+                    className="text-lg text-black"
+                  >
+                    {quantity}
+                  </Text>
+                  <Pressable
+                    className="px-4 py-2 rounded-full border-hairline border-gray-200"
+                    onPress={() => setQuantity(quantity + 1)}
+                  >
+                    <Ionicons name="add" size={24} color={"black"} />
+                  </Pressable>
+                </View>
+                <Text>
+                  <Text
+                    style={{ fontFamily: "Unbounded Regular" }}
+                    className="text-xs text-black"
+                  >
+                    Total:{" "}
+                  </Text>
+                  <Text
+                    style={{ fontFamily: "Unbounded Regular" }}
+                    className="text-xs text-black"
+                  >
+                    ₵{(product.price * quantity).toFixed(2)}
                   </Text>
                 </Text>
               </View>
+            )}
+
+            <Pressable className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center ">
               <Text
-                className="text-gray-500 text-sm mb-4"
-                style={{ fontFamily: "Unbounded Light" }}
+                style={{ fontFamily: "Unbounded Regular" }}
+                className="text-xs text-white"
               >
-                {product.description}
+                Buy now
               </Text>
-            </View>
-            <View className="mt-6">
-              <Text
-                className="text-gray-500 text-sm mb-4"
-                style={{ fontFamily: "Unbounded Light" }}
-              >
-                Similar Products
-              </Text>
-              <ScrollView
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                className="mb-10"
-              >
-                {productsArray
-                  .filter(
-                    (p: Product) =>
-                      p.category === product.category && p.id !== product.id
-                  )
-                  .slice(0, 4)
-                  .map((similarProduct: Product) => (
-                    <GridcardComponent
-                      key={similarProduct.id}
-                      name={similarProduct.name}
-                      price={similarProduct.price}
-                      unitOfMeasure={similarProduct.unitOfMeasure}
-                      imageUrl={similarProduct.imageUrl}
-                      productId={similarProduct.id}
-                    />
-                  ))}
-              </ScrollView>
-            </View>
-            <View className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200"></View>
+            </Pressable>
           </View>
-        </ScrollView>
+        </>
       ) : (
         <Text className="text-center">404 - Product not found</Text>
       )}
