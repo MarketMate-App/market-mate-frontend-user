@@ -71,80 +71,75 @@ const CartComponent = () => {
           </>
         )}
         {cart.map((item) => (
-          <>
-            <View
-              key={item.id}
-              className="flex-row items-center justify-between"
-            >
-              <View className="flex-row items-center justify-center gap-4">
-                <Image
-                  source={{ uri: item.imageUrl }}
-                  className="w-24 h-24"
-                  resizeMode="contain"
-                />
-                <View>
-                  <Text
-                    className="text-sm text-gray-700 mb-2"
-                    style={{ fontFamily: "Unbounded Medium" }}
-                  >
-                    {item.name}
-                  </Text>
-                  <Text
-                    className="text-gray-500 text-xs mb-4"
-                    style={{ fontFamily: "Unbounded Light" }}
-                  >
-                    1 {item.unitOfMeasure}
-                  </Text>
-                </View>
-              </View>
-
-              <View className=" items-center justify-between">
+          <View key={item.id} className="flex-row items-center justify-between">
+            <View className="flex-row items-center justify-center gap-4">
+              <Image
+                source={{ uri: item.imageUrl }}
+                className="w-24 h-24"
+                resizeMode="contain"
+              />
+              <View>
                 <Text
-                  className="text-sm relative mb-2 text-gray-700"
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  className="text-sm text-gray-700 mb-2"
+                  style={{ fontFamily: "Unbounded Medium" }}
                 >
-                  ₵{Math.floor(item.price)}.
-                  {item.price.toFixed(2).split(".")[1] === "00"
-                    ? "00"
-                    : item.price.toFixed(2).split(".")[1]}
+                  {item.name}
                 </Text>
-                <View className="flex-row items-center gap-2">
-                  <Entypo
-                    name="minus"
-                    size={20}
-                    color={"gray"}
-                    className="border-hairline border-gray-300 rounded-full p-1"
-                    onPress={() => {
-                      if (item.quantity > 1) {
-                        item.quantity -= 1;
-                      } else {
-                        if (item.id !== undefined) {
-                          removeFromCart(item.id);
-                        }
-                      }
-                      setQuantity(item.quantity);
-                    }}
-                  />
-                  <Text
-                    className="mx-2 text-gray-500 text-sm"
-                    style={{ fontFamily: "Unbounded Regular" }}
-                  >
-                    {item.quantity}
-                  </Text>
-                  <Entypo
-                    name="plus"
-                    size={20}
-                    color={"white"}
-                    onPress={() => {
-                      item.quantity += 1;
-                      setQuantity(item.quantity);
-                    }}
-                    className="border-hairline border-gray-300 rounded-full p-1 bg-black"
-                  />
-                </View>
+                <Text
+                  className="text-gray-500 text-xs mb-4"
+                  style={{ fontFamily: "Unbounded Light" }}
+                >
+                  1 {item.unitOfMeasure}
+                </Text>
               </View>
             </View>
-          </>
+
+            <View className="items-center justify-between">
+              <Text
+                className="text-sm relative mb-2 text-gray-700"
+                style={{ fontFamily: "Unbounded Regular" }}
+              >
+                ₵{Math.floor(item.price)}.
+                {item.price.toFixed(2).split(".")[1] === "00"
+                  ? "00"
+                  : item.price.toFixed(2).split(".")[1]}
+              </Text>
+              <View className="flex-row items-center gap-2">
+                <Entypo
+                  name="minus"
+                  size={20}
+                  color={"gray"}
+                  className="border-hairline border-gray-300 rounded-full p-1"
+                  onPress={() => {
+                    if (item.quantity > 1) {
+                      item.quantity -= 1;
+                    } else {
+                      if (item.id !== undefined) {
+                        removeFromCart(item.id);
+                      }
+                    }
+                    setQuantity(item.quantity);
+                  }}
+                />
+                <Text
+                  className="mx-2 text-gray-500 text-sm"
+                  style={{ fontFamily: "Unbounded Regular" }}
+                >
+                  {item.quantity}
+                </Text>
+                <Entypo
+                  name="plus"
+                  size={20}
+                  color={"white"}
+                  onPress={() => {
+                    item.quantity += 1;
+                    setQuantity(item.quantity);
+                  }}
+                  className="border-hairline border-gray-300 rounded-full p-1 bg-black"
+                />
+              </View>
+            </View>
+          </View>
         ))}
         {cart.length === 0 && (
           <View className="flex-1 items-center justify-center ">
