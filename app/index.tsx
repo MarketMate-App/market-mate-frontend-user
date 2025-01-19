@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import React from "react";
 import {
   ImageBackground,
@@ -14,7 +14,7 @@ export default function Index() {
   return (
     <SafeAreaView>
       <ImageBackground
-        source={require("@/assets/images/woman.png")}
+        source={require("@/assets/images/woman.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
         <LinearGradient
@@ -24,8 +24,8 @@ export default function Index() {
           <View className="flex-1">
             <View className="absolute bottom-0 w-full">
               <Text
-                className="text-white text-5xl"
-                style={{ fontFamily: "Unbounded Light" }}
+                className="text-white text-5xl mb-1"
+                style={{ fontFamily: "Unbounded Regular" }}
               >
                 Fast Delivery
               </Text>
@@ -36,21 +36,22 @@ export default function Index() {
                 of fresh groceries
               </Text>
               <Text
-                className="text-gray-100 text-xl mb-8"
-                style={{ fontFamily: "Gilroy Regular" }}
+                className="text-gray-100 text-lg mb-8"
+                style={{ fontFamily: "Unbounded Light" }}
               >
                 Order and pickup within 24 hours.
               </Text>
-              <Link href={"/home"} asChild>
-                <Pressable className="w-full bg-[#2BCC5A] px-8 py-5 rounded-[16px]">
-                  <Text
-                    className="text-center text-xl text-white"
-                    style={{ fontFamily: "Gilroy Bold" }}
-                  >
-                    Get Started
-                  </Text>
-                </Pressable>
-              </Link>
+              <Pressable
+                onPress={() => router.push("/home")}
+                className="w-full bg-[#2BCC5A] px-8 py-5 rounded-full"
+              >
+                <Text
+                  className="text-center text-sm text-white"
+                  style={{ fontFamily: "Unbounded SemiBold" }}
+                >
+                  Get Started
+                </Text>
+              </Pressable>
             </View>
           </View>
         </LinearGradient>

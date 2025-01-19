@@ -6,10 +6,17 @@ import {
 } from "expo-camera";
 import React, { useRef } from "react";
 import { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import Tesseract from "tesseract.js";
+import TextRecognition from "@react-native-ml-kit/text-recognition";
 
 export default function App() {
   const [facing, setFacing] = useState<CameraType>("back");
@@ -39,24 +46,33 @@ export default function App() {
   }
 
   async function takePicture() {
-    if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
-      if (photo) {
-        console.log(photo);
+    try {
+      if (cameraRef.current) {
+        const photo = await cameraRef.current.takePictureAsync();
+        if (photo) {
+          console.log(photo);
 
-        // Perform OCR on the taken picture
-        Tesseract.recognize("../../assets/images/GT1sOHUWsAA6_1v.jpeg", "eng", {
-          logger: (m) => console.log(m),
-        })
-          .then((result) => {
-            console.log(result.data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      } else {
-        console.error("Failed to take picture");
+          // Perform OCR on the taken picture
+          const result = await TextRecognition.recognize(photo.uri);
+
+          console.log("Recognized text:", result.text);
+
+          for (let block of result.blocks) {
+            console.log("Block text:", block.text);
+            console.log("Block frame:", block.frame);
+
+            for (let line of block.lines) {
+              console.log("Line text:", line.text);
+              console.log("Line frame:", line.frame);
+            }
+          }
+        } else {
+          Alert.alert("Error", "Failed to take picture");
+        }
       }
+    } catch (error) {
+      console.error("Error taking picture:", error);
+      Alert.alert("Error", "An error occurred while taking the picture");
     }
   }
 

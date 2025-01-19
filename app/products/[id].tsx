@@ -168,7 +168,7 @@ const DetailsPage = () => {
                   >
                     ₵{product.price}
                     <Text className="text-sm text-gray-500">
-                      / {product.unitOfMeasure}
+                      /{product.unitOfMeasure}
                     </Text>
                   </Text>
                 </View>
@@ -184,7 +184,7 @@ const DetailsPage = () => {
                   className="text-gray-500 text-sm mb-4"
                   style={{ fontFamily: "Unbounded Light" }}
                 >
-                  Similar Products
+                  You may also like
                 </Text>
                 <ScrollView
                   showsHorizontalScrollIndicator={false}
@@ -214,7 +214,7 @@ const DetailsPage = () => {
           <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
             {quantity === 0 ? (
               <Pressable
-                className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center gap-2"
+                className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center justify-center gap-4"
                 onPress={() => setQuantity(1)}
               >
                 <Ionicons name="basket-outline" size={24} color={"black"} />
@@ -226,10 +226,10 @@ const DetailsPage = () => {
                 </Text>
               </Pressable>
             ) : (
-              <View className="items-center justify-center">
+              <View className="items-center justify-center flex-1">
                 <View className="flex-row items-center gap-2 mb-1">
                   <Pressable
-                    className="px-4 py-2 rounded-full border-hairline border-gray-200"
+                    className="px-4 py-2 rounded-full border-hairline border-gray-300"
                     onPress={() => setQuantity(quantity - 1)}
                   >
                     <Ionicons name="remove" size={24} color={"black"} />

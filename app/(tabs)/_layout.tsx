@@ -1,7 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Entypo,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
 const RootLayout = () => {
   return (
@@ -20,13 +25,19 @@ const RootLayout = () => {
         options={{
           headerShown: false,
           tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "#014E3C" : "gray", fontSize: 11 }}>
+            <Text
+              style={{
+                color: focused ? "#014E3C" : "gray",
+                fontSize: 9,
+                fontFamily: "Unbounded Regular",
+              }}
+            >
               Shop
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <Entypo
-              name="shop"
+            <MaterialCommunityIcons
+              name={focused ? "storefront" : "storefront-outline"}
               size={24}
               color={focused ? "#014E3C" : "gray"}
             />
@@ -37,23 +48,30 @@ const RootLayout = () => {
           },
         }}
       />
+
       <Tabs.Screen
         name="cart"
         options={{
           headerShadowVisible: false,
           tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "#014E3C" : "gray", fontSize: 11 }}>
-              Basket
+            <Text
+              style={{
+                color: focused ? "#014E3C" : "gray",
+                fontSize: 9,
+                fontFamily: "Unbounded Regular",
+              }}
+            >
+              Cart
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "basket" : "basket-outline"}
+            <MaterialCommunityIcons
+              name={focused ? "shopping" : "shopping-outline"}
               size={24}
               color={focused ? "#014E3C" : "gray"}
             />
           ),
-          title: "Your Cart",
+          title: "My Cart",
           headerTitleStyle: {
             fontFamily: "Unbounded Regular",
             fontSize: 14,
@@ -67,13 +85,19 @@ const RootLayout = () => {
           headerTitleAlign: "center",
           headerShadowVisible: false,
           tabBarLabel: ({ focused }) => (
-            <Text style={{ color: focused ? "#014E3C" : "gray", fontSize: 11 }}>
+            <Text
+              style={{
+                color: focused ? "#014E3C" : "gray",
+                fontSize: 8,
+                fontFamily: "Unbounded Regular",
+              }}
+            >
               Account
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
-              name={focused ? "account" : "account-outline"}
+              name={focused ? "account-circle" : "account-circle-outline"}
               size={24}
               color={focused ? "#014E3C" : "gray"}
             />

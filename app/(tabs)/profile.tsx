@@ -134,10 +134,10 @@ const ProfilePage = () => {
             mark.brock@icloud.com
           </Text>
 
-          <Pressable className="py-4 px-14 rounded-[16px] mb-8 border-hairline border-[#2BCC5A]">
+          <Pressable className="py-5 w-[56%] rounded-full mb-8 border-hairline border-[#014E3C]">
             <Text
-              className="text-[#2BCC5A] text-sm"
-              style={{ fontFamily: "Unbounded Medium" }}
+              className="text-[#014E3C] text-xs text-center"
+              style={{ fontFamily: "Unbounded SemiBold" }}
             >
               Edit Profile
             </Text>

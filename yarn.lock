@@ -828,6 +828,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@devinikhiya/react-native-tesseractocr@^0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@devinikhiya/react-native-tesseractocr/-/react-native-tesseractocr-0.1.10.tgz#492fbcad24ffec61b46a5fdd348b71f2723fb8dd"
+  integrity sha512-1ADy80gXtBCyhu/KT4ht+iVjaBFqZHixvjMbK2wdBgIxY9NndmH+nSR78mx9F6tBZrbo3NxlgFZfeFo8xSkSDw==
+
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
@@ -1500,6 +1505,11 @@
   integrity sha512-eAGQGPTAuFNEoIQSB5j2Jh1zm5NPyBRTfjRMfCN0W1OakC5WIB5vsDyIQhUweKN9XOE2/V07lqTMGsL0dGXNkA==
   dependencies:
     merge-options "^3.0.4"
+
+"@react-native-ml-kit/text-recognition@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-ml-kit/text-recognition/-/text-recognition-1.5.2.tgz#c8492d6d2874c07f83f8c245b933dd43c23a159d"
+  integrity sha512-zPnJrD19u4FhT0ntvtnZVEhvPym9KyZ0R+UXBYJbCT0ePL9DpMnSewBFnHy44YnXKGgbokRQXUQMMM+GOsQs7w==
 
 "@react-native/assets-registry@0.76.5":
   version "0.76.5"
