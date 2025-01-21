@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground } from "react-native";
+import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import React from "react";
 import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
 import { useCartStore } from "../store/cartStore";
@@ -60,7 +60,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
     (state) => (state as CartState).removeFromCart
   );
   return (
-    <View className="p-4 border-hairline border-gray-300 rounded-3xl w-[180px] mr-3">
+    <TouchableOpacity className="p-4 border-hairline border-gray-300 rounded-3xl w-[180px] mr-3">
       <Link href={`/products/${productId}`}>
         <ImageBackground
           source={{ uri: imageUrl }}
@@ -153,7 +153,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

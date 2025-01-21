@@ -63,11 +63,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="screens/search"
         options={{
-          headerTitle: "",
-          headerTitleStyle: {
-            fontFamily: "Gilroy Bold",
-          },
-          headerShadowVisible: false,
+          headerShown: false,
         }}
       />
 

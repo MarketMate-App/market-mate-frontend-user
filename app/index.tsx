@@ -14,7 +14,9 @@ export default function Index() {
   return (
     <SafeAreaView>
       <ImageBackground
-        source={require("@/assets/images/woman.jpg")}
+        source={{
+          uri: "https://images.pexels.com/photos/12024075/pexels-photo-12024075.jpeg?auto=compress&cs=tinysrgb&w=600",
+        }}
         style={{ width: "100%", height: "100%" }}
       >
         <LinearGradient
@@ -42,7 +44,7 @@ export default function Index() {
                 Order and pickup within 24 hours.
               </Text>
               <Pressable
-                onPress={() => router.push("/home")}
+                onPress={() => router.push("/shop")}
                 className="w-full bg-[#2BCC5A] px-8 py-5 rounded-full"
               >
                 <Text

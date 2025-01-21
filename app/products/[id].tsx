@@ -107,7 +107,7 @@ const DetailsPage = () => {
               <Image
                 source={{ uri: product.imageUrl }}
                 className="h-[300px] mt-3 w-full"
-                resizeMode="center"
+                resizeMode="cover"
               />
               <View className="flex-row flex-wrap mt-4">
                 {product.tags.map((tag, index) => {

@@ -32,6 +32,34 @@ const RootLayout = () => {
                 fontFamily: "Unbounded Regular",
               }}
             >
+              Home
+            </Text>
+          ),
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name={focused ? "home" : "home-outline"}
+              size={24}
+              color={focused ? "#014E3C" : "gray"}
+            />
+          ),
+          title: "Home",
+          headerTitleStyle: {
+            fontFamily: "Unbounded Medium",
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="shop"
+        options={{
+          headerShown: false,
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                color: focused ? "#014E3C" : "gray",
+                fontSize: 9,
+                fontFamily: "Unbounded Regular",
+              }}
+            >
               Shop
             </Text>
           ),
