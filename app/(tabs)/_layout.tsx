@@ -36,8 +36,8 @@ const RootLayout = () => {
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons
-              name={focused ? "home" : "home-outline"}
+            <MaterialIcons
+              name={focused ? "home-filled" : "home-mini"}
               size={24}
               color={focused ? "#014E3C" : "gray"}
             />
