@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "market-mate-frontend-user",
+    "name": "Market Mate",
     "slug": "market-mate-frontend-user",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,13 +9,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aceslice.marketmatefrontenduser"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.png",
+        "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.aceslice.marketmatefrontenduser"
     },
     "web": {
       "bundler": "metro",
@@ -28,14 +30,22 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash.png",
-          "imageWidth": 80,
-          "resizeMode": "contain",
+          "imageWidth": 100,
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ad4c6020-630e-44ac-9cff-cba305855660"
+      }
     }
   }
 }

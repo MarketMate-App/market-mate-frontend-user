@@ -31,7 +31,7 @@ const HeaderComponent = () => {
   }, []);
   return (
     <View className="flex-row items-center justify-between w-full mb-4">
-      <Link href={"/screens/location"}>
+      <Link href={"/home"}>
         <View>
           <Text
             style={{ fontFamily: "Gilroy Medium" }}

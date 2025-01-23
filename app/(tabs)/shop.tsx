@@ -444,6 +444,114 @@ const products = [
     description:
       "Add a burst of flavor to your dishes with our green peppers. Rich in vitamins A and C, they are perfect for salads, stir-fries, and grilling. Green peppers are a versatile ingredient in many African recipes, adding color and nutrition to your meals.",
   },
+  {
+    id: 36,
+    name: "Lettuce",
+    price: 8,
+    imageUrl: "https://ik.imagekit.io/corsa/images/lettuce.jpg",
+    unitOfMeasure: "piece",
+    discount: 0,
+    category: "Vegetables",
+    tags: ["Vegetables", "Lettuce", "Green", "Essential", "Crunchy"],
+    description:
+      "Our lettuce is crisp and refreshing, perfect for salads, sandwiches, or wraps. Rich in vitamins and minerals, it's a healthy addition to your diet. Lettuce is often enjoyed as a side dish or in traditional African recipes.",
+  },
+  {
+    id: 37,
+    name: "Garlic",
+    price: 5,
+    imageUrl: "https://ik.imagekit.io/corsa/images/garlic.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Vegetables",
+    tags: ["Vegetables", "Garlic", "Essential", "Flavor Enhancer"],
+    description:
+      "Add flavor to your dishes with our garlic. Essential for seasoning soups, stews, and sauces, it's a must-have in every kitchen. Garlic is widely used in traditional African recipes, enhancing the overall taste of your meals.",
+  },
+  {
+    id: 38,
+    name: "Ginger",
+    price: 10,
+    imageUrl: "https://ik.imagekit.io/corsa/images/ginger.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Vegetables",
+    tags: ["Vegetables", "Ginger", "Essential", "Flavor Enhancer"],
+    description:
+      "Add a zing to your dishes with our ginger. Perfect for seasoning soups, stews, and sauces, it's a versatile ingredient in many African cuisines. Ginger is known for its health benefits and is often used in traditional remedies.",
+  },
+  {
+    id: 39,
+    name: "Cocoyam",
+    price: 20,
+    imageUrl: "https://ik.imagekit.io/corsa/images/cocoyam.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Vegetables",
+    tags: ["Vegetables", "Cocoyam", "Essential", "Staple"],
+    description:
+      "Our cocoyams are starchy and delicious, perfect for boiling, frying, or making fufu. A staple in many African diets, they are rich in carbohydrates and provide energy for your meals.",
+  },
+  {
+    id: 40,
+    name: "Salt",
+    price: 2,
+    imageUrl: "https://ik.imagekit.io/corsa/images/salt.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Spices",
+    tags: ["Spices", "Salt", "Essential", "Flavor Enhancer"],
+    description:
+      "Our salt is a versatile seasoning that can be used in a variety of dishes. Essential for enhancing the flavor of your meals, it's a must-have in every kitchen. Salt is often used in traditional African recipes, adding depth and balance to your dishes.",
+  },
+  {
+    id: 41,
+    name: "Sugar",
+    price: 5,
+    imageUrl: "https://ik.imagekit.io/corsa/images/sugar.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Spices",
+    tags: ["Spices", "Sugar", "Essential", "Sweetener"],
+    description:
+      "Our sugar is a sweetener that can be used in baking, cooking, or beverages. Perfect for adding sweetness to your favorite dishes, it's a versatile ingredient in many African recipes. Sugar is often enjoyed in tea, coffee, and desserts.",
+  },
+  {
+    id: 42,
+    name: "Palm Oil",
+    price: 10,
+    imageUrl: "https://ik.imagekit.io/corsa/images/palmoil.jpg",
+    unitOfMeasure: "litre",
+    discount: 0,
+    category: "Oils",
+    tags: ["Oils", "Palm Oil", "Essential", "Cooking Oil"],
+    description:
+      "Our palm oil is rich and flavorful, perfect for cooking, frying, or seasoning. A staple in many African cuisines, it adds color and depth to your dishes, often used in traditional recipes like jollof rice and soups.",
+  },
+  {
+    id: 43,
+    name: "Honey",
+    price: 15,
+    imageUrl: "https://ik.imagekit.io/corsa/images/honey.jpg",
+    unitOfMeasure: "litre",
+    discount: 0,
+    category: "Sweeteners",
+    tags: ["Sweeteners", "Honey", "Essential", "Natural Sweetener"],
+    description:
+      "Our honey is pure and natural, perfect for sweetening your favorite dishes and beverages. Rich in antioxidants and vitamins, it's a healthy alternative to sugar and can be enjoyed on its own or in recipes.",
+  },
+  {
+    id: 44,
+    name: "Palm Nuts",
+    price: 10,
+    imageUrl: "https://ik.imagekit.io/corsa/images/palmnuts.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Nuts",
+    tags: ["Nuts", "Palm Nuts", "Essential", "Cooking Ingredient"],
+    description:
+      "Our palm nuts are perfect for making palm nut soup, a traditional African dish. Rich in flavor and nutrients, they are a popular ingredient in many West African cuisines, adding depth and richness to your meals.",
+  },
 ];
 
 const HomePage = () => {
@@ -699,7 +807,7 @@ const HomePage = () => {
           padding: 15,
           elevation: 5,
         }}
-        onPress={() => router.push("/screens/scan")}
+        onPress={() => router.push("/home")}
       >
         <Ionicons name="scan" size={24} color="white" />
       </TouchableOpacity>
