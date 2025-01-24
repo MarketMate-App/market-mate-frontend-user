@@ -15,7 +15,7 @@ export default function Index() {
     <SafeAreaView>
       <ImageBackground
         source={{
-          uri: "https://images.pexels.com/photos/12024075/pexels-photo-12024075.jpeg?auto=compress&cs=tinysrgb&w=600",
+          uri: "https://images.pexels.com/photos/27950727/pexels-photo-27950727/free-photo-of-a-woman-standing-in-front-of-a-market-with-fresh-produce.jpeg?auto=compress&cs=tinysrgb&w=600",
         }}
         style={{ width: "100%", height: "100%" }}
       >

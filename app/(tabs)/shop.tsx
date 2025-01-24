@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
@@ -621,7 +622,10 @@ const HomePage = () => {
   );
 
   return (
-    <SafeAreaView className="p-2 bg-white flex-1">
+    <View
+      className="p-2 bg-white flex-1"
+      style={{ paddingTop: Platform.OS === "ios" ? 50 : 0 }}
+    >
       <HeaderComponent />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -645,7 +649,7 @@ const HomePage = () => {
                 className="text-lg text-[#014E3C] "
                 style={{ fontFamily: "Unbounded Medium" }}
               >
-                Best Deals
+                Essential Produce
               </Text>
 
               <TouchableOpacity
@@ -690,7 +694,7 @@ const HomePage = () => {
                   className="text-lg mb-4 text-[#014E3C]"
                   style={{ fontFamily: "Unbounded Medium" }}
                 >
-                  Morning Snacks
+                  Quick Snacks
                 </Text>
                 <ScrollView
                   horizontal={true}
@@ -699,9 +703,7 @@ const HomePage = () => {
                 >
                   {localProducts
                     .filter((product) =>
-                      ["Snacks", "Breakfast", "Healthy", "Nutritious"].some(
-                        (tag) => product.tags.includes(tag)
-                      )
+                      ["Nutritious"].some((tag) => product.tags.includes(tag))
                     )
                     .map((product) => (
                       <GridcardComponent
@@ -811,7 +813,7 @@ const HomePage = () => {
       >
         <Ionicons name="scan" size={24} color="white" />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 export default HomePage;

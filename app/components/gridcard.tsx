@@ -65,7 +65,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
         <ImageBackground
           source={{ uri: imageUrl }}
           className="h-[100px] w-full mb-4"
-          resizeMode="center"
+          resizeMode="contain"
         >
           <AntDesign
             name={heartFilled ? "heart" : "hearto"}

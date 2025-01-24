@@ -1,5 +1,6 @@
 // components/ProductCard.js
 import { Entypo } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
@@ -19,7 +20,10 @@ const handleQuantityChange = (product: Product, increment: boolean) => {
 const ProductCard = ({ product }: { product: Product }) => {
   return (
     <View key={product.id} className="flex-row items-center justify-between">
-      <View className="flex-row items-center justify-center gap-4">
+      <Link
+        href={`/products/${product.id}`}
+        className="flex-row items-center justify-center gap-4"
+      >
         <Image
           source={{ uri: product.imageUrl }}
           className="w-24 h-24"
@@ -39,7 +43,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             1 {product.unitOfMeasure}
           </Text>
         </View>
-      </View>
+      </Link>
       <View className="items-center justify-between">
         <Text
           className="text-sm relative mb-2 text-gray-700"

@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -104,32 +105,9 @@ const SearchScreen = () => {
 
   const handleSearch = async () => {
     if (searchQuery) {
-      // Save the search query if it's not already in the recent searches
-      if (!recentSearches.includes(searchQuery)) {
-        const updatedSearches = [...recentSearches, searchQuery];
-        setRecentSearches(updatedSearches);
-        await AsyncStorage.setItem(
-          "@recentSearches",
-          JSON.stringify(updatedSearches)
-        );
-      }
       // Perform the search
       setSearchQuery(searchQuery);
     }
-  };
-
-  const handleRecentSearch = (query: string) => {
-    setSearchQuery(query);
-    handleSearch(); // Call handleSearch to update recent searches
-  };
-
-  const removeRecentSearch = async (query: string) => {
-    const updatedSearches = recentSearches.filter((search) => search !== query);
-    setRecentSearches(updatedSearches);
-    await AsyncStorage.setItem(
-      "@recentSearches",
-      JSON.stringify(updatedSearches)
-    );
   };
 
   const onRefresh = useCallback(() => {
@@ -138,8 +116,11 @@ const SearchScreen = () => {
   }, []);
 
   return (
-    <View className="bg-gray-50 py-1 px-3 flex-1">
-      <View className="flex flex-row items-center bg-gray-200 rounded-full px-4 py-2 mb-2 sticky top-1">
+    <View
+      className="bg-white py-1 px-3"
+      style={{ paddingTop: Platform.OS === "ios" ? 50 : 0 }}
+    >
+      <View className="flex flex-row items-center bg-gray-50 rounded-full px-4 py-2 mb-2 sticky top-1">
         <Feather name="search" size={20} color="gray" className="mr-2" />
         <TextInput
           placeholder="Search MarketMate"
@@ -148,46 +129,11 @@ const SearchScreen = () => {
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-        {searchQuery.length > 0 && (
-          <Pressable onPress={() => setSearchQuery("")} className="ml-2">
-            <Feather name="x-circle" size={20} color="gray" />
-          </Pressable>
-        )}
-        <Pressable onPress={handleSearch} className="ml-2">
-          <Text
-            className="text-green-900 text-xs"
-            style={{ fontFamily: "Unbounded Regular" }}
-          >
-            Search
-          </Text>
-        </Pressable>
       </View>
-
-      {/* Recent Searches Section */}
-      {recentSearches.length > 0 && (
-        <View className="mb-4">
-          <Text className="text-lg font-semibold">Recent Searches:</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {recentSearches.map((search, index) => (
-              <View key={index} className="flex-row items-center">
-                <Pressable
-                  onPress={() => handleRecentSearch(search)}
-                  className="bg-gray-200 rounded-full px-3 py-1 mr-2"
-                >
-                  <Text className="text-gray-700">{search}</Text>
-                  <Pressable onPress={() => removeRecentSearch(search)}>
-                    <Text className="text-red-500">X</Text>
-                  </Pressable>
-                </Pressable>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-      )}
 
       {/* Categories Section */}
       {categories.length > 0 && (
-        <ScrollView horizontal={true} className="flex-row mt-4">
+        <ScrollView horizontal={true} className="flex-row mt-4 mb-4">
           {categories.map((tag, index) => {
             const colors = [
               "#FF6347",
@@ -210,10 +156,10 @@ const SearchScreen = () => {
             const backgroundColor = color + "10"; // Adding transparency
 
             return (
-              <TouchableOpacity
+              <Pressable
                 onPress={() => setSelectedCategory(tag)}
                 key={tag}
-                className={`px-3 py-1 mr-2 mb-2 rounded-full ${
+                className={`px-3 py-1 mr-2 mb-2 rounded-full h-6 ${
                   selectedCategory === tag ? "bg-opacity-100" : "bg-opacity-10"
                 }`}
                 style={{
@@ -232,7 +178,7 @@ const SearchScreen = () => {
                 >
                   {tag}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             );
           })}
         </ScrollView>
@@ -247,7 +193,7 @@ const SearchScreen = () => {
 
       {/* Empty State */}
       {!loading && filteredProducts.length === 0 && (
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 justify-center items-center h-screen-safe">
           <MaterialCommunityIcons
             name="alert-circle-outline"
             size={50}

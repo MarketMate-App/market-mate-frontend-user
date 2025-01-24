@@ -179,7 +179,7 @@ const CartComponent = () => {
       <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
         <Pressable
           className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
-          onPress={() => console.log("Checkout")}
+          onPress={() => cart.length > 0 && router.push("/screens/checkout")}
         >
           <Text
             className="text-white text-xs text-center"

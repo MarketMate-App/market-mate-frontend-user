@@ -5,6 +5,8 @@ import {
   Image,
   ScrollView,
   Pressable,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, useGlobalSearchParams } from "expo-router";
@@ -81,7 +83,7 @@ const DetailsPage = () => {
           headerRight: () => (
             <AntDesign
               name={heartFilled ? "heart" : "hearto"}
-              size={20}
+              size={24}
               color={heartFilled ? "red" : "gray"}
               onPress={() => setHeartFilled(!heartFilled)}
             />
@@ -211,7 +213,10 @@ const DetailsPage = () => {
               </View>
             </View>
           </ScrollView>
-          <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
+          <View
+            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0"
+            style={{ paddingBottom: Platform.OS === "ios" ? 20 : 12 }}
+          >
             {quantity === 0 ? (
               <Pressable
                 className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center justify-center gap-4"
