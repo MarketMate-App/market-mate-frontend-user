@@ -1,6 +1,13 @@
-// CartComponent.tsx
 import React, { useState } from "react";
-import { View, Text, Button, ScrollView, Pressable, Image } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  ScrollView,
+  Pressable,
+  Image,
+  Alert,
+} from "react-native";
 import { useCartStore } from "../store/cartStore";
 import { router } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
@@ -47,6 +54,17 @@ const CartComponent = () => {
       .toFixed(2);
   };
 
+  const handleClearCart = () => {
+    Alert.alert(
+      "Clear Cart",
+      "Are you sure you want to remove all items from the cart?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Yes", onPress: clearCart },
+      ]
+    );
+  };
+
   return (
     <>
       <ScrollView className="bg-white flex-1 px-3 mb-20">
@@ -67,10 +85,10 @@ const CartComponent = () => {
                 {cart.length} items
               </Text>
             </View>
-            <View className="flex-row justify-end">
+            <View className="flex-row justify-end mb-4">
               <Pressable
                 className="px-4 py-2 bg-red-500 rounded-full flex-row items-center justify-center"
-                onPress={clearCart}
+                onPress={handleClearCart}
               >
                 <Entypo
                   name="trash"
@@ -89,7 +107,10 @@ const CartComponent = () => {
           </>
         )}
         {cart.map((item) => (
-          <View key={item.id} className="flex-row items-center justify-between">
+          <View
+            key={item.id}
+            className="flex-row items-center justify-between mb-4"
+          >
             <View className="flex-row items-center justify-center gap-4">
               <Image
                 source={{ uri: item.imageUrl }}
@@ -119,26 +140,24 @@ const CartComponent = () => {
                 ₵{Math.floor(item.price)}.{item.price.toFixed(2).split(".")[1]}
               </Text>
               <View className="flex-row items-center gap-2">
-                <Entypo
-                  name="minus"
-                  size={20}
-                  color={"gray"}
-                  className="border-hairline border-gray-300 rounded-full p-1"
+                <Pressable
                   onPress={() => handleQuantityChange(item, false)}
-                />
+                  className="border-hairline border-gray-300 rounded-full p-1"
+                >
+                  <Entypo name="minus" size={20} color={"gray"} />
+                </Pressable>
                 <Text
                   className="mx-2 text-gray-500 text-sm"
                   style={{ fontFamily: "Unbounded Regular" }}
                 >
                   {item.quantity}
                 </Text>
-                <Entypo
-                  name="plus"
-                  size={20}
-                  color={"white"}
+                <Pressable
                   onPress={() => handleQuantityChange(item, true)}
                   className="border-hairline border-gray-300 rounded-full p-1 bg-black"
-                />
+                >
+                  <Entypo name="plus" size={20} color={"white"} />
+                </Pressable>
               </View>
             </View>
           </View>
@@ -178,8 +197,11 @@ const CartComponent = () => {
       </ScrollView>
       <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
         <Pressable
-          className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
+          className={`bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white ${
+            cart.length === 0 ? "opacity-50" : ""
+          }`}
           onPress={() => cart.length > 0 && router.push("/screens/checkout")}
+          disabled={cart.length === 0}
         >
           <Text
             className="text-white text-xs text-center"

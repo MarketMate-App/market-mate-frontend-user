@@ -1,9 +1,16 @@
-import { View, Text, ImageBackground } from "react-native";
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  ImageBackground,
+  ActivityIndicator,
+  TouchableOpacity,
+  ToastAndroid,
+} from "react-native";
 import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
 import { useCartStore } from "../store/cartStore";
-import { ImageSourcePropType } from "react-native";
 import { Link } from "expo-router";
+import debounce from "lodash.debounce";
 
 interface GridcardProps {
   name: string;
@@ -15,11 +22,7 @@ interface GridcardProps {
   tags?: string[];
   productId?: number;
 }
-type CartState = {
-  cart: any[];
-  addToCart: (item: any) => void;
-  removeFromCart: (id: number) => void;
-};
+
 const GridcardComponent: React.FC<GridcardProps> = ({
   productId,
   name,
@@ -28,37 +31,62 @@ const GridcardComponent: React.FC<GridcardProps> = ({
   discount,
   unitOfMeasure,
 }) => {
-  const [heartFilled, setHeartFilled] = React.useState(false);
-  const [quantity, setQuantity] = React.useState(0);
+  const [heartFilled, setHeartFilled] = useState(false);
+  const [quantity, setQuantity] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const product = {
-    id: productId,
-    name: name,
-    price: price,
-    imageUrl: imageUrl,
-    discount: discount,
-    unitOfMeasure: unitOfMeasure,
-    quantity: quantity,
-    instructions: "",
-    total: price * quantity,
-  };
+  const cart = useCartStore((state) => (state as { cart: any[] }).cart);
+  const addToCart = useCartStore(
+    (state) => (state as { addToCart: Function }).addToCart
+  );
+  const removeFromCart = useCartStore(
+    (state) => (state as { removeFromCart: Function }).removeFromCart
+  );
+  const updateQuantity = useCartStore(
+    (state) => (state as { updateQuantity: Function }).updateQuantity
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const existingProduct = cart.find((item) => item.id === productId);
     if (existingProduct) {
-      existingProduct.quantity = quantity;
-      existingProduct.total = price * quantity;
-    } else if (quantity > 0) {
-      addToCart(product);
-    } else if (quantity === 0 && productId !== undefined) {
-      removeFromCart(productId);
+      setQuantity(existingProduct.quantity);
+    } else {
+      setQuantity(0);
     }
-  }, [quantity]);
-  const cart = useCartStore((state) => (state as CartState).cart);
-  const addToCart = useCartStore((state) => (state as CartState).addToCart);
-  const removeFromCart = useCartStore(
-    (state) => (state as CartState).removeFromCart
+  }, [cart]);
+
+  const handleAddToCart = () => {
+    setLoading(true);
+    const product = {
+      id: productId,
+      name,
+      price,
+      imageUrl,
+      discount,
+      unitOfMeasure,
+      quantity: 1,
+      total: price,
+    };
+    addToCart(product);
+    setQuantity(1);
+    setLoading(false);
+    ToastAndroid.show(`Added ${product.name} to cart`, ToastAndroid.SHORT);
+  };
+
+  const handleQuantityChange = useCallback(
+    debounce((newQuantity: number) => {
+      setLoading(true);
+      if (newQuantity === 0) {
+        removeFromCart(productId);
+      } else {
+        updateQuantity(productId, newQuantity);
+      }
+      setQuantity(newQuantity);
+      setLoading(false);
+    }, 300),
+    []
   );
+
   return (
     <View className="p-4 border-hairline border-gray-300 rounded-3xl w-[180px] mr-3">
       <Link href={`/products/${productId}`}>
@@ -66,13 +94,18 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           source={{ uri: imageUrl }}
           className="h-[100px] w-full mb-4"
           resizeMode="contain"
+          style={{ opacity: loading ? 0.5 : 1 }}
         >
-          <AntDesign
-            name={heartFilled ? "heart" : "hearto"}
-            size={20}
-            color={heartFilled ? "red" : "gray"}
+          <TouchableOpacity
+            style={{ position: "absolute", top: 10, right: 10 }}
             onPress={() => setHeartFilled(!heartFilled)}
-          />
+          >
+            <AntDesign
+              name={heartFilled ? "heart" : "hearto"}
+              size={20}
+              color={heartFilled ? "red" : "gray"}
+            />
+          </TouchableOpacity>
         </ImageBackground>
       </Link>
 
@@ -104,44 +137,31 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           </Text>
           <View>
             {quantity === 0 ? (
-              <View
+              <TouchableOpacity
                 className="p-3 rounded-full bg-[#2BCC5A20]"
-                onTouchEnd={() => {
-                  setQuantity(1);
-                  addToCart(product);
-                }}
+                onPress={handleAddToCart}
               >
-                <Ionicons name="basket" size={24} color={"#2BCC5A"} />
-              </View>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#2BCC5A" />
+                ) : (
+                  <Ionicons name="basket" size={24} color={"#2BCC5A"} />
+                )}
+              </TouchableOpacity>
             ) : (
               <View className="flex-row items-center bg-gray-50 p-2 rounded-full">
-                <Entypo
-                  name="minus"
-                  size={24}
-                  color={"black"}
-                  onPress={() => {
-                    if (quantity > 1) {
-                      setQuantity(quantity - 1);
-                    } else {
-                      setQuantity(0);
-                      if (productId !== undefined) {
-                        removeFromCart(productId);
-                      }
-                    }
-                  }}
-                />
+                <TouchableOpacity
+                  onPress={() => handleQuantityChange(quantity - 1)}
+                >
+                  <Entypo name="minus" size={24} color={"black"} />
+                </TouchableOpacity>
                 <Text className="mx-2">{quantity}</Text>
-                <Entypo
-                  name="plus"
-                  size={24}
-                  color={"black"}
-                  onPress={() => setQuantity(quantity + 1)}
-                />
+                <TouchableOpacity
+                  onPress={() => handleQuantityChange(quantity + 1)}
+                >
+                  <Entypo name="plus" size={24} color={"black"} />
+                </TouchableOpacity>
               </View>
             )}
-            {/* {quantity > 0 && (
-              <Text className="text-green-500 mt-2 text-sm">Added to cart</Text>
-            )} */}
           </View>
         </View>
         <View className="mt-2">

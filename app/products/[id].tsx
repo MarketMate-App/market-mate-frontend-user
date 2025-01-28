@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,11 +9,11 @@ import {
   SafeAreaView,
   Platform,
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import { Stack, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import GridcardComponent from "../components/gridcard";
+import { useCartStore } from "../store/cartStore";
 
 interface Product {
   id: number;
@@ -23,6 +24,7 @@ interface Product {
   discount: number;
   unitOfMeasure: string;
   tags: string[];
+  quantity?: number;
   imageUrl: string;
 }
 
@@ -35,42 +37,88 @@ const DetailsPage = () => {
   const [productsArray, setProductsArray] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(0);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setLoading(true);
-      setProduct(null); // Reset product state before fetching
-      setProductsArray([]); // Reset products array before fetching
-      setError(null); // Reset error state before fetching
+  const cart = useCartStore((state) => (state as { cart: Product[] }).cart);
+  const addToCart = useCartStore(
+    (state) => (state as { addToCart: Function }).addToCart
+  );
+  const removeFromCart = useCartStore(
+    (state) => (state as { removeFromCart: Function }).removeFromCart
+  );
+  const updateQuantity = useCartStore(
+    (state) => (state as { updateQuantity: Function }).updateQuantity
+  );
 
-      try {
-        const storedProducts = await AsyncStorage.getItem("@products");
-        const productsArray = storedProducts ? JSON.parse(storedProducts) : [];
-        if (productsArray.length > 0) {
-          setProductsArray(productsArray);
-        }
+  const fetchProduct = async () => {
+    setLoading(true);
+    setProduct(null);
+    setProductsArray([]);
+    setError(null);
 
-        // Convert id to a number for comparison
-        const productId = Number(id);
-        const storedProduct = productsArray.find(
-          (product: Product) => product.id === productId
-        );
-
-        if (storedProduct) {
-          setProduct(storedProduct);
-        } else {
-          console.log("Product not found in storage");
-          setError("Product not found");
-        }
-      } catch (error) {
-        console.error("Failed to fetch product from storage", error);
-        setError("Failed to load product details");
-      } finally {
-        setLoading(false);
+    try {
+      const storedProducts = await AsyncStorage.getItem("@products");
+      const productsArray = storedProducts ? JSON.parse(storedProducts) : [];
+      if (productsArray.length > 0) {
+        setProductsArray(productsArray);
       }
-    };
 
+      const productId = Number(id);
+      const storedProduct = productsArray.find(
+        (product: Product) => product.id === productId
+      );
+
+      if (storedProduct) {
+        setProduct(storedProduct);
+      } else {
+        console.log("Product not found in storage");
+        setError("Product not found");
+      }
+    } catch (error) {
+      console.error("Failed to fetch product from storage", error);
+      setError("Failed to load product details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    const existingProduct = cart.find((item) => item.id === Number(id));
+    if (existingProduct) {
+      setQuantity(existingProduct.quantity ?? 0);
+    }
+  }, [cart, id]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      const newProduct = {
+        ...product,
+        quantity: 1,
+        total: product.price,
+      };
+      addToCart(newProduct);
+      setQuantity(1);
+    }
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (product) {
+      if (newQuantity === 0) {
+        removeFromCart(product.id);
+      } else {
+        updateQuantity(product.id, newQuantity);
+      }
+      setQuantity(newQuantity);
+    }
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    setLoading(true);
+    fetchProduct();
+  };
 
   return (
     <View className="flex-1 p-3 bg-white">
@@ -91,13 +139,27 @@ const DetailsPage = () => {
         }}
       />
       {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#2BCC5A"
-          className="flex-1 items-center justify-center"
-        />
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#2BCC5A" />
+          <Text className="mt-4" style={{ fontFamily: "Unbounded Regular" }}>
+            Loading product details...
+          </Text>
+        </View>
       ) : error ? (
-        <Text className="text-red-500 text-center">{error}</Text>
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-red-500 text-center">{error}</Text>
+          <Pressable
+            className="mt-4 px-6 py-3 rounded-full bg-[#2BCC5A]"
+            onPress={handleRetry}
+          >
+            <Text
+              style={{ fontFamily: "Unbounded Regular" }}
+              className="text-xs text-white"
+            >
+              Retry
+            </Text>
+          </Pressable>
+        </View>
       ) : product ? (
         <>
           <ScrollView
@@ -131,7 +193,7 @@ const DetailsPage = () => {
                     "#FF8C00",
                   ];
                   const color = colors[index % colors.length];
-                  const backgroundColor = color + "10"; // Adding transparency
+                  const backgroundColor = color + "10";
 
                   return (
                     <View
@@ -220,7 +282,7 @@ const DetailsPage = () => {
             {quantity === 0 ? (
               <Pressable
                 className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center justify-center gap-4"
-                onPress={() => setQuantity(1)}
+                onPress={handleAddToCart}
               >
                 <Ionicons name="basket-outline" size={24} color={"black"} />
                 <Text
@@ -235,7 +297,7 @@ const DetailsPage = () => {
                 <View className="flex-row items-center gap-2 mb-1">
                   <Pressable
                     className="px-4 py-2 rounded-full border-hairline border-gray-300"
-                    onPress={() => setQuantity(quantity - 1)}
+                    onPress={() => handleQuantityChange(quantity - 1)}
                   >
                     <Ionicons name="remove" size={24} color={"black"} />
                   </Pressable>
@@ -247,7 +309,7 @@ const DetailsPage = () => {
                   </Text>
                   <Pressable
                     className="px-4 py-2 rounded-full border-hairline border-gray-200"
-                    onPress={() => setQuantity(quantity + 1)}
+                    onPress={() => handleQuantityChange(quantity + 1)}
                   >
                     <Ionicons name="add" size={24} color={"black"} />
                   </Pressable>

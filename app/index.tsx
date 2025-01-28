@@ -29,19 +29,19 @@ export default function Index() {
                 className="text-white text-5xl mb-1"
                 style={{ fontFamily: "Unbounded Regular" }}
               >
-                Fast Delivery
+                Everyday Essentials
               </Text>
               <Text
                 className="text-white text-5xl mb-2"
                 style={{ fontFamily: "Unbounded SemiBold" }}
               >
-                of fresh groceries
+                to your doorstep
               </Text>
               <Text
                 className="text-gray-100 text-lg mb-8"
                 style={{ fontFamily: "Unbounded Light" }}
               >
-                Order and pickup within 24 hours.
+                Delivery and pickup within 24 hours.
               </Text>
               <Pressable
                 onPress={() => router.push("/shop")}
@@ -51,7 +51,7 @@ export default function Index() {
                   className="text-center text-sm text-white"
                   style={{ fontFamily: "Unbounded SemiBold" }}
                 >
-                  Get Started
+                  Shop now{" "}
                 </Text>
               </Pressable>
             </View>
