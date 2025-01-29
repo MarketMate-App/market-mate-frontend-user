@@ -33,7 +33,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
 }) => {
   const [heartFilled, setHeartFilled] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const cart = useCartStore((state) => (state as { cart: any[] }).cart);
   const addToCart = useCartStore(
@@ -52,6 +52,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
       setQuantity(existingProduct.quantity);
     } else {
       setQuantity(0);
+      setLoading(false);
     }
   }, [cart]);
 
@@ -83,7 +84,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
       }
       setQuantity(newQuantity);
       setLoading(false);
-    }, 300),
+    }, 0),
     []
   );
 
@@ -140,6 +141,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
               <TouchableOpacity
                 className="p-3 rounded-full bg-[#2BCC5A20]"
                 onPress={handleAddToCart}
+                disabled={loading}
               >
                 {loading ? (
                   <ActivityIndicator size="small" color="#2BCC5A" />
