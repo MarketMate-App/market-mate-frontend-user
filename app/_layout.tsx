@@ -60,7 +60,13 @@ export default function RootLayout() {
           headerShadowVisible: false,
         }}
       />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          headerShown: false,
+          headerTitle: "",
+        }}
+      />
       <Stack.Screen
         name="screens/search"
         options={{

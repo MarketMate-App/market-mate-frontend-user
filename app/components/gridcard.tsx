@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ToastAndroid,
+  Platform,
+  Alert,
 } from "react-native";
 import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
 import { useCartStore } from "../store/cartStore";
@@ -71,7 +73,10 @@ const GridcardComponent: React.FC<GridcardProps> = ({
     addToCart(product);
     setQuantity(1);
     setLoading(false);
-    ToastAndroid.show(`Added ${product.name} to cart`, ToastAndroid.SHORT);
+
+    if (Platform.OS === "android") {
+      ToastAndroid.show(`Added ${product.name} to cart`, ToastAndroid.SHORT);
+    }
   };
 
   const handleQuantityChange = useCallback(
@@ -84,8 +89,8 @@ const GridcardComponent: React.FC<GridcardProps> = ({
       }
       setQuantity(newQuantity);
       setLoading(false);
-    }, 0),
-    []
+    }, 300),
+    [productId, removeFromCart, updateQuantity]
   );
 
   return (
@@ -100,6 +105,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           <TouchableOpacity
             style={{ position: "absolute", top: 10, right: 10 }}
             onPress={() => setHeartFilled(!heartFilled)}
+            hitSlop={20}
           >
             <AntDesign
               name={heartFilled ? "heart" : "hearto"}
@@ -111,12 +117,14 @@ const GridcardComponent: React.FC<GridcardProps> = ({
       </Link>
 
       <View>
-        <Text
-          className="text-black text-base mb-4"
-          style={{ fontFamily: "Unbounded Regular" }}
-        >
-          {name}
-        </Text>
+        <Link href={`/products/${productId}`}>
+          <Text
+            className="text-black text-base mb-4"
+            style={{ fontFamily: "Unbounded Regular" }}
+          >
+            {name}
+          </Text>
+        </Link>
         <Text
           className="text-gray-500 text-sm"
           style={{ fontFamily: "Unbounded Light" }}
@@ -156,7 +164,12 @@ const GridcardComponent: React.FC<GridcardProps> = ({
                 >
                   <Entypo name="minus" size={24} color={"black"} />
                 </TouchableOpacity>
-                <Text className="mx-2">{quantity}</Text>
+                <Text
+                  className="mx-2 text-sm text-gray-600"
+                  style={{ fontFamily: "Unbounded Regular" }}
+                >
+                  {quantity}
+                </Text>
                 <TouchableOpacity
                   onPress={() => handleQuantityChange(quantity + 1)}
                 >

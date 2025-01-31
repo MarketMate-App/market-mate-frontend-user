@@ -73,7 +73,7 @@ const CartComponent = () => {
             <View className="mb-2 bg-white flex-row items-center justify-between sticky top-0 left-0 right-0">
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "Unbounded Regular" }}
+                style={{ fontFamily: "Unbounded Medium" }}
               >
                 Estimated:{" "}
                 <Text className="text-gray-700">₵{calculateTotal()}</Text>
@@ -82,7 +82,7 @@ const CartComponent = () => {
                 className="text-xs text-gray-500"
                 style={{ fontFamily: "Unbounded Light" }}
               >
-                {cart.length} items
+                <Text className="text-gray-700">{cart.length}</Text> items
               </Text>
             </View>
             <View className="flex-row justify-end mb-4">
@@ -109,7 +109,7 @@ const CartComponent = () => {
         {cart.map((item) => (
           <View
             key={item.id}
-            className="flex-row items-center justify-between mb-4"
+            className="flex-row items-center justify-between mb-3"
           >
             <View className="flex-row items-center justify-center gap-4">
               <Image
@@ -122,7 +122,9 @@ const CartComponent = () => {
                   className="text-sm text-gray-700 mb-2"
                   style={{ fontFamily: "Unbounded Medium" }}
                 >
-                  {item.name}
+                  {item.name.length > 10
+                    ? `${item.name.substring(0, 16)}...`
+                    : item.name}
                 </Text>
                 <Text
                   className="text-gray-500 text-xs mb-4"

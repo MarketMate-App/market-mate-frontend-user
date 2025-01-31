@@ -281,6 +281,7 @@ const DetailsPage = () => {
           >
             {quantity === 0 ? (
               <Pressable
+                hitSlop={20}
                 className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center justify-center gap-4"
                 onPress={handleAddToCart}
               >
@@ -296,6 +297,7 @@ const DetailsPage = () => {
               <View className="items-center justify-center flex-1">
                 <View className="flex-row items-center gap-2 mb-1">
                   <Pressable
+                    hitSlop={20}
                     className="px-4 py-2 rounded-full border-hairline border-gray-300"
                     onPress={() => handleQuantityChange(quantity - 1)}
                   >
@@ -308,6 +310,7 @@ const DetailsPage = () => {
                     {quantity}
                   </Text>
                   <Pressable
+                    hitSlop={20}
                     className="px-4 py-2 rounded-full border-hairline border-gray-200"
                     onPress={() => handleQuantityChange(quantity + 1)}
                   >
@@ -331,7 +334,10 @@ const DetailsPage = () => {
               </View>
             )}
 
-            <Pressable className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center ">
+            <Pressable
+              hitSlop={20}
+              className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center "
+            >
               <Text
                 style={{ fontFamily: "Unbounded Regular" }}
                 className="text-xs text-white"

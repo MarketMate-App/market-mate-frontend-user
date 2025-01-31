@@ -1,12 +1,41 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  Image,
+  TextInput,
+  Alert,
+  Platform,
+} from "react-native";
+import React, { useState, useRef } from "react";
 import { router, Stack } from "expo-router";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 
 const CheckoutScreen = () => {
-  const [cont, setCont] = useState("");
-  const [show, setShow] = useState(false);
+  const [name, setName] = useState("");
+  const [country, setCountry] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const nameRef = useRef<TextInput>(null);
+  const countryRef = useRef<TextInput>(null);
+  const addressRef = useRef<TextInput>(null);
+  const phoneRef = useRef<TextInput>(null);
+
+  const handleProceedToPayment = () => {
+    if (!name || !country || !address || !phone) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.push("/screens/payment");
+    }, 1000);
+  };
 
   return (
     <>
@@ -20,14 +49,157 @@ const CheckoutScreen = () => {
           }}
         />
         <Text
-          className="text-xs text-gray-500 mt-2"
+          className="text-xs text-gray-500 mb-2"
           style={{ fontFamily: "Unbounded Regular" }}
         >
           Delivery Address
         </Text>
 
-        <View className="bg-white p-3 border-hairline flex-row items-center gap-2 border-gray-200 mb-4 rounded-xl">
-          <FloatingLabelInput label="Full name" />
+        <View className="bg-white border-hairline items-center gap-2 border-gray-200 mb-4 rounded-xl">
+          <FloatingLabelInput
+            label="Full name"
+            labelStyles={{
+              fontFamily: "Unbounded Light",
+              color: "#e5e7eb",
+              paddingHorizontal: 3,
+              fontSize: 12,
+            }}
+            inputStyles={{
+              fontFamily: "Unbounded Regular",
+              color: "#4b5563",
+              fontSize: 13,
+            }}
+            customLabelStyles={{ colorFocused: "#9ca3af" }}
+            value={name}
+            hint="ex: Kwame Nkrumah"
+            hintTextColor="#9ca3af"
+            animationDuration={50}
+            onChangeText={(value) => setName(value)}
+            containerStyles={{
+              paddingLeft: Platform.OS === "ios" ? 20 : 0,
+              paddingTop: Platform.OS === "ios" ? 20 : 5,
+              paddingBottom: Platform.OS === "ios" ? 20 : 5,
+              borderWidth: 0,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#e5e7eb",
+            }}
+            ref={nameRef}
+            returnKeyType="next"
+            onSubmitEditing={() => countryRef.current?.focus()}
+          />
+          <FloatingLabelInput
+            label="Region"
+            labelStyles={{
+              fontFamily: "Unbounded Light",
+              color: "#e5e7eb",
+              paddingHorizontal: 3,
+              fontSize: 12,
+            }}
+            inputStyles={{
+              fontFamily: "Unbounded Regular",
+              color: "#4b5563",
+              fontSize: 13,
+            }}
+            customLabelStyles={{ colorFocused: "#9ca3af" }}
+            value={country}
+            hint="ex: Western Region"
+            hintTextColor="#9ca3af"
+            onChangeText={(value) => setCountry(value)}
+            containerStyles={{
+              paddingLeft: Platform.OS === "ios" ? 20 : 0,
+              paddingTop: Platform.OS === "ios" ? 20 : 5,
+              paddingBottom: Platform.OS === "ios" ? 20 : 5,
+              borderWidth: 0,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#e5e7eb",
+            }}
+            ref={countryRef}
+            returnKeyType="next"
+            onSubmitEditing={() => addressRef.current?.focus()}
+          />
+          <FloatingLabelInput
+            label="Address"
+            animationDuration={50}
+            labelStyles={{
+              fontFamily: "Unbounded Light",
+              color: "#e5e7eb",
+              paddingHorizontal: 3,
+              fontSize: 12,
+            }}
+            inputStyles={{
+              fontFamily: "Unbounded Regular",
+              color: "#4b5563",
+              fontSize: 13,
+            }}
+            customLabelStyles={{ colorFocused: "#9ca3af" }}
+            value={address}
+            hint="ex:Justmoh Avenue"
+            hintTextColor="#9ca3af"
+            onChangeText={(value) => setAddress(value)}
+            containerStyles={{
+              paddingLeft: Platform.OS === "ios" ? 20 : 0,
+              paddingTop: Platform.OS === "ios" ? 20 : 5,
+              paddingBottom: Platform.OS === "ios" ? 20 : 5,
+              borderWidth: 0,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#e5e7eb",
+            }}
+            ref={addressRef}
+            returnKeyType="next"
+            onSubmitEditing={() => phoneRef.current?.focus()}
+          />
+
+          <View className="flex-row flex-1 items-center ">
+            <FloatingLabelInput
+              label="Phone"
+              labelStyles={{
+                fontFamily: "Unbounded Light",
+                color: "#e5e7eb",
+                paddingHorizontal: 3,
+                fontSize: 12,
+              }}
+              maxLength={10}
+              leftComponent={
+                <View className="flex-row items-center gap-2 border-hairline border-gray-200 p-2 rounded-xl absolute left-3">
+                  <Image
+                    source={require("@/assets/images/ghana-flag.png")}
+                    className="w-6 h-6 rounded-lg"
+                    resizeMode="contain"
+                  />
+                  <Text
+                    className="text-xs text-gray-500"
+                    style={{ fontFamily: "Unbounded Regular" }}
+                  >
+                    +233
+                  </Text>
+                </View>
+              }
+              inputStyles={{
+                fontFamily: "Unbounded Regular",
+                color: "#4b5563",
+                fontSize: 13,
+              }}
+              customLabelStyles={{ colorFocused: "#9ca3af" }}
+              value={phone}
+              animationDuration={50}
+              hintTextColor={"#9ca3af"}
+              mask="123 456 789"
+              hint="123 456 789"
+              maskType="phone"
+              keyboardType="numeric"
+              onChangeText={(value) => setPhone(value)}
+              containerStyles={{
+                paddingLeft: 100,
+                paddingTop: Platform.OS === "ios" ? 20 : 5,
+                paddingBottom: Platform.OS === "ios" ? 20 : 5,
+                borderWidth: 0,
+                borderBottomWidth: 0,
+                borderBottomColor: "#e5e7eb",
+              }}
+              ref={phoneRef}
+              returnKeyType="done"
+            />
+          </View>
         </View>
         <Text
           className="text-xs text-gray-500 mt-2 mb-2"
@@ -53,16 +225,20 @@ const CheckoutScreen = () => {
           />
         </View>
       </ScrollView>
-      <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
+      <View
+        style={{ paddingBottom: Platform.OS === "ios" ? 20 : 12 }}
+        className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0"
+      >
         <Pressable
           className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
-          onPress={() => router.push("/screens/payment")}
+          onPress={handleProceedToPayment}
+          disabled={loading}
         >
           <Text
             className="text-white text-xs text-center"
             style={{ fontFamily: "Unbounded SemiBold" }}
           >
-            Proceed to Payment
+            {loading ? "Processing..." : "Proceed to Payment"}
           </Text>
         </Pressable>
       </View>

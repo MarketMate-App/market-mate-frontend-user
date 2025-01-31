@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Market Mate",
+    "name": "MarketMate",
     "slug": "market-mate-frontend-user",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -31,7 +31,7 @@
         {
           "image": "./assets/images/splash.png",
           "imageWidth": 200,
-          "resizeMode": "cover",
+          "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
       ]

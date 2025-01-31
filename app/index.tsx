@@ -38,13 +38,13 @@ export default function Index() {
                   textAlign: "center",
                 }}
               >
-                to daily essentials
+                to daily essentials.
               </Text>
               <Text
                 className="text-gray-100 text-lg mb-8"
                 style={{ fontFamily: "Unbounded Light", textAlign: "center" }}
               >
-                Shop smarter, live healthier
+                Shop smarter, live healthier.
               </Text>
               <Pressable
                 onPress={() => router.push("/shop")}

@@ -7,8 +7,11 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { useCartStore } from "../store/cartStore";
 
 const RootLayout = () => {
+  const cart = useCartStore((state) => (state as { cart: any[] }).cart);
+  const cartItemCount = cart.length; // Define cartItemCount variable
   return (
     <Tabs
       screenOptions={{
@@ -64,11 +67,13 @@ const RootLayout = () => {
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons
-              name={focused ? "storefront" : "storefront-outline"}
-              size={24}
-              color={focused ? "#014E3C" : "gray"}
-            />
+            <View>
+              <MaterialCommunityIcons
+                name={focused ? "storefront" : "storefront-outline"}
+                size={24}
+                color={focused ? "#014E3C" : "gray"}
+              />
+            </View>
           ),
           title: "Shop",
           headerTitleStyle: {
@@ -93,11 +98,41 @@ const RootLayout = () => {
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons
-              name={focused ? "shopping" : "shopping-outline"}
-              size={24}
-              color={focused ? "#014E3C" : "gray"}
-            />
+            <View>
+              <MaterialCommunityIcons
+                name={focused ? "shopping" : "shopping-outline"}
+                size={24}
+                color={focused ? "#014E3C" : "gray"}
+              />
+              {cartItemCount > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -6,
+                    top: -3,
+                    backgroundColor: "#014E3C",
+                    borderRadius: 50,
+                    width: 15,
+                    height: 15,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderColor: "white",
+                    borderWidth: 0.5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 8,
+                      fontFamily: "Unbounded SemiBold",
+                      textAlign: "center",
+                    }}
+                  >
+                    {cartItemCount}
+                  </Text>
+                </View>
+              )}
+            </View>
           ),
           title: "My Cart",
           headerTitleStyle: {

@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import Feather from "@expo/vector-icons/Feather";
 import { Link } from "expo-router";
@@ -55,10 +55,13 @@ const HeaderComponent = () => {
         </View>
       </Link>
       <View className="flex-row items-center gap-2">
-        <Link href={"/screens/search"}>
-          <View className="py-3 px-5 rounded-full bg-gray-50">
+        <Link href={"/screens/search"} asChild>
+          <TouchableOpacity
+            hitSlop={20}
+            className="py-3 px-5 rounded-full bg-gray-50"
+          >
             <Feather name="search" size={20} color="gray" />
-          </View>
+          </TouchableOpacity>
         </Link>
         {/* <Link href={"/screens/cart"}>
           <View className="bg-black py-2 px-4 rounded-full flex-row items-center justify-center gap-3">

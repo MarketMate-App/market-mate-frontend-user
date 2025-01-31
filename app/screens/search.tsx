@@ -156,7 +156,7 @@ const SearchScreen = () => {
             const backgroundColor = color + "10"; // Adding transparency
 
             return (
-              <Pressable
+              <TouchableOpacity
                 onPress={() => setSelectedCategory(tag)}
                 key={tag}
                 className={`px-3 py-1 mr-2 mb-2 rounded-full h-6 ${
@@ -178,7 +178,7 @@ const SearchScreen = () => {
                 >
                   {tag}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
@@ -193,7 +193,7 @@ const SearchScreen = () => {
 
       {/* Empty State */}
       {!loading && filteredProducts.length === 0 && (
-        <View className="flex-1 justify-center items-center h-screen-safe">
+        <View className="flex-1 justify-center items-center bg-white">
           <MaterialCommunityIcons
             name="alert-circle-outline"
             size={50}
