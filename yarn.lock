@@ -7429,6 +7429,11 @@ react-native-drawer-layout@^4.1.1:
   dependencies:
     use-latest-callback "^0.2.1"
 
+react-native-floating-label-input@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/react-native-floating-label-input/-/react-native-floating-label-input-1.4.3.tgz#4945ea61e9733e8922a0601cde4a7f248c0ce867"
+  integrity sha512-+M4jxs5KiqzXGiFeUi+G69tpgQFDUknGpWbiRtiQVREvwFA5rkZW3HiETzx0zxYhhr7Jgb47thh+DOzkwwcQnA==
+
 react-native-gesture-handler@~2.20.2:
   version "2.20.2"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.20.2.tgz"

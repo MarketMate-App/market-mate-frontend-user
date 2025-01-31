@@ -26,22 +26,25 @@ export default function Index() {
           <View className="flex-1">
             <View className="absolute bottom-0 w-full">
               <Text
-                className="text-white text-5xl mb-1"
-                style={{ fontFamily: "Unbounded Regular" }}
+                className="text-white text-4xl mb-1"
+                style={{ fontFamily: "Unbounded Regular", textAlign: "center" }}
               >
-                Everyday Essentials
+                From fresh produce
               </Text>
               <Text
-                className="text-white text-5xl mb-2"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                className="text-white text-4xl mb-2"
+                style={{
+                  fontFamily: "Unbounded SemiBold",
+                  textAlign: "center",
+                }}
               >
-                to your doorstep
+                to daily essentials
               </Text>
               <Text
                 className="text-gray-100 text-lg mb-8"
-                style={{ fontFamily: "Unbounded Light" }}
+                style={{ fontFamily: "Unbounded Light", textAlign: "center" }}
               >
-                Delivery and pickup within 24 hours.
+                Shop smarter, live healthier
               </Text>
               <Pressable
                 onPress={() => router.push("/shop")}

@@ -120,7 +120,7 @@ const RootLayout = () => {
                 fontFamily: "Unbounded Regular",
               }}
             >
-              Account
+              Me
             </Text>
           ),
           tabBarIcon: ({ color, focused }) => (
