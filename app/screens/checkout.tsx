@@ -76,9 +76,9 @@ const CheckoutScreen = () => {
             animationDuration={50}
             onChangeText={(value) => setName(value)}
             containerStyles={{
-              paddingLeft: Platform.OS === "ios" ? 20 : 0,
-              paddingTop: Platform.OS === "ios" ? 20 : 5,
-              paddingBottom: Platform.OS === "ios" ? 20 : 5,
+              paddingLeft: Platform.OS === "ios" ? 20 : 10,
+              paddingTop: Platform.OS === "ios" ? 20 : 15,
+              paddingBottom: Platform.OS === "ios" ? 20 : 15,
               borderWidth: 0,
               borderBottomWidth: 0.5,
               borderBottomColor: "#e5e7eb",
@@ -106,9 +106,9 @@ const CheckoutScreen = () => {
             hintTextColor="#9ca3af"
             onChangeText={(value) => setCountry(value)}
             containerStyles={{
-              paddingLeft: Platform.OS === "ios" ? 20 : 0,
-              paddingTop: Platform.OS === "ios" ? 20 : 5,
-              paddingBottom: Platform.OS === "ios" ? 20 : 5,
+              paddingLeft: Platform.OS === "ios" ? 20 : 10,
+              paddingTop: Platform.OS === "ios" ? 20 : 15,
+              paddingBottom: Platform.OS === "ios" ? 20 : 15,
               borderWidth: 0,
               borderBottomWidth: 0.5,
               borderBottomColor: "#e5e7eb",
@@ -137,9 +137,9 @@ const CheckoutScreen = () => {
             hintTextColor="#9ca3af"
             onChangeText={(value) => setAddress(value)}
             containerStyles={{
-              paddingLeft: Platform.OS === "ios" ? 20 : 0,
-              paddingTop: Platform.OS === "ios" ? 20 : 5,
-              paddingBottom: Platform.OS === "ios" ? 20 : 5,
+              paddingLeft: Platform.OS === "ios" ? 20 : 10,
+              paddingTop: Platform.OS === "ios" ? 20 : 15,
+              paddingBottom: Platform.OS === "ios" ? 20 : 15,
               borderWidth: 0,
               borderBottomWidth: 0.5,
               borderBottomColor: "#e5e7eb",
@@ -190,8 +190,8 @@ const CheckoutScreen = () => {
               onChangeText={(value) => setPhone(value)}
               containerStyles={{
                 paddingLeft: 100,
-                paddingTop: Platform.OS === "ios" ? 20 : 5,
-                paddingBottom: Platform.OS === "ios" ? 20 : 5,
+                paddingTop: Platform.OS === "ios" ? 20 : 15,
+                paddingBottom: Platform.OS === "ios" ? 20 : 15,
                 borderWidth: 0,
                 borderBottomWidth: 0,
                 borderBottomColor: "#e5e7eb",
