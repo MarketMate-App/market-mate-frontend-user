@@ -364,7 +364,7 @@ const products = [
   {
     id: 29,
     name: "Eggs",
-    price: 6,
+    price: 12,
     imageUrl: "https://ik.imagekit.io/corsa/images/eggs.jpg",
     unitOfMeasure: "dozen",
     discount: 0,
@@ -552,6 +552,90 @@ const products = [
     tags: ["Nuts", "Palm Nuts", "Essential", "Cooking Ingredient"],
     description:
       "Our palm nuts are perfect for making palm nut soup, a traditional African dish. Rich in flavor and nutrients, they are a popular ingredient in many West African cuisines, adding depth and richness to your meals.",
+  },
+  {
+    id: 45,
+    name: "Potato",
+    price: 10,
+    imageUrl: "https://ik.imagekit.io/corsa/images/potato.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Vegetables",
+    tags: ["Vegetables", "Potato", "Essential", "Staple"],
+    description:
+      "Our potatoes are versatile and can be boiled, mashed, or fried. A staple in many African diets, they are rich in carbohydrates and provide energy for your day. Potatoes are often enjoyed as a side dish or in traditional recipes like potato salad.",
+  },
+  {
+    id: 46,
+    name: "Cassava Flour",
+    price: 20,
+    imageUrl: "https://ik.imagekit.io/corsa/images/cassava-flour.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Flours",
+    tags: ["Flours", "Cassava Flour", "Essential", "Staple"],
+    description:
+      "Our cassava flour is a versatile ingredient that can be used in baking, cooking, or as a thickener. A staple in many African cuisines, it is gluten-free and provides a unique flavor and texture to your dishes.",
+  },
+  {
+    id: 47,
+    name: "Yam Flour",
+    price: 15,
+    imageUrl: "https://ik.imagekit.io/corsa/images/yam-flour.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Flours",
+    tags: ["Flours", "Yam Flour", "Essential", "Staple"],
+    description:
+      "Our yam flour is perfect for making fufu, a traditional African dish. Rich in carbohydrates and fiber, it provides energy and nutrition for your day. Enjoy it with your favorite soups and stews for a complete meal.",
+  },
+  {
+    id: 48,
+    name: "Beans",
+    price: 10,
+    imageUrl: "https://ik.imagekit.io/corsa/images/beans.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Legumes",
+    tags: ["Legumes", "Beans", "Essential", "Protein"],
+    description:
+      "Our beans are rich in protein and fiber, perfect for soups, stews, and salads. A staple in many African diets, they provide energy and nutrition for your day. Enjoy them with rice, plantains, or cassava for a complete meal.",
+  },
+  {
+    id: 49,
+    name: "Millet",
+    price: 18,
+    imageUrl: "https://ik.imagekit.io/corsa/images/millet.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Grains",
+    tags: ["Grains", "Millet", "Essential", "Staple"],
+    description:
+      "Our millet is a versatile grain that can be used to make porridge, bread, or beer. A staple in many African diets, it is rich in nutrients and provides energy for your day.",
+  },
+  {
+    id: 50,
+    name: "Soybeans",
+    price: 12,
+    imageUrl: "https://ik.imagekit.io/corsa/images/soybeans.jpg",
+    unitOfMeasure: "kg",
+    discount: 0,
+    category: "Legumes",
+    tags: ["Legumes", "Soybeans", "Essential", "Protein"],
+    description:
+      "Our soybeans are rich in protein and healthy fats, perfect for soups, stews, and salads. A popular ingredient in many African cuisines, they add flavor and nutrition to your meals.",
+  },
+  {
+    id: 51,
+    name: "Cooking Oil",
+    price: 10,
+    imageUrl: "https://ik.imagekit.io/corsa/images/cooking-oil.jpg",
+    unitOfMeasure: "litre",
+    discount: 0,
+    category: "Oils",
+    tags: ["Oils", "Cooking Oil", "Essential", "Versatile"],
+    description:
+      "Our cooking oil is perfect for frying, sautéing, or seasoning your dishes. A staple in every kitchen, it adds flavor and depth to your meals, making them delicious and satisfying. Enjoy it in your favorite recipes for a tasty meal.",
   },
 ];
 
