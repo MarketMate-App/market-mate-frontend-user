@@ -22,6 +22,7 @@ import GridcardComponent from "../components/gridcard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { set } from "react-hook-form";
 import SwitchComponent from "../components/switch";
+import LottieView from "lottie-react-native";
 
 const products = [
   {
@@ -682,7 +683,6 @@ const HomePage = () => {
   };
   useEffect(() => {
     loadFromLocalStorage();
-    saveToLocalStorage(products);
   }, [products]);
   const handleBackPress = () => {
     Alert.alert("Exit", "Are you sure you want to exit?", [
@@ -721,11 +721,14 @@ const HomePage = () => {
         }
       >
         {loading ? (
-          <ActivityIndicator
-            size="large"
-            color="#2BCC5A"
-            className="flex-1 items-center justify-center"
-          />
+          <View className="flex-1 justify-center items-center">
+            <LottieView
+              style={{ width: 100, height: 100 }}
+              autoPlay
+              loop={true}
+              source={require("@/assets/animations/bounce.json")}
+            />
+          </View>
         ) : (
           <>
             <View className="flex-row justify-between items-center mb-4">

@@ -39,6 +39,7 @@
     "expo-web-browser": "~14.0.1",
     "frames-react-native": "^1.1.9",
     "lodash.debounce": "^4.0.8",
+    "lottie-react-native": "^7.2.2",
     "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-dom": "18.3.1",

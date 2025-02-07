@@ -10,7 +10,7 @@ import {
   Alert,
   Platform,
 } from "react-native";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
@@ -62,6 +62,7 @@ const CheckoutScreen = () => {
             const { name, country, address, phone } = JSON.parse(details);
             setAddressDetails({ name, country, address, phone });
             setHasAddress(!!name && !!country && !!address && !!phone);
+            setLoading(false);
           }
         } catch (error) {
           console.log(error);
@@ -118,7 +119,12 @@ const CheckoutScreen = () => {
     const cleaned = phone.replace(/\D/g, "");
     return cleaned.replace(/(\d{2})(\d{3})(\d{4})/, "$1 $2 $3");
   };
-
+  useEffect(() => {
+    setLoading(true);
+    if (cart.length === 0) {
+      router.push("/");
+    }
+  }, []);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
