@@ -13,8 +13,26 @@ import {
 } from "react-native";
 import LottieView from "lottie-react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
+import { useCartStore } from "../store/cartStore";
+
+type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  imageUrl: string;
+  unitOfMeasure: string;
+};
+
+type CartState = {
+  cart: CartItem[];
+  removeFromCart: (id: number) => void;
+  clearCart: () => void;
+};
 
 const PaymentProcessingScreen = () => {
+  const cart = useCartStore((state) => (state as CartState).cart);
+  const clearCart = useCartStore((state) => (state as CartState).clearCart);
   const [status, setStatus] = useState("processing");
   const [fadeAnim] = useState(new Animated.Value(1));
 
@@ -81,21 +99,59 @@ const PaymentProcessingScreen = () => {
         ) : (
           <View className="items-center">
             <LottieView
-              style={{ width: 400, height: 400 }}
+              style={{ width: 150, height: 150 }}
               autoPlay
               loop={false}
               source={require("@/assets/animations/basket.json")}
             />
             <Text
-              className=" text-[#2BCC5A]"
+              className="text-lg text-gray-700 mb-4"
               style={{ fontFamily: "Unbounded Medium" }}
             >
-              Order Confirmed!
+              Packing your order...
             </Text>
-            <Text className="text-base text-gray-600 font-unbounded-regular text-center">
-              Your order has been confirmed. You'll receive an email receipt
-              shortly.
+            <Text
+              className="text-center w-80 text-gray-500 mb-8 text-xs"
+              style={{ fontFamily: "Unbounded Light" }}
+            >
+              Your order has been confirmed. You will receive an email
+              confirmation shortly.
             </Text>
+
+            <View className="p-3 w-full mb-8 flex-row items-center justify-start rounded-2xl bg-slate-50">
+              {cart.slice(0, 5).map((item, index) => (
+                <View key={item.id} className="mb-2">
+                  <Image
+                    source={{ uri: item.imageUrl }}
+                    style={{ width: 40, height: 40, borderRadius: 20 }}
+                  />
+                </View>
+              ))}
+              {cart.length > 5 && (
+                <Text
+                  className="text-[#2BCC5A] p-3 rounded-full text-xs flex items-center justify-center"
+                  style={{
+                    fontFamily: "Unbounded SemiBold",
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "#2BCC5A20",
+                  }}
+                >
+                  {cart.length - 5}
+                </Text>
+              )}
+            </View>
+            <Pressable
+              className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
+              onPress={() => router.push("/home")}
+            >
+              <Text
+                className="text-[#014E3C] text-xs text-center"
+                style={{ fontFamily: "Unbounded SemiBold" }}
+              >
+                View my orders
+              </Text>
+            </Pressable>
           </View>
         )}
       </View>
@@ -115,7 +171,7 @@ const PaymentProcessingScreen = () => {
               className="text-white text-xs text-center"
               style={{ fontFamily: "Unbounded SemiBold" }}
             >
-              Continue
+              Continue Shopping
             </Text>
           )}
         </Pressable>

@@ -714,10 +714,7 @@ const HomePage = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={loadFromLocalStorage}
-          />
+          <RefreshControl refreshing={false} onRefresh={loadFromLocalStorage} />
         }
       >
         {loading ? (

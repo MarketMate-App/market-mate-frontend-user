@@ -229,7 +229,7 @@ const Payment = () => {
                   </Text>
                 </View>
 
-                {data?.peakSurCharge && (
+                {data?.peakSurCharge !== undefined && (
                   <View className="flex-row justify-between">
                     <Text
                       className="text-red-600 text-sm"
@@ -246,7 +246,7 @@ const Payment = () => {
                   </View>
                 )}
 
-                {data?.deliveryDiscounts && (
+                {data?.deliveryDiscounts !== 0 && (
                   <View className="flex-row justify-between">
                     <Text
                       className="text-green-600 text-sm"
@@ -258,7 +258,7 @@ const Payment = () => {
                       className="text-green-600 text-sm"
                       style={{ fontFamily: "Unbounded Medium" }}
                     >
-                      -GHS {data.deliveryDiscounts.toFixed(2)}
+                      -GHS {data?.deliveryDiscounts?.toFixed(2) || "0.00"}
                     </Text>
                   </View>
                 )}
