@@ -7,10 +7,12 @@ import {
   Pressable,
   Image,
   Alert,
+  Platform,
 } from "react-native";
 import { useCartStore } from "../store/cartStore";
 import { router } from "expo-router";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
+import { FloatingLabelInput } from "react-native-floating-label-input";
 
 type CartItem = {
   id: number;
@@ -29,12 +31,51 @@ type CartState = {
 
 const CartComponent = () => {
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const cart = useCartStore((state) => (state as CartState).cart);
   const removeFromCart = useCartStore(
     (state) => (state as CartState).removeFromCart
   );
   const clearCart = useCartStore((state) => (state as CartState).clearCart);
+  const [coupon, setCoupon] = useState("");
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  const [couponDetails, setCouponDetails] = useState<{
+    valid: boolean;
+    discount: number;
+  } | null>(null);
+  const handleCouponApply = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://192.168.43.155:3000/api/verify-coupon",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ promoCode: coupon }),
+        }
+      );
 
+      const data = await response.json();
+      if (data.valid) {
+        setCouponDetails(data);
+      } else {
+        Alert.alert("Invalid Coupon", "The coupon entered is invalid");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to verify coupon");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCouponRemove = () => {
+    setCouponDetails(null);
+    setCoupon("");
+  };
   const handleQuantityChange = (item: CartItem, increment: boolean) => {
     if (increment) {
       item.quantity += 1;
@@ -196,13 +237,120 @@ const CartComponent = () => {
             </Pressable>
           </View>
         )}
+        {cart.length > 0 && (
+          <View className="mb-4">
+            <Text
+              className="text-xs text-gray-500 mt-4 mb-2"
+              style={{ fontFamily: "Unbounded Regular" }}
+            >
+              Have Coupon?
+            </Text>
+
+            <View className="bg-white p-3 border-hairline border-gray-200 mb-4 rounded-xl">
+              <View className="flex-row items-center">
+                <FloatingLabelInput
+                  label="Enter Coupon Code"
+                  value={coupon}
+                  onChangeText={setCoupon}
+                  labelStyles={{
+                    fontFamily: "Unbounded Light",
+                    color: "#e5e7eb",
+                    paddingHorizontal: 3,
+                    fontSize: 12,
+                  }}
+                  inputStyles={{
+                    fontFamily: "Unbounded Regular",
+                    color: "#4b5563",
+                    fontSize: 13,
+                  }}
+                  customLabelStyles={{
+                    colorFocused: "#9ca3af",
+                    topFocused: -18,
+                    leftFocused: Platform.OS === "ios" ? 15 : 10,
+                  }}
+                  hint="ex: FREESHIPPING15"
+                  hintTextColor="#9ca3af"
+                  containerStyles={{
+                    flex: 1,
+                    paddingLeft: Platform.OS === "ios" ? 15 : 0,
+                  }}
+                />
+                {coupon.length > 0 && (
+                  <Pressable
+                    className="bg-[#2BCC5A] absolute right-2 px-4 py-2 rounded-full ml-2"
+                    onPress={
+                      couponDetails ? handleCouponRemove : handleCouponApply
+                    }
+                    disabled={loading}
+                  >
+                    <Text
+                      className="text-white text-xs"
+                      style={{ fontFamily: "Unbounded SemiBold" }}
+                    >
+                      {couponDetails ? "Remove" : "Apply"}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+
+              {couponDetails?.valid && (
+                <View className="bg-green-100 p-3 mt-2 rounded-xl flex-row items-center justify-between">
+                  <Text
+                    className="text-green-800 text-xs"
+                    style={{ fontFamily: "Unbounded Medium" }}
+                  >
+                    {coupon} applied. {couponDetails?.discount}% off
+                  </Text>
+                  <Pressable onPress={handleCouponRemove}>
+                    <MaterialIcons name="close" size={16} color="#166534" />
+                  </Pressable>
+                </View>
+              )}
+            </View>
+
+            {/* Free Delivery Progress Section */}
+            <View className="bg-white p-3 border-hairline border-gray-200 mb-4 rounded-xl">
+              <Text
+                className="text-xs text-gray-500 mb-2"
+                style={{ fontFamily: "Unbounded Regular" }}
+              >
+                Free Delivery Progress
+              </Text>
+              <View className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                <View
+                  className="bg-[#2BCC5A] h-2.5 rounded-full"
+                  style={{
+                    width: `${(totalPrice / 250) * 100}%`,
+                    maxWidth: "100%",
+                  }}
+                />
+              </View>
+              {totalPrice >= 250 ? (
+                <Text
+                  className="text-green-600 text-xs"
+                  style={{ fontFamily: "Unbounded Regular" }}
+                >
+                  Congratulations! You qualify for free delivery.
+                </Text>
+              ) : (
+                <Text
+                  className="text-gray-600 text-xs"
+                  style={{ fontFamily: "Unbounded Regular" }}
+                >
+                  Add GHS {(250 - totalPrice).toFixed(2)} more to qualify for
+                  free delivery.
+                </Text>
+              )}
+            </View>
+          </View>
+        )}
       </ScrollView>
       <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
         <Pressable
           className={`bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white ${
             cart.length === 0 ? "opacity-50" : ""
           }`}
-          onPress={() => cart.length > 0 && router.push("/screens/checkout")}
+          onPress={() => cart.length > 0 && router.push("/screens/payment")}
           disabled={cart.length === 0}
         >
           <Text

@@ -37,15 +37,17 @@ const HeaderComponent = () => {
             style={{ fontFamily: "Gilroy Medium" }}
             className="text-gray-500"
           >
-            Pickup now
+            Deliver now
           </Text>
           <View className="flex-row items-center gap-1">
-            <Text
-              className="text-sm"
-              style={{ fontFamily: "Unbounded Regular" }}
-            >
-              Justmoh Avenue
-            </Text>
+            <Link href={"/(tabs)/location"}>
+              <Text
+                className="text-sm"
+                style={{ fontFamily: "Unbounded Regular" }}
+              >
+                Set delivery address
+              </Text>
+            </Link>
             <MaterialCommunityIcons
               name="chevron-down"
               size={24}
@@ -63,17 +65,6 @@ const HeaderComponent = () => {
             <Feather name="search" size={20} color="gray" />
           </TouchableOpacity>
         </Link>
-        {/* <Link href={"/screens/cart"}>
-          <View className="bg-black py-2 px-4 rounded-full flex-row items-center justify-center gap-3">
-            <Feather name="shopping-bag" size={24} color="white" />
-            <Text
-              className="text-white text-xl"
-              style={{ fontFamily: "Gilroy Bold" }}
-            >
-              0
-            </Text>
-          </View>
-        </Link> */}
       </View>
     </View>
   );

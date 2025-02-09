@@ -3,6 +3,7 @@ import React from "react";
 import HeaderComponent from "../components/header";
 import { useHeaderHeight } from "@react-navigation/elements";
 import CategoriesComponent from "../components/categories";
+import GuestBanner from "../components/guestbanner";
 
 const HomePage = () => {
   const headerHeight = useHeaderHeight();
@@ -15,6 +16,7 @@ const HomePage = () => {
     >
       <HeaderComponent />
       <CategoriesComponent />
+      <GuestBanner />
     </View>
   );
 };

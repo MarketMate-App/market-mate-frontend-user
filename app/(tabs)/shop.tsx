@@ -653,13 +653,26 @@ const HomePage = () => {
     category: string;
     tags: string[];
   }
-
+  const fecthData = () => {
+    fetch("http://192.168.43.130:8080/api/products")
+      .then((res) => res.json())
+      .then((data) => setLocalProducts(data))
+      .catch((err) => console.log(err));
+  };
   const saveToLocalStorage = async (products: Product[]): Promise<void> => {
     try {
       const jsonValue = JSON.stringify(products);
       await AsyncStorage.setItem("@products", jsonValue);
       console.log("Products saved to local storage");
       loadFromLocalStorage();
+    } catch (e) {
+      console.error("Failed to save products to local storage", e);
+    }
+  };
+  const deleteFromLocalStorage = async (): Promise<void> => {
+    try {
+      await AsyncStorage.removeItem("@products");
+      console.log("Products removed from local storage");
     } catch (e) {
       console.error("Failed to save products to local storage", e);
     }
@@ -682,7 +695,10 @@ const HomePage = () => {
     }
   };
   useEffect(() => {
+    saveToLocalStorage(localProducts);
     loadFromLocalStorage();
+    fecthData();
+    // deleteFromLocalStorage();
   }, [products]);
   const handleBackPress = () => {
     Alert.alert("Exit", "Are you sure you want to exit?", [

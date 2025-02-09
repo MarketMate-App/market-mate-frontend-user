@@ -35,6 +35,13 @@ const PaymentProcessingScreen = () => {
   const clearCart = useCartStore((state) => (state as CartState).clearCart);
   const [status, setStatus] = useState("processing");
   const [fadeAnim] = useState(new Animated.Value(1));
+  type OrderItem = {
+    _id: string;
+    imageUrl: string;
+    // Add other properties if needed
+  };
+
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
   const handleBackPress = () => {
     router.push("/(tabs)/shop");
@@ -43,6 +50,9 @@ const PaymentProcessingScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
+      createOrder();
+      console.log("Payment Processing Screen");
+
       BackHandler.addEventListener("hardwareBackPress", handleBackPress);
       return () => {
         BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
@@ -55,12 +65,59 @@ const PaymentProcessingScreen = () => {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-      }).start(() => setStatus("success"));
+      });
     }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
 
+  const body = {
+    user: "gid_123456789",
+    items: cart.map((item) => ({
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      imageUrl: item.imageUrl,
+      unitOfMeasure: item.unitOfMeasure,
+    })),
+    deliveryAddress: {
+      street: "123 Main Street",
+      city: "Los Angeles",
+      state: "CA",
+      postalCode: "90001",
+      country: "USA",
+      coordinates: [-118.2437, 34.0522],
+    },
+    payment: "65f1b2c4a3e7b2d123456789",
+    specialInstructions: "Leave the package at the front door.",
+  };
+  const createOrder = async () => {
+    try {
+      const response = await fetch("http://192.168.43.155:3000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+      const data = await result;
+      console.log(data);
+
+      if (data.order && data.order._id) {
+        setOrderItems(data.order.items);
+        console.log(data.order);
+        clearCart();
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      setStatus("error");
+    }
+  };
   return (
     <>
       <View className="flex-1 bg-white p-5 items-center justify-center">
@@ -119,15 +176,15 @@ const PaymentProcessingScreen = () => {
             </Text>
 
             <View className="p-3 w-full mb-8 flex-row items-center justify-start rounded-2xl bg-slate-50">
-              {cart.slice(0, 5).map((item, index) => (
-                <View key={item.id} className="mb-2">
+              {orderItems.slice(0, 5).map((item, index) => (
+                <View key={item._id} className="mb-2">
                   <Image
                     source={{ uri: item.imageUrl }}
                     style={{ width: 40, height: 40, borderRadius: 20 }}
                   />
                 </View>
               ))}
-              {cart.length > 5 && (
+              {orderItems.length > 5 && (
                 <Text
                   className="text-[#2BCC5A] p-3 rounded-full text-xs flex items-center justify-center"
                   style={{
@@ -137,7 +194,7 @@ const PaymentProcessingScreen = () => {
                     backgroundColor: "#2BCC5A20",
                   }}
                 >
-                  {cart.length - 5}
+                  {orderItems.length - 5}
                 </Text>
               )}
             </View>
@@ -161,7 +218,7 @@ const PaymentProcessingScreen = () => {
       >
         <Pressable
           className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
-          onPress={() => router.push("/screens/payment_processing")}
+          onPress={() => router.push("/(tabs)/shop")}
           disabled={status === "processing"}
         >
           {status === "processing" ? (

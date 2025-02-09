@@ -172,6 +172,8 @@ const RootLayout = () => {
           },
         }}
       />
+      <Tabs.Screen name="auth" options={{ href: null }} />
+      <Tabs.Screen name="location" options={{ href: null }} />
     </Tabs>
   );
 };

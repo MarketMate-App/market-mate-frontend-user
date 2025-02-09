@@ -15,8 +15,6 @@ import { FloatingLabelInput } from "react-native-floating-label-input";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const Payment = () => {
-  // ... existing type declarations
-
   type CartItem = {
     id: number;
     name: string;
@@ -58,7 +56,6 @@ const Payment = () => {
   };
   const body = {
     // Calcualte peak hours based on current time of day between 2pm and 6pm
-
     isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
     distance: 5,
     promoCode: "FREESHIP15",
