@@ -13,6 +13,7 @@ import { router, Stack } from "expo-router";
 import { useCartStore } from "../store/cartStore";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
 
 const Payment = () => {
   type CartItem = {
@@ -42,6 +43,10 @@ const Payment = () => {
   const [phoneError, setPhoneError] = useState("");
   const cart = useCartStore((state) => (state as CartState).cart);
   const [data, setData] = useState<TotalData | null>(null);
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const validatePhone = (number: string) => {
     const cleaned = number.replace(/\D/g, "");
@@ -50,8 +55,16 @@ const Payment = () => {
   };
 
   const handlePayment = () => {
-    if (!validatePhone(phone)) return;
-    setLoading(true);
+    if (location === null) {
+      Alert.alert(
+        "Location Error",
+        "Please set your location before proceeding"
+      );
+      router.push("/location");
+      return;
+    } else {
+      router.push("/screens/payment_processing");
+    }
     router.push("/screens/payment_processing");
   };
   const body = {
@@ -84,8 +97,17 @@ const Payment = () => {
         setLoading(false);
       });
   };
-
+  const fetchLocation = async () => {
+    const savedLocation = await SecureStore.getItemAsync("userLocation");
+    if (savedLocation) {
+      const coordinates = JSON.parse(savedLocation);
+      setLocation(coordinates);
+    } else {
+      setLocation(null);
+    }
+  };
   useEffect(() => {
+    fetchLocation();
     if (cart.length === 0) router.push("/");
     fetchTotal();
   }, []);
@@ -177,16 +199,16 @@ const Payment = () => {
           </View>
 
           {/* Order Summary */}
-          <View className="bg-gray-50 rounded-xl p-4">
+          <View className="bg-gray-50 rounded-xl p-4 shadow-sm">
             <Text
               style={{ fontFamily: "Unbounded Medium" }}
-              className=" mb-4 text-gray-700"
+              className="mb-4 text-gray-700 text-lg"
             >
               Order Breakdown
             </Text>
 
             <View className="space-y-4 mb-3">
-              <View className="flex-row justify-between">
+              <View className="flex-row justify-between items-center">
                 <Text
                   className="text-gray-500 text-sm"
                   style={{ fontFamily: "Unbounded Light" }}
@@ -201,10 +223,10 @@ const Payment = () => {
                 </Text>
               </View>
 
-              <View className="border-b border-gray-100" />
+              <View className="border-b border-dashed border-gray-300" />
 
               <View className="space-y-3">
-                <View className="flex-row justify-between">
+                <View className="flex-row justify-between items-center">
                   <View className="flex-row items-center gap-2">
                     <Text
                       className="text-gray-500 text-sm"
@@ -227,7 +249,7 @@ const Payment = () => {
                 </View>
 
                 {data?.peakSurCharge !== undefined && (
-                  <View className="flex-row justify-between">
+                  <View className="flex-row justify-between items-center">
                     <Text
                       className="text-red-600 text-sm"
                       style={{ fontFamily: "Unbounded Regular" }}
@@ -244,7 +266,7 @@ const Payment = () => {
                 )}
 
                 {data?.deliveryDiscounts !== 0 && (
-                  <View className="flex-row justify-between">
+                  <View className="flex-row justify-between items-center">
                     <Text
                       className="text-green-600 text-sm"
                       style={{ fontFamily: "Unbounded Regular" }}
@@ -261,9 +283,9 @@ const Payment = () => {
                 )}
               </View>
 
-              <View className="border-b border-gray-100" />
+              <View className="border-b border-dashed border-gray-300" />
 
-              <View className="flex-row justify-between">
+              <View className="flex-row justify-between items-center">
                 <Text
                   className="text-gray-500 text-sm"
                   style={{ fontFamily: "Unbounded Light" }}
@@ -279,7 +301,7 @@ const Payment = () => {
               </View>
             </View>
 
-            <View className="mt-6 items-center bg-[#2BCC5A]/10 p-3 rounded-lg flex-row justify-between">
+            <View className="mt-6 items-center bg-[#2BCC5A]/10 p-3 rounded-lg flex-row justify-between border-t border-dashed border-gray-300">
               <Text
                 className="text-[#2BCC5A] text-sm"
                 style={{ fontFamily: "Unbounded Light" }}
@@ -287,7 +309,7 @@ const Payment = () => {
                 Total Amount
               </Text>
               <Text
-                className="text-[#2BCC5A]"
+                className="text-[#2BCC5A] text-lg"
                 style={{ fontFamily: "Unbounded Medium" }}
               >
                 GHS {data?.total?.toFixed(2) || "0.00"}

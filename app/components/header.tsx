@@ -40,7 +40,7 @@ const HeaderComponent = () => {
             Deliver now
           </Text>
           <View className="flex-row items-center gap-1">
-            <Link href={"/(tabs)/location"}>
+            <Link href={"/location"}>
               <Text
                 className="text-sm"
                 style={{ fontFamily: "Unbounded Regular" }}

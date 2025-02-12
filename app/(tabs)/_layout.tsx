@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { Tabs } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 import {
   Entypo,
   Ionicons,
@@ -172,8 +172,6 @@ const RootLayout = () => {
           },
         }}
       />
-      <Tabs.Screen name="auth" options={{ href: null }} />
-      <Tabs.Screen name="location" options={{ href: null }} />
     </Tabs>
   );
 };

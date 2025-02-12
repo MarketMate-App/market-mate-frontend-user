@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import { useCartStore } from "../store/cartStore";
 import { router } from "expo-router";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
+import * as SecureStore from "expo-secure-store";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type CartItem = {
   id: number;
@@ -30,6 +32,7 @@ type CartState = {
 };
 
 const CartComponent = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -43,6 +46,31 @@ const CartComponent = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
+
+  const addSecureKey = async () => {
+    const user = {
+      phoneNumber: "+233241234567",
+    };
+    await SecureStore.setItemAsync("user", JSON.stringify(user));
+    if (await SecureStore.getItemAsync("user")) {
+      console.log("Secure key added");
+    }
+  };
+  const getSecureKey = async () => {
+    const user = await SecureStore.getItemAsync("user");
+    const parsedUser = user ? JSON.parse(user) : null;
+    if (parsedUser && parsedUser.phoneNumber) {
+      setIsAuthenticated(true);
+      console.log("User authenticated");
+    } else {
+      setIsAuthenticated(false);
+      console.log("User not authenticated");
+    }
+  };
+  useEffect(() => {
+    getSecureKey();
+  }, []);
+
   const [couponDetails, setCouponDetails] = useState<{
     valid: boolean;
     discount: number;
@@ -350,7 +378,15 @@ const CartComponent = () => {
           className={`bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white ${
             cart.length === 0 ? "opacity-50" : ""
           }`}
-          onPress={() => cart.length > 0 && router.push("/screens/payment")}
+          onPress={() => {
+            if (cart.length > 0) {
+              if (isAuthenticated) {
+                router.push("/screens/payment");
+              } else {
+                router.push("/auth");
+              }
+            }
+          }}
           disabled={cart.length === 0}
         >
           <Text

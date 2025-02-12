@@ -1,123 +1,168 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   ActivityIndicator,
   Animated,
-  Easing,
   Image,
   Platform,
   Pressable,
-  Alert,
   BackHandler,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { useCartStore } from "../store/cartStore";
-
-type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl: string;
-  unitOfMeasure: string;
-};
-
-type CartState = {
-  cart: CartItem[];
-  removeFromCart: (id: number) => void;
-  clearCart: () => void;
-};
+import * as SecureStore from "expo-secure-store";
 
 const PaymentProcessingScreen = () => {
-  const cart = useCartStore((state) => (state as CartState).cart);
-  const clearCart = useCartStore((state) => (state as CartState).clearCart);
+  const cart = useCartStore((state) => state.cart);
+  const clearCart = useCartStore((state) => state.clearCart);
   const [status, setStatus] = useState("processing");
   const [fadeAnim] = useState(new Animated.Value(1));
-  type OrderItem = {
-    _id: string;
-    imageUrl: string;
-    // Add other properties if needed
-  };
+  const [user, setUser] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [orderItems, setOrderItems] = useState([]);
 
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-
-  const handleBackPress = () => {
+  const handleBackPress = useCallback(() => {
     router.push("/(tabs)/shop");
     return true;
-  };
+  }, []);
 
   useFocusEffect(
-    React.useCallback(() => {
-      createOrder();
-      console.log("Payment Processing Screen");
+    useCallback(() => {
+      const loadUserData = async () => {
+        try {
+          const userData = await SecureStore.getItemAsync("user");
+          const locationData = await SecureStore.getItemAsync("userLocation");
 
-      BackHandler.addEventListener("hardwareBackPress", handleBackPress);
-      return () => {
-        BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+          if (userData) setUser(JSON.parse(userData));
+          if (locationData) setUserLocation(JSON.parse(locationData));
+        } catch (error) {
+          console.error("Error retrieving SecureStore data:", error);
+        }
       };
-    }, [])
+
+      loadUserData();
+      BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    }, [handleBackPress])
   );
+
   useEffect(() => {
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-      });
+      }).start();
     }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  const body = {
-    user: "gid_123456789",
-    items: cart.map((item) => ({
-      id: item.id,
-      name: item.name,
-      quantity: item.quantity,
-      price: item.price,
-      imageUrl: item.imageUrl,
-      unitOfMeasure: item.unitOfMeasure,
-    })),
-    deliveryAddress: {
-      street: "123 Main Street",
-      city: "Los Angeles",
-      state: "CA",
-      postalCode: "90001",
-      country: "USA",
-      coordinates: [-118.2437, 34.0522],
-    },
-    payment: "65f1b2c4a3e7b2d123456789",
-    specialInstructions: "Leave the package at the front door.",
-  };
+  useEffect(() => {
+    if (user && userLocation) {
+      createOrder();
+    }
+  }, [user, userLocation]);
+
   const createOrder = async () => {
+    if (!user || !userLocation?.coords || cart.length === 0) {
+      console.error(
+        "Order cannot be placed: missing user, location, or empty cart."
+      );
+      setStatus("error");
+      return;
+    }
+
+    const orderData = {
+      user,
+      items: cart.map(
+        ({ id, name, quantity, price, imageUrl, unitOfMeasure }) => ({
+          id,
+          name,
+          quantity,
+          price,
+          imageUrl,
+          unitOfMeasure,
+        })
+      ),
+      deliveryAddress: {
+        street: "123 Main Street",
+        city: "Los Angeles",
+        state: "CA",
+        postalCode: "90001",
+        country: "USA",
+        coordinates: [
+          userLocation.coords.latitude,
+          userLocation.coords.longitude,
+        ],
+      },
+      payment: "65f1b2c4a3e7b2d123456789",
+      specialInstructions: "Leave the package at the front door.",
+    };
+
     try {
       const response = await fetch("http://192.168.43.155:3000/api/orders", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
       });
 
-      const result = await response.json();
-      const data = await result;
-      console.log(data);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
 
-      if (data.order && data.order._id) {
+      const data = await response.json();
+      if (data?.order?._id) {
         setOrderItems(data.order.items);
-        console.log(data.order);
+        createDelivery(data.order);
         clearCart();
         setStatus("success");
       } else {
-        setStatus("error");
+        throw new Error("Invalid response: Order ID missing");
       }
     } catch (error) {
+      console.error("Error creating order:", error);
       setStatus("error");
     }
   };
+
+  const createDelivery = async (order) => {
+    const deliveryData = {
+      order: order._id,
+      courier: order.courier,
+      user: order.user,
+      route: {
+        type: "LineString",
+        coordinates: [
+          [
+            order.deliveryAddress.coordinates[1],
+            order.deliveryAddress.coordinates[0],
+          ],
+          [-0.25, 5.65],
+        ],
+      },
+      currentLocation: {
+        coordinates: [-0.21, 5.61],
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    try {
+      const response = await fetch("http://192.168.43.155:3000/api/delivery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(deliveryData),
+      });
+      const data = await response.json();
+      console.log("Delivery created:", data);
+    } catch (error) {
+      console.error("Error creating delivery:", error);
+      setStatus("error");
+    }
+  };
+
   return (
     <>
       <View className="flex-1 bg-white p-5 items-center justify-center">
@@ -200,7 +245,7 @@ const PaymentProcessingScreen = () => {
             </View>
             <Pressable
               className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
-              onPress={() => router.push("/home")}
+              onPress={() => router.push("/screens/userOrders")}
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"

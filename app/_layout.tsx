@@ -38,26 +38,7 @@ export default function RootLayout() {
           headerShadowVisible: false,
           headerTitle: "",
           statusBarBackgroundColor: "transparent",
-        }}
-      />
-      <Stack.Screen
-        name="login"
-        options={{
-          headerTitle: "Welcome Back",
-          headerTitleStyle: {
-            fontFamily: "Unbounded Regular",
-          },
-          headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="registration"
-        options={{
-          headerTitle: "Create an Account",
-          headerTitleStyle: {
-            fontFamily: "Unbounded Medium",
-          },
-          headerShadowVisible: false,
+          presentation: "modal",
         }}
       />
       <Stack.Screen
@@ -67,6 +48,7 @@ export default function RootLayout() {
           headerTitle: "",
         }}
       />
+      <Stack.Screen name="location" options={{ headerShown: false }} />
       <Stack.Screen
         name="screens/search"
         options={{

@@ -722,198 +722,200 @@ const HomePage = () => {
   );
 
   return (
-    <View
-      className="p-2 bg-white flex-1"
-      style={{ paddingTop: Platform.OS === "ios" ? 50 : 0 }}
-    >
-      <HeaderComponent />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={loadFromLocalStorage} />
-        }
-      >
-        {loading ? (
-          <View className="flex-1 justify-center items-center">
-            <LottieView
-              style={{ width: 100, height: 100 }}
-              autoPlay
-              loop={true}
-              source={require("@/assets/animations/bounce.json")}
+    <SafeAreaView className="flex-1">
+      <View className="p-2 bg-white flex-1">
+        <HeaderComponent />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={loadFromLocalStorage}
             />
-          </View>
-        ) : (
-          <>
-            <View className="flex-row justify-between items-center mb-4">
-              <Text
-                className="text-lg text-[#014E3C] "
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Essential Produce
-              </Text>
-
-              <TouchableOpacity
-                onPress={() => router.push("/")}
-                className="text-[#2BCC5A]"
-              >
-                <Text
-                  style={{ fontFamily: "Unbounded Light" }}
-                  className="text-gray-700 text-xs underline"
-                >
-                  See More
-                </Text>
-              </TouchableOpacity>
+          }
+        >
+          {loading ? (
+            <View className="flex-1 justify-center items-center">
+              <LottieView
+                style={{ width: 100, height: 100 }}
+                autoPlay
+                loop={true}
+                source={require("@/assets/animations/bounce.json")}
+              />
             </View>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              className="mb-4"
-            >
-              {localProducts
-                .filter((product) =>
-                  ["Essential"].some((tag) => product.tags.includes(tag))
-                )
-                .sort(() => Math.random() - 0.5) // Randomize the order
-                .slice(0, 10) // Limit to 7 products
-                .map((product) => (
-                  <GridcardComponent
-                    productId={product.id}
-                    key={product.id}
-                    name={product.name}
-                    price={product.price}
-                    imageUrl={product.imageUrl}
-                    discount={product.discount}
-                    unitOfMeasure={product.unitOfMeasure}
-                  />
-                ))}
-            </ScrollView>
-
-            {new Date().getHours() < 12 && (
-              <>
+          ) : (
+            <>
+              <View className="flex-row justify-between items-center mb-4">
                 <Text
-                  className="text-lg mb-4 text-[#014E3C]"
+                  className="text-lg text-[#014E3C] "
                   style={{ fontFamily: "Unbounded Medium" }}
                 >
-                  Quick Snacks
+                  Essential Produce
                 </Text>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  className="mb-4"
-                >
-                  {localProducts
-                    .filter((product) =>
-                      ["Nutritious"].some((tag) => product.tags.includes(tag))
-                    )
-                    .map((product) => (
-                      <GridcardComponent
-                        productId={product.id}
-                        key={product.id}
-                        name={product.name}
-                        price={product.price}
-                        imageUrl={product.imageUrl}
-                        discount={product.discount}
-                        unitOfMeasure={product.unitOfMeasure}
-                      />
-                    ))}
-                </ScrollView>
-              </>
-            )}
-            <Text
-              className="text-lg mb-4 text-[#014E3C]"
-              style={{ fontFamily: "Unbounded Medium" }}
-            >
-              Fresh Veggies
-            </Text>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              className="mb-4"
-            >
-              {localProducts
-                .filter((product) => product.category === "Vegetables")
-                .map((product) => (
-                  <GridcardComponent
-                    productId={product.id}
-                    key={product.id}
-                    name={product.name}
-                    price={product.price}
-                    imageUrl={product.imageUrl}
-                    discount={product.discount}
-                    unitOfMeasure={product.unitOfMeasure}
-                  />
-                ))}
-            </ScrollView>
-            <Text
-              className="text-lg mb-4 text-[#014E3C]"
-              style={{ fontFamily: "Unbounded Medium" }}
-            >
-              Featured Fruits
-            </Text>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              className="mb-4"
-            >
-              {localProducts
-                .filter((product) => product.category === "Fruits")
-                .map((product) => (
-                  <GridcardComponent
-                    productId={product.id}
-                    key={product.id}
-                    name={product.name}
-                    price={product.price}
-                    imageUrl={product.imageUrl}
-                    discount={product.discount}
-                    unitOfMeasure={product.unitOfMeasure}
-                  />
-                ))}
-            </ScrollView>
-            <Text
-              className="text-lg mb-4 text-[#014E3C]"
-              style={{ fontFamily: "Unbounded Medium" }}
-            >
-              Grossing Meats
-            </Text>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              className="mb-4"
-            >
-              {localProducts
-                .filter((product) => product.category === "Meats")
-                .map((product) => (
-                  <GridcardComponent
-                    productId={product.id}
-                    key={product.id}
-                    name={product.name}
-                    price={product.price}
-                    imageUrl={product.imageUrl}
-                    discount={product.discount}
-                    unitOfMeasure={product.unitOfMeasure}
-                  />
-                ))}
-            </ScrollView>
 
-            <CategoriesComponent />
-          </>
-        )}
-      </ScrollView>
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          backgroundColor: "#2BCC5A",
-          borderRadius: 50,
-          padding: 15,
-          elevation: 5,
-        }}
-        onPress={() => router.push("/home")}
-      >
-        <Ionicons name="scan" size={24} color="white" />
-      </TouchableOpacity>
-    </View>
+                <TouchableOpacity
+                  onPress={() => router.push("/")}
+                  className="text-[#2BCC5A]"
+                >
+                  <Text
+                    style={{ fontFamily: "Unbounded Light" }}
+                    className="text-gray-700 text-xs underline"
+                  >
+                    See More
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) =>
+                    ["Essential"].some((tag) => product.tags.includes(tag))
+                  )
+                  .sort(() => Math.random() - 0.5) // Randomize the order
+                  .slice(0, 10) // Limit to 7 products
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+
+              {new Date().getHours() < 12 && (
+                <>
+                  <Text
+                    className="text-lg mb-4 text-[#014E3C]"
+                    style={{ fontFamily: "Unbounded Medium" }}
+                  >
+                    Quick Snacks
+                  </Text>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    className="mb-4"
+                  >
+                    {localProducts
+                      .filter((product) =>
+                        ["Nutritious"].some((tag) => product.tags.includes(tag))
+                      )
+                      .map((product) => (
+                        <GridcardComponent
+                          productId={product.id}
+                          key={product.id}
+                          name={product.name}
+                          price={product.price}
+                          imageUrl={product.imageUrl}
+                          discount={product.discount}
+                          unitOfMeasure={product.unitOfMeasure}
+                        />
+                      ))}
+                  </ScrollView>
+                </>
+              )}
+              <Text
+                className="text-lg mb-4 text-[#014E3C]"
+                style={{ fontFamily: "Unbounded Medium" }}
+              >
+                Fresh Veggies
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) => product.category === "Vegetables")
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+              <Text
+                className="text-lg mb-4 text-[#014E3C]"
+                style={{ fontFamily: "Unbounded Medium" }}
+              >
+                Featured Fruits
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) => product.category === "Fruits")
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+              <Text
+                className="text-lg mb-4 text-[#014E3C]"
+                style={{ fontFamily: "Unbounded Medium" }}
+              >
+                Grossing Meats
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) => product.category === "Meats")
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+
+              <CategoriesComponent />
+            </>
+          )}
+        </ScrollView>
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 20,
+            backgroundColor: "#2BCC5A",
+            borderRadius: 50,
+            padding: 15,
+            elevation: 5,
+          }}
+          onPress={() => router.push("/home")}
+        >
+          <Ionicons name="scan" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 export default HomePage;
