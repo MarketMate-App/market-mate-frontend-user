@@ -1,33 +1,30 @@
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
   Text,
   KeyboardAvoidingView,
   Platform,
-  Image,
-  Pressable,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  Pressable,
 } from "react-native";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 
-const AuthPage = () => {
-  const [phone, setPhone] = useState("");
+const OtpPage = () => {
+  const [otp, setOtp] = useState("");
 
   const handleContinue = () => {
-    // Remove any spaces from the input
-    const cleanedPhone = phone.replace(/\s/g, "");
-    // Validate that the number contains exactly 9 digits
-    const ghanaianPhoneRegex = /^\d{9}$/;
-    if (!ghanaianPhoneRegex.test(cleanedPhone)) {
-      Alert.alert("Oops!", "Please enter a valid Ghanaian phone number.");
+    // Validate that the OTP contains exactly 6 digits
+    const otpRegex = /^\d{6}$/;
+    if (!otpRegex.test(otp)) {
+      Alert.alert("Error", "Please enter a valid 6-digit OTP.");
       return;
     }
-    // Proceed with authentication or navigation
-    Alert.alert("Success!", "Welcome aboard. Let's get started!");
-    router.push("/otp");
+    // Proceed with OTP verification or navigation
+    Alert.alert("Success", "OTP verified successfully!");
+    router.push("/screens/delivery_address");
   };
 
   return (
@@ -36,45 +33,35 @@ const AuthPage = () => {
         className="flex-1 bg-white p-5 justify-between"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        <Stack.Screen
+          options={{
+            headerShown: false,
+            presentation: "modal",
+          }}
+        />
         <View>
           <Text
             className="text-3xl mb-3"
             style={{ fontFamily: "Unbounded Regular" }}
           >
-            Akwaaba!
+            Enter OTP
           </Text>
           <Text
             className="text-gray-500 text-xs mb-8"
             style={{ fontFamily: "Unbounded Regular" }}
           >
-            Welcome to Market Mate – your local hub for grocery deals,
-            handpicked selections, unbeatable prices, and fast delivery.
+            Please enter the one-time password sent to +233******209.
           </Text>
 
           <View className="flex-row items-center border border-gray-200 rounded-2xl w-full mb-2">
             <FloatingLabelInput
-              label="Phone Number"
+              label="OTP"
               labelStyles={{
                 fontFamily: "Unbounded Light",
                 color: "#e5e7eb",
                 paddingHorizontal: 3,
                 fontSize: 12,
               }}
-              leftComponent={
-                <View className="flex-row items-center gap-2 border-r border-gray-200 p-2 ml-2">
-                  <Image
-                    source={require("@/assets/images/ghana-flag.png")}
-                    className="w-6 h-6 rounded-lg"
-                    resizeMode="contain"
-                  />
-                  <Text
-                    className="text-xs text-gray-500"
-                    style={{ fontFamily: "Unbounded Regular" }}
-                  >
-                    +233
-                  </Text>
-                </View>
-              }
               inputStyles={{
                 fontFamily: "Unbounded Regular",
                 color: "#4b5563",
@@ -82,14 +69,13 @@ const AuthPage = () => {
                 paddingLeft: 10,
               }}
               customLabelStyles={{ colorFocused: "#9ca3af" }}
-              value={phone}
+              value={otp}
               animationDuration={50}
               hintTextColor={"#9ca3af"}
-              mask="123 456 7890"
-              hint="123 456 7890"
-              maskType="phone"
+              mask="123456"
+              hint="123456"
               keyboardType="numeric"
-              onChangeText={setPhone}
+              onChangeText={setOtp}
               containerStyles={{
                 paddingVertical: Platform.OS === "ios" ? 20 : 15,
               }}
@@ -106,7 +92,7 @@ const AuthPage = () => {
               className="text-white text-xs text-center"
               style={{ fontFamily: "Unbounded SemiBold" }}
             >
-              Continue
+              Verify
             </Text>
           </Pressable>
         </View>
@@ -116,39 +102,25 @@ const AuthPage = () => {
             className="text-center text-gray-500 text-xs mb-3"
             style={{ fontFamily: "Unbounded Regular" }}
           >
-            Or sign in with
+            Didn't receive your OTP?
           </Text>
           <Pressable
             onPress={() =>
-              Alert.alert(
-                "Coming Soon",
-                "Google login is on its way. Stay tuned!"
-              )
+              Alert.alert("Resend OTP", "OTP has been resent to your device.")
             }
-            className="flex-row items-center gap-2 justify-center py-4 rounded-full border border-gray-200"
+            className="flex-row items-center justify-center py-4 rounded-full border border-gray-200"
           >
-            <Image
-              source={require("@/assets/images/google.png")}
-              className="h-6 w-6"
-              resizeMode="contain"
-            />
             <Text
               className="text-xs text-gray-500"
               style={{ fontFamily: "Unbounded SemiBold" }}
             >
-              Continue with Google
+              Resend OTP
             </Text>
           </Pressable>
-          <Text
-            className="text-xs text-gray-500 mt-4 text-center"
-            style={{ fontFamily: "Unbounded Regular" }}
-          >
-            By continuing, you agree to our Terms of Service and Privacy Policy.
-          </Text>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
-export default AuthPage;
+export default OtpPage;

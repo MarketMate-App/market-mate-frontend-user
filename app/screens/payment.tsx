@@ -50,25 +50,26 @@ const Payment = () => {
 
   const validatePhone = (number: string) => {
     const cleaned = number.replace(/\D/g, "");
-    setPhoneError(cleaned.length === 9 ? "" : "Invalid phone number");
+    setPhoneError(
+      cleaned.length === 9 ? "" : "Please enter a valid 9-digit number"
+    );
     return cleaned.length === 9;
   };
 
   const handlePayment = () => {
     if (location === null) {
       Alert.alert(
-        "Location Error",
-        "Please set your location before proceeding"
+        "Location Required",
+        "It looks like you haven't set a delivery location. Please update your location for accurate delivery."
       );
       router.push("/location");
       return;
-    } else {
-      router.push("/screens/payment_processing");
     }
+    // Proceed to payment processing
     router.push("/screens/payment_processing");
   };
+
   const body = {
-    // Calcualte peak hours based on current time of day between 2pm and 6pm
     isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
     distance: 5,
     promoCode: "FREESHIP15",
@@ -78,6 +79,7 @@ const Payment = () => {
       price: item.price,
     })),
   };
+
   const fetchTotal = () => {
     setLoading(true);
     fetch("http://192.168.43.155:3000/api/calculate-total", {
@@ -93,10 +95,14 @@ const Payment = () => {
         setLoading(false);
       })
       .catch(() => {
-        Alert.alert("Error", "Failed to calculate total. Please try again.");
+        Alert.alert(
+          "Oops!",
+          "We couldn't calculate the total. Please try again."
+        );
         setLoading(false);
       });
   };
+
   const fetchLocation = async () => {
     const savedLocation = await SecureStore.getItemAsync("userLocation");
     if (savedLocation) {
@@ -106,6 +112,7 @@ const Payment = () => {
       setLocation(null);
     }
   };
+
   useEffect(() => {
     fetchLocation();
     if (cart.length === 0) router.push("/");
@@ -118,7 +125,7 @@ const Payment = () => {
         <Stack.Screen
           options={{
             headerTitleAlign: "center",
-            title: "Payment",
+            title: "Review & Pay",
             headerShadowVisible: false,
             headerTitleStyle: { fontFamily: "Unbounded Light", fontSize: 14 },
           }}
@@ -128,83 +135,69 @@ const Payment = () => {
           className="flex-1 p-4"
           contentContainerStyle={{ paddingBottom: 100 }}
         >
-          {/* Phone Input Section */}
+          {/* Uncomment and update phone input if needed */}
+          {/*
           <View className="mb-8">
-            <View className="border-hairline border-gray-100 rounded-xl bg-gray-50">
-              <View className="rounded-xl w-full">
-                <FloatingLabelInput
-                  label="Mobile Number"
-                  labelStyles={{
-                    fontFamily: "Unbounded Light",
-                    color: "#e5e7eb",
-                    paddingHorizontal: 3,
-                    fontSize: 12,
-                  }}
-                  leftComponent={
-                    <View className="flex-row items-center gap-2 border-hairline border-gray-200 p-2 rounded-xl absolute left-3">
-                      <Image
-                        source={require("@/assets/images/mtn.png")}
-                        className="w-6 h-6 rounded-lg"
-                        resizeMode="contain"
-                      />
-                      <Text
-                        className="text-xs text-gray-500"
-                        style={{ fontFamily: "Unbounded Light" }}
-                      >
-                        +233
-                      </Text>
-                    </View>
-                  }
-                  inputStyles={{
-                    fontFamily: "Unbounded Light",
-                    color: "#4b5563",
-                    fontSize: 13,
-                  }}
-                  customLabelStyles={{ colorFocused: "#9ca3af" }}
-                  value={phone}
-                  animationDuration={50}
-                  hintTextColor={"#9ca3af"}
-                  mask="123 456 7890"
-                  hint="123 456 7890"
-                  maskType="phone"
-                  keyboardType="numeric"
-                  onChangeText={(v) => {
-                    setPhone(v);
-                    if (phoneError) validatePhone(v);
-                  }}
-                  onBlur={() => validatePhone(phone)}
-                  containerStyles={{
-                    paddingLeft: 100,
-                    paddingTop: Platform.OS === "ios" ? 20 : 15,
-                    paddingBottom: Platform.OS === "ios" ? 20 : 15,
-                    borderWidth: 0,
-                    borderBottomWidth: 0,
-                    borderBottomColor: "#e5e7eb",
-                  }}
-                  returnKeyType="done"
-                />
-              </View>
-            </View>
+            <FloatingLabelInput
+              label="Mobile Number"
+              labelStyles={{
+                fontFamily: "Unbounded Light",
+                color: "#e5e7eb",
+                paddingHorizontal: 3,
+                fontSize: 12,
+              }}
+              leftComponent={
+                <View className="flex-row items-center gap-2 border border-gray-200 p-2 rounded-xl absolute left-3">
+                  <Image
+                    source={require("@/assets/images/mtn.png")}
+                    className="w-6 h-6 rounded-lg"
+                    resizeMode="contain"
+                  />
+                  <Text className="text-xs text-gray-500" style={{ fontFamily: "Unbounded Light" }}>
+                    +233
+                  </Text>
+                </View>
+              }
+              inputStyles={{
+                fontFamily: "Unbounded Light",
+                color: "#4b5563",
+                fontSize: 13,
+              }}
+              value={phone}
+              animationDuration={50}
+              hintTextColor={"#9ca3af"}
+              mask="123 456 7890"
+              hint="123 456 7890"
+              maskType="phone"
+              keyboardType="numeric"
+              onChangeText={(v) => {
+                setPhone(v);
+                if (phoneError) validatePhone(v);
+              }}
+              onBlur={() => validatePhone(phone)}
+              containerStyles={{
+                paddingLeft: 100,
+                paddingTop: Platform.OS === "ios" ? 20 : 15,
+                paddingBottom: Platform.OS === "ios" ? 20 : 15,
+              }}
+            />
             {phoneError && (
               <View className="flex-row items-center gap-1 mt-2">
                 <MaterialIcons name="warning" size={12} color="#ef4444" />
-                <Text
-                  className="text-red-500 text-xs"
-                  style={{ fontFamily: "Unbounded Light" }}
-                >
+                <Text className="text-red-500 text-xs" style={{ fontFamily: "Unbounded Light" }}>
                   {phoneError}
                 </Text>
               </View>
             )}
           </View>
+          */}
 
-          {/* Order Summary */}
-          <View className="bg-gray-50 rounded-xl p-4 shadow-sm">
+          <View className="bg-gray-50 rounded-xl p-4">
             <Text
               style={{ fontFamily: "Unbounded Medium" }}
               className="mb-4 text-gray-700 text-lg"
             >
-              Order Breakdown
+              Review Your Order
             </Text>
 
             <View className="space-y-4 mb-3">
@@ -232,7 +225,7 @@ const Payment = () => {
                       className="text-gray-500 text-sm"
                       style={{ fontFamily: "Unbounded Light" }}
                     >
-                      Delivery
+                      Delivery Cost
                     </Text>
                     <Ionicons
                       name="information-circle"
@@ -244,7 +237,12 @@ const Payment = () => {
                     className="text-gray-700 text-sm"
                     style={{ fontFamily: "Unbounded Medium" }}
                   >
-                    GHS {(data?.deliveryFee || 0).toFixed(2)}
+                    GHS{" "}
+                    {(data?.deliveryFee || 0) + (data?.distanceFee || 0)
+                      ? (
+                          (data?.deliveryFee || 0) + (data?.distanceFee || 0)
+                        ).toFixed(2)
+                      : "0.00"}
                   </Text>
                 </View>
 
@@ -254,7 +252,7 @@ const Payment = () => {
                       className="text-red-600 text-sm"
                       style={{ fontFamily: "Unbounded Regular" }}
                     >
-                      Peak Hours Surcharge (+20%)
+                      Peak Hour Surcharge (+20%)
                     </Text>
                     <Text
                       className="text-red-600 text-sm"
@@ -301,7 +299,7 @@ const Payment = () => {
               </View>
             </View>
 
-            <View className="mt-6 items-center bg-[#2BCC5A]/10 p-3 rounded-lg flex-row justify-between border-t border-dashed border-gray-300">
+            <View className="mt-6 items-center bg-[#2BCC5A]/10 p-3 rounded-lg flex-row justify-between">
               <Text
                 className="text-[#2BCC5A] text-sm"
                 style={{ fontFamily: "Unbounded Light" }}
@@ -319,7 +317,6 @@ const Payment = () => {
         </ScrollView>
       </View>
 
-      {/* Sticky Footer */}
       <View className="bg-white border-t border-gray-100 pt-4 px-4 pb-6">
         <Pressable
           className={`w-full py-5 rounded-full border-hairline border-white ${
@@ -337,11 +334,9 @@ const Payment = () => {
                 style={{ fontFamily: "Unbounded SemiBold" }}
                 className="text-white text-xs"
               >
-                Confirm & Pay
+                Confirm & Securely Pay
               </Text>
-              <Text>
-                <MaterialIcons name="lock" size={16} color="white" />
-              </Text>
+              <MaterialIcons name="lock" size={16} color="white" />
             </View>
           )}
         </Pressable>
@@ -350,7 +345,8 @@ const Payment = () => {
           className="text-center text-xs text-gray-500 mt-3"
           style={{ fontFamily: "Unbounded Light" }}
         >
-          Secure payment processed via Hubtel
+          Your payment information is encrypted and securely processed by
+          Hubtel.
         </Text>
       </View>
     </>

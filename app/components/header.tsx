@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import Feather from "@expo/vector-icons/Feather";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -39,21 +39,24 @@ const HeaderComponent = () => {
           >
             Deliver now
           </Text>
-          <View className="flex-row items-center gap-1">
-            <Link href={"/location"}>
+          <TouchableOpacity
+            hitSlop={20}
+            onPress={() => router.push("/location")}
+          >
+            <View className="flex-row items-center gap-1">
               <Text
                 className="text-sm"
                 style={{ fontFamily: "Unbounded Regular" }}
               >
                 Set delivery address
               </Text>
-            </Link>
-            <MaterialCommunityIcons
-              name="chevron-down"
-              size={24}
-              color="black"
-            />
-          </View>
+              <MaterialCommunityIcons
+                name="chevron-down"
+                size={24}
+                color="black"
+              />
+            </View>
+          </TouchableOpacity>
         </View>
       </Link>
       <View className="flex-row items-center gap-2">

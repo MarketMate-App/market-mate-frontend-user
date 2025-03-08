@@ -36,26 +36,26 @@ const DeliveryAddressScreen = () => {
   };
 
   const saveDetails = async () => {
-    if (!name || !country || !address || !phone) {
+    if (!name || !country || !address) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
-    if (!validatePhone(phone)) {
-      Alert.alert("Error", "Please enter a valid Ghanaian phone number");
-      return;
-    }
+    // if (!validatePhone(phone)) {
+    //   Alert.alert("Error", "Please enter a valid Ghanaian phone number");
+    //   return;
+    // }
 
     setLoading(true);
     try {
       await AsyncStorage.setItem(
         "@deliveryAddress",
-        JSON.stringify({ name, country, address, phone })
+        JSON.stringify({ name, country, address })
       );
       setTimeout(() => {
         setLoading(false);
         Alert.alert("Success", "Details saved successfully");
-        router.back();
+        router.push("/(tabs)/shop");
       }, 1000);
     } catch (error) {
       setLoading(false);
@@ -88,23 +88,23 @@ const DeliveryAddressScreen = () => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <>
-          <ScrollView className="flex-1 bg-white px-3">
+          <ScrollView className="flex-1 bg-white p-3">
             <Stack.Screen
               options={{
-                headerTitleAlign: "center",
-                title: "Checkout",
-                headerShadowVisible: false,
-                headerTitleStyle: {
-                  fontFamily: "Unbounded Regular",
-                  fontSize: 14,
-                },
+                headerShown: false,
               }}
             />
             <Text
-              className="text-xs text-gray-500 mb-2"
+              className="text-3xl mb-3"
               style={{ fontFamily: "Unbounded Regular" }}
             >
-              Delivery Details
+              Tell Us About Yourself
+            </Text>
+            <Text
+              className="text-gray-500 text-xs mb-8"
+              style={{ fontFamily: "Unbounded Regular" }}
+            >
+              Please enter your details below.
             </Text>
 
             <View className="bg-white border-hairline items-center gap-2 border-gray-200 mb-4 rounded-xl">
@@ -205,7 +205,7 @@ const DeliveryAddressScreen = () => {
                 onSubmitEditing={() => phoneRef.current?.focus()}
               />
 
-              <View className="flex-row flex-1 items-center ">
+              {/* <View className="flex-row flex-1 items-center ">
                 <FloatingLabelInput
                   label="Phone"
                   labelStyles={{
@@ -254,7 +254,7 @@ const DeliveryAddressScreen = () => {
                   ref={phoneRef}
                   returnKeyType="done"
                 />
-              </View>
+              </View> */}
             </View>
           </ScrollView>
 

@@ -8,22 +8,57 @@ import {
   Platform,
   Pressable,
   BackHandler,
+  Alert,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { useCartStore } from "../store/cartStore";
 import * as SecureStore from "expo-secure-store";
 
-const PaymentProcessingScreen = () => {
-  const cart = useCartStore((state) => state.cart);
-  const clearCart = useCartStore((state) => state.clearCart);
-  const [status, setStatus] = useState("processing");
-  const [fadeAnim] = useState(new Animated.Value(1));
-  const [user, setUser] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
-  const [orderItems, setOrderItems] = useState([]);
+interface User {
+  id: string;
+  name: string;
+  // additional user fields if necessary
+}
 
-  const handleBackPress = useCallback(() => {
+interface LocationData {
+  coords: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+interface CartItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  imageUrl: string;
+  unitOfMeasure: string;
+}
+
+interface Order {
+  _id: string;
+  items: CartItem[];
+  deliveryAddress: {
+    coordinates: [number, number];
+  };
+  courier?: string;
+  user: User;
+}
+
+type Status = "processing" | "success" | "error";
+
+const PaymentProcessingScreen: React.FC = () => {
+  const cart = useCartStore((state) => state.cart) as CartItem[];
+  const clearCart = useCartStore((state) => state.clearCart);
+  const [status, setStatus] = useState<Status>("processing");
+  const [fadeAnim] = useState(new Animated.Value(1));
+  const [user, setUser] = useState<User | null>(null);
+  const [userLocation, setUserLocation] = useState<LocationData | null>(null);
+  const [orderItems, setOrderItems] = useState<CartItem[]>([]);
+
+  const handleBackPress = useCallback((): boolean => {
     router.push("/(tabs)/shop");
     return true;
   }, []);
@@ -34,11 +69,11 @@ const PaymentProcessingScreen = () => {
         try {
           const userData = await SecureStore.getItemAsync("user");
           const locationData = await SecureStore.getItemAsync("userLocation");
-
           if (userData) setUser(JSON.parse(userData));
           if (locationData) setUserLocation(JSON.parse(locationData));
         } catch (error) {
           console.error("Error retrieving SecureStore data:", error);
+          Alert.alert("Error", "Unable to load user data.");
         }
       };
 
@@ -57,9 +92,8 @@ const PaymentProcessingScreen = () => {
         useNativeDriver: true,
       }).start();
     }, 4000);
-
     return () => clearTimeout(timer);
-  }, []);
+  }, [fadeAnim]);
 
   useEffect(() => {
     if (user && userLocation) {
@@ -69,10 +103,9 @@ const PaymentProcessingScreen = () => {
 
   const createOrder = async () => {
     if (!user || !userLocation?.coords || cart.length === 0) {
-      console.error(
-        "Order cannot be placed: missing user, location, or empty cart."
-      );
       setStatus("error");
+      Alert.alert("Error", "Missing required information. Please try again.");
+      router.push("/(tabs)/shop");
       return;
     }
 
@@ -90,10 +123,11 @@ const PaymentProcessingScreen = () => {
       ),
       deliveryAddress: {
         street: "123 Main Street",
-        city: "Los Angeles",
-        state: "CA",
-        postalCode: "90001",
-        country: "USA",
+        city: "Takoradi",
+        state: "WS",
+        postalCode: "00233",
+        country: "Ghana",
+        // sending coordinates as [latitude, longitude]
         coordinates: [
           userLocation.coords.latitude,
           userLocation.coords.longitude,
@@ -116,7 +150,7 @@ const PaymentProcessingScreen = () => {
       const data = await response.json();
       if (data?.order?._id) {
         setOrderItems(data.order.items);
-        createDelivery(data.order);
+        await createDelivery(data.order);
         clearCart();
         setStatus("success");
       } else {
@@ -125,16 +159,18 @@ const PaymentProcessingScreen = () => {
     } catch (error) {
       console.error("Error creating order:", error);
       setStatus("error");
+      Alert.alert("Order Error", "There was an issue processing your order.");
     }
   };
 
-  const createDelivery = async (order) => {
+  const createDelivery = async (order: Order) => {
     const deliveryData = {
       order: order._id,
       courier: order.courier,
       user: order.user,
       route: {
         type: "LineString",
+        // Reverse coordinates order if needed
         coordinates: [
           [
             order.deliveryAddress.coordinates[1],
@@ -160,17 +196,14 @@ const PaymentProcessingScreen = () => {
     } catch (error) {
       console.error("Error creating delivery:", error);
       setStatus("error");
+      Alert.alert("Delivery Error", "Failed to create delivery.");
     }
   };
 
   return (
     <>
       <View className="flex-1 bg-white p-5 items-center justify-center">
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-        />
+        <Stack.Screen options={{ headerShown: false }} />
 
         {status === "processing" ? (
           <Animated.View
@@ -180,10 +213,9 @@ const PaymentProcessingScreen = () => {
             <LottieView
               style={{ width: 100, height: 100 }}
               autoPlay
-              loop={true}
+              loop
               source={require("@/assets/animations/bounce.json")}
             />
-            {/* <ActivityIndicator size="large" color="#4CAF50" /> */}
             <Text
               className="text-lg text-gray-700 mb-4"
               style={{ fontFamily: "Unbounded Medium" }}
@@ -216,13 +248,13 @@ const PaymentProcessingScreen = () => {
               className="text-center w-80 text-gray-500 mb-8 text-xs"
               style={{ fontFamily: "Unbounded Light" }}
             >
-              Your order has been confirmed. You will receive an email
+              Your order has been confirmed. You will receive an SMS
               confirmation shortly.
             </Text>
 
             <View className="p-3 w-full mb-8 flex-row items-center justify-start rounded-2xl bg-slate-50">
-              {orderItems.slice(0, 5).map((item, index) => (
-                <View key={item._id} className="mb-2">
+              {orderItems.slice(0, 5).map((item) => (
+                <View key={item.id} className="mb-2">
                   <Image
                     source={{ uri: item.imageUrl }}
                     style={{ width: 40, height: 40, borderRadius: 20 }}
