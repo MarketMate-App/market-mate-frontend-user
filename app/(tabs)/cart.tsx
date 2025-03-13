@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import {
   View,
   Text,
-  Button,
+  Alert,
   ScrollView,
   Pressable,
   Image,
-  Alert,
   Platform,
 } from "react-native";
 import { useCartStore } from "../store/cartStore";
@@ -14,7 +13,6 @@ import { router } from "expo-router";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import * as SecureStore from "expo-secure-store";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type CartItem = {
   id: number;
@@ -29,52 +27,135 @@ type CartState = {
   cart: CartItem[];
   removeFromCart: (id: number) => void;
   clearCart: () => void;
+  updateQuantity: (id: number, newQuantity: number) => void;
 };
+
+const CartItemComponent = memo(
+  ({
+    item,
+    onUpdateQuantity,
+    onRemove,
+  }: {
+    item: CartItem;
+    onUpdateQuantity: (id: number, increment: boolean) => void;
+    onRemove: (id: number) => void;
+  }) => {
+    const handleDecrement = useCallback(() => {
+      if (item.quantity > 1) {
+        onUpdateQuantity(item.id, false);
+      } else {
+        onRemove(item.id);
+      }
+    }, [item, onUpdateQuantity, onRemove]);
+
+    const handleIncrement = useCallback(() => {
+      onUpdateQuantity(item.id, true);
+    }, [item, onUpdateQuantity]);
+
+    const formattedPrice = `${Math.floor(item.price)}.${
+      item.price.toFixed(2).split(".")[1]
+    }`;
+
+    return (
+      <View
+        key={item.id}
+        className="flex-row items-center justify-between mb-3"
+      >
+        <View className="flex-row items-center justify-center gap-4">
+          <Image
+            source={{ uri: item.imageUrl }}
+            className="w-24 h-24"
+            resizeMode="contain"
+          />
+          <View>
+            <Text
+              className="text-sm text-gray-700 mb-2"
+              style={{ fontFamily: "Unbounded Medium" }}
+            >
+              {item.name.length > 10
+                ? `${item.name.substring(0, 16)}...`
+                : item.name}
+            </Text>
+            <Text
+              className="text-gray-500 text-xs mb-4"
+              style={{ fontFamily: "Unbounded Light" }}
+            >
+              1 {item.unitOfMeasure}
+            </Text>
+          </View>
+        </View>
+        <View className="items-center justify-between">
+          <Text
+            className="text-sm relative mb-2 text-gray-700"
+            style={{ fontFamily: "Unbounded Regular" }}
+          >
+            ₵{formattedPrice}
+          </Text>
+          <View className="flex-row items-center gap-2">
+            <Pressable
+              onPress={handleDecrement}
+              className="border-hairline border-gray-300 rounded-full p-1"
+            >
+              <Entypo name="minus" size={20} color="gray" />
+            </Pressable>
+            <Text
+              className="mx-2 text-gray-500 text-sm"
+              style={{ fontFamily: "Unbounded Regular" }}
+            >
+              {item.quantity}
+            </Text>
+            <Pressable
+              onPress={handleIncrement}
+              className="border-hairline border-gray-300 rounded-full p-1 bg-black"
+            >
+              <Entypo name="plus" size={20} color="white" />
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    );
+  }
+);
 
 const CartComponent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [coupon, setCoupon] = useState("");
+  const [couponDetails, setCouponDetails] = useState<{
+    valid: boolean;
+    discount: number;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const cart = useCartStore((state) => (state as CartState).cart);
+  const cart = useCartStore((state) => (state as unknown as CartState).cart);
   const removeFromCart = useCartStore(
-    (state) => (state as CartState).removeFromCart
+    (state) => (state as unknown as CartState).removeFromCart
   );
-  const clearCart = useCartStore((state) => (state as CartState).clearCart);
-  const [coupon, setCoupon] = useState("");
+  const clearCart = useCartStore(
+    (state) => (state as unknown as CartState).clearCart
+  );
+  const updateQuantity = useCartStore(
+    (state) => (state as unknown as CartState).updateQuantity
+  );
+
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  const addSecureKey = async () => {
-    const user = {
-      phoneNumber: "+233241234567",
-    };
-    await SecureStore.setItemAsync("user", JSON.stringify(user));
-    if (await SecureStore.getItemAsync("user")) {
-      console.log("Secure key added");
-    }
-  };
   const getSecureKey = async () => {
     const user = await SecureStore.getItemAsync("user");
     const parsedUser = user ? JSON.parse(user) : null;
     if (parsedUser && parsedUser.phoneNumber) {
       setIsAuthenticated(true);
-      console.log("User authenticated");
     } else {
       setIsAuthenticated(false);
-      console.log("User not authenticated");
     }
   };
+
   useEffect(() => {
     getSecureKey();
   }, []);
 
-  const [couponDetails, setCouponDetails] = useState<{
-    valid: boolean;
-    discount: number;
-  } | null>(null);
   const handleCouponApply = async () => {
     try {
       setLoading(true);
@@ -86,7 +167,6 @@ const CartComponent = () => {
           body: JSON.stringify({ promoCode: coupon }),
         }
       );
-
       const data = await response.json();
       if (data.valid) {
         setCouponDetails(data);
@@ -104,24 +184,23 @@ const CartComponent = () => {
     setCouponDetails(null);
     setCoupon("");
   };
-  const handleQuantityChange = (item: CartItem, increment: boolean) => {
-    if (increment) {
-      item.quantity += 1;
-    } else {
-      if (item.quantity > 1) {
-        item.quantity -= 1;
-      } else {
-        removeFromCart(item.id);
-      }
-    }
-    setQuantity(item.quantity);
-  };
 
-  const calculateTotal = () => {
-    return cart
-      .reduce((acc, item) => acc + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
+  const handleUpdateQuantity = useCallback(
+    (id: number, increment: boolean) => {
+      const item = cart.find((item) => item.id === id);
+      if (!item) return;
+      const newQuantity = increment ? item.quantity + 1 : item.quantity - 1;
+      if (newQuantity > 0) {
+        updateQuantity(id, newQuantity);
+      } else {
+        removeFromCart(id);
+      }
+    },
+    [cart, removeFromCart, updateQuantity]
+  );
+
+  const calculateTotal = () =>
+    cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
   const handleClearCart = () => {
     Alert.alert(
@@ -176,62 +255,12 @@ const CartComponent = () => {
           </>
         )}
         {cart.map((item) => (
-          <View
+          <CartItemComponent
             key={item.id}
-            className="flex-row items-center justify-between mb-3"
-          >
-            <View className="flex-row items-center justify-center gap-4">
-              <Image
-                source={{ uri: item.imageUrl }}
-                className="w-24 h-24"
-                resizeMode="contain"
-              />
-              <View>
-                <Text
-                  className="text-sm text-gray-700 mb-2"
-                  style={{ fontFamily: "Unbounded Medium" }}
-                >
-                  {item.name.length > 10
-                    ? `${item.name.substring(0, 16)}...`
-                    : item.name}
-                </Text>
-                <Text
-                  className="text-gray-500 text-xs mb-4"
-                  style={{ fontFamily: "Unbounded Light" }}
-                >
-                  1 {item.unitOfMeasure}
-                </Text>
-              </View>
-            </View>
-            <View className="items-center justify-between">
-              <Text
-                className="text-sm relative mb-2 text-gray-700"
-                style={{ fontFamily: "Unbounded Regular" }}
-              >
-                ₵{Math.floor(item.price)}.{item.price.toFixed(2).split(".")[1]}
-              </Text>
-              <View className="flex-row items-center gap-2">
-                <Pressable
-                  onPress={() => handleQuantityChange(item, false)}
-                  className="border-hairline border-gray-300 rounded-full p-1"
-                >
-                  <Entypo name="minus" size={20} color={"gray"} />
-                </Pressable>
-                <Text
-                  className="mx-2 text-gray-500 text-sm"
-                  style={{ fontFamily: "Unbounded Regular" }}
-                >
-                  {item.quantity}
-                </Text>
-                <Pressable
-                  onPress={() => handleQuantityChange(item, true)}
-                  className="border-hairline border-gray-300 rounded-full p-1 bg-black"
-                >
-                  <Entypo name="plus" size={20} color={"white"} />
-                </Pressable>
-              </View>
-            </View>
-          </View>
+            item={item}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemove={removeFromCart}
+          />
         ))}
         {cart.length === 0 && (
           <View className="flex-1 items-center justify-center">
@@ -273,7 +302,6 @@ const CartComponent = () => {
             >
               Have Coupon?
             </Text>
-
             <View className="bg-white p-3 border-hairline border-gray-200 mb-4 rounded-xl">
               <View className="flex-row items-center">
                 <FloatingLabelInput
@@ -320,7 +348,6 @@ const CartComponent = () => {
                   </Pressable>
                 )}
               </View>
-
               {couponDetails?.valid && (
                 <View className="bg-green-100 p-3 mt-2 rounded-xl flex-row items-center justify-between">
                   <Text
@@ -335,8 +362,6 @@ const CartComponent = () => {
                 </View>
               )}
             </View>
-
-            {/* Free Delivery Progress Section */}
             <View className="bg-white p-3 border-hairline border-gray-200 mb-4 rounded-xl">
               <Text
                 className="text-xs text-gray-500 mb-2"
@@ -380,11 +405,7 @@ const CartComponent = () => {
           }`}
           onPress={() => {
             if (cart.length > 0) {
-              if (isAuthenticated) {
-                router.push("/screens/payment");
-              } else {
-                router.push("/auth");
-              }
+              router.push(isAuthenticated ? "/screens/payment" : "/auth");
             }
           }}
           disabled={cart.length === 0}

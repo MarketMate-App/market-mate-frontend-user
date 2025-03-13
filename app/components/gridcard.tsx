@@ -1,18 +1,15 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
   ImageBackground,
-  ActivityIndicator,
   TouchableOpacity,
   ToastAndroid,
   Platform,
-  Alert,
 } from "react-native";
-import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useCartStore } from "../store/cartStore";
 import { Link } from "expo-router";
-import debounce from "lodash.debounce";
 
 interface GridcardProps {
   name: string;
@@ -35,7 +32,6 @@ const GridcardComponent: React.FC<GridcardProps> = ({
 }) => {
   const [heartFilled, setHeartFilled] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   const cart = useCartStore((state) => (state as { cart: any[] }).cart);
   const addToCart = useCartStore(
@@ -48,18 +44,13 @@ const GridcardComponent: React.FC<GridcardProps> = ({
     (state) => (state as { updateQuantity: Function }).updateQuantity
   );
 
+  // Update local quantity based on cart changes
   useEffect(() => {
     const existingProduct = cart.find((item) => item.id === productId);
-    if (existingProduct) {
-      setQuantity(existingProduct.quantity);
-    } else {
-      setQuantity(0);
-      setLoading(false);
-    }
-  }, [cart]);
+    setQuantity(existingProduct ? existingProduct.quantity : 0);
+  }, [cart, productId]);
 
   const handleAddToCart = () => {
-    setLoading(true);
     const product = {
       id: productId,
       name,
@@ -72,24 +63,22 @@ const GridcardComponent: React.FC<GridcardProps> = ({
     };
     addToCart(product);
     setQuantity(1);
-    setLoading(false);
 
     if (Platform.OS === "android") {
-      ToastAndroid.show(`Added ${product.name} to cart`, ToastAndroid.SHORT);
+      ToastAndroid.show(`Added ${name} to cart`, ToastAndroid.SHORT);
     }
   };
 
+  // Immediately update quantity without any debounce delay
   const handleQuantityChange = useCallback(
-    debounce((newQuantity: number) => {
-      setLoading(true);
+    (newQuantity: number) => {
       if (newQuantity === 0) {
         removeFromCart(productId);
       } else {
         updateQuantity(productId, newQuantity);
       }
       setQuantity(newQuantity);
-      setLoading(false);
-    }, 300),
+    },
     [productId, removeFromCart, updateQuantity]
   );
 
@@ -100,15 +89,14 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           source={{ uri: imageUrl }}
           className="h-[100px] w-full mb-4"
           resizeMode="contain"
-          style={{ opacity: loading ? 0.5 : 1 }}
         >
           <TouchableOpacity
             style={{ position: "absolute", top: 10, right: 10 }}
             onPress={() => setHeartFilled(!heartFilled)}
             hitSlop={20}
           >
-            <AntDesign
-              name={heartFilled ? "heart" : "hearto"}
+            <Ionicons
+              name={heartFilled ? "heart" : "heart-outline"}
               size={20}
               color={heartFilled ? "red" : "gray"}
             />
@@ -138,10 +126,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           >
             ₵{Math.floor(price)}
             <Text style={{ fontSize: 12, fontFamily: "Unbounded Regular" }}>
-              .
-              {price.toFixed(2).split(".")[1] === "00"
-                ? "00"
-                : price.toFixed(2).split(".")[1]}
+              .{price.toFixed(2).split(".")[1]}
             </Text>
           </Text>
           <View>
@@ -149,13 +134,8 @@ const GridcardComponent: React.FC<GridcardProps> = ({
               <TouchableOpacity
                 className="p-3 rounded-full bg-[#2BCC5A20]"
                 onPress={handleAddToCart}
-                disabled={loading}
               >
-                {loading ? (
-                  <ActivityIndicator size="small" color="#2BCC5A" />
-                ) : (
-                  <Ionicons name="basket" size={24} color={"#2BCC5A"} />
-                )}
+                <Ionicons name="basket" size={24} color={"#2BCC5A"} />
               </TouchableOpacity>
             ) : (
               <View className="flex-row items-center bg-gray-50 p-2 rounded-full">

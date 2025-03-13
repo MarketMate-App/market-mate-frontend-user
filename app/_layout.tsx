@@ -38,7 +38,6 @@ export default function RootLayout() {
           headerShadowVisible: false,
           headerTitle: "",
           statusBarBackgroundColor: "transparent",
-          presentation: "modal",
         }}
       />
       <Stack.Screen

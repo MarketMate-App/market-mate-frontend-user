@@ -41,7 +41,7 @@ const Payment = () => {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [phoneError, setPhoneError] = useState("");
-  const cart = useCartStore((state) => (state as CartState).cart);
+  const cart = useCartStore((state) => (state as unknown as CartState).cart);
   const [data, setData] = useState<TotalData | null>(null);
   const [location, setLocation] = useState<{
     latitude: number;
@@ -66,7 +66,7 @@ const Payment = () => {
       return;
     }
     // Proceed to payment processing
-    router.push("/screens/payment_processing");
+    router.replace("/screens/payment_processing");
   };
 
   const body = {
@@ -99,7 +99,7 @@ const Payment = () => {
           "Oops!",
           "We couldn't calculate the total. Please try again."
         );
-        setLoading(false);
+        setLoading(true);
       });
   };
 
@@ -115,7 +115,7 @@ const Payment = () => {
 
   useEffect(() => {
     fetchLocation();
-    if (cart.length === 0) router.push("/");
+    if (cart.length === 0) router.replace("/");
     fetchTotal();
   }, []);
 
@@ -127,7 +127,7 @@ const Payment = () => {
             headerTitleAlign: "center",
             title: "Review & Pay",
             headerShadowVisible: false,
-            headerTitleStyle: { fontFamily: "Unbounded Light", fontSize: 14 },
+            headerTitleStyle: { fontFamily: "Unbounded Medium", fontSize: 14 },
           }}
         />
 

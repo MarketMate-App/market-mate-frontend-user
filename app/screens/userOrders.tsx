@@ -324,7 +324,15 @@ const UserOrdersScreen: React.FC = () => {
           headerShadowVisible: false,
           headerTitleStyle: { fontFamily: "Unbounded Medium", fontSize: 14 },
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.replace("/profile")}>
+            <TouchableOpacity
+              onPress={() => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace("/profile");
+                }
+              }}
+            >
               <MaterialIcons name="arrow-back" size={24} color="#000" />
             </TouchableOpacity>
           ),

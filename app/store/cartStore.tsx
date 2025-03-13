@@ -1,37 +1,54 @@
-// store.js
 import { create } from "zustand";
 
-export const useCartStore = create((set) => ({
+interface CartItem {
+  id: string;
+  quantity: number;
+  price: number;
+  total?: number;
+}
+
+interface CartState {
+  cart: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
+  clearCart: () => void;
+}
+
+export const useCartStore = create<CartState>((set) => ({
   cart: [],
-  addToCart: (item: { id: string; quantity: any }) => {
-    set((state: { cart: any[] }) => {
-      const existingItem = state.cart.find(
-        (cartItem: { id: string }) => cartItem.id === item.id
-      );
-      if (existingItem) {
-        existingItem.quantity += item.quantity;
-        existingItem.total = existingItem.price * existingItem.quantity;
-        return { cart: [...state.cart] };
+  addToCart: (item: CartItem) =>
+    set((state) => {
+      const index = state.cart.findIndex((cartItem) => cartItem.id === item.id);
+      if (index !== -1) {
+        const updatedCart = [...state.cart];
+        const existingItem = updatedCart[index];
+        const newQuantity = existingItem.quantity + item.quantity;
+        updatedCart[index] = {
+          ...existingItem,
+          quantity: newQuantity,
+          total: existingItem.price * newQuantity,
+        };
+        return { cart: updatedCart };
       } else {
-        return { cart: [...state.cart, item] };
+        return {
+          cart: [...state.cart, { ...item, total: item.price * item.quantity }],
+        };
       }
-    });
-  },
-  removeFromCart: (itemId: any) => {
-    set((state: { cart: any[] }) => ({
-      cart: state.cart.filter((item: { id: any }) => item.id !== itemId),
-    }));
-  },
-  updateQuantity: (itemId: any, quantity: number) => {
-    set((state: { cart: any[] }) => {
-      const newCart = state.cart.map((item: { id: any; price: number }) =>
+    }),
+  removeFromCart: (itemId: string) =>
+    set((state) => ({
+      cart: state.cart.filter((item) => item.id !== itemId),
+    })),
+  updateQuantity: (itemId: string, quantity: number) =>
+    set((state) => {
+      const updatedCart = state.cart.map((item) =>
         item.id === itemId
           ? { ...item, quantity, total: item.price * quantity }
           : item
       );
-      return { cart: newCart };
-    });
-  },
+      return { cart: updatedCart };
+    }),
   clearCart: () => {
     set({ cart: [] });
   },

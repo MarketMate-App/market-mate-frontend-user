@@ -46,12 +46,21 @@ interface Order {
   courier?: string;
   user: User;
 }
-
+type CartState = {
+  cart: CartItem[];
+  removeFromCart: (id: number) => void;
+  clearCart: () => void;
+};
 type Status = "processing" | "success" | "error";
 
 const PaymentProcessingScreen: React.FC = () => {
-  const cart = useCartStore((state) => state.cart) as CartItem[];
-  const clearCart = useCartStore((state) => state.clearCart);
+  const cart = useCartStore((state) => (state as unknown as CartState).cart);
+  const removeFromCart = useCartStore(
+    (state) => (state as unknown as CartState).removeFromCart
+  );
+  const clearCart = useCartStore(
+    (state) => (state as unknown as CartState).clearCart
+  );
   const [status, setStatus] = useState<Status>("processing");
   const [fadeAnim] = useState(new Animated.Value(1));
   const [user, setUser] = useState<User | null>(null);
@@ -59,7 +68,7 @@ const PaymentProcessingScreen: React.FC = () => {
   const [orderItems, setOrderItems] = useState<CartItem[]>([]);
 
   const handleBackPress = useCallback((): boolean => {
-    router.push("/(tabs)/shop");
+    router.replace("/(tabs)/shop");
     return true;
   }, []);
 
@@ -105,7 +114,7 @@ const PaymentProcessingScreen: React.FC = () => {
     if (!user || !userLocation?.coords || cart.length === 0) {
       setStatus("error");
       Alert.alert("Error", "Missing required information. Please try again.");
-      router.push("/(tabs)/shop");
+      router.replace("/(tabs)/shop");
       return;
     }
 
@@ -277,7 +286,7 @@ const PaymentProcessingScreen: React.FC = () => {
             </View>
             <Pressable
               className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
-              onPress={() => router.push("/screens/userOrders")}
+              onPress={() => router.replace("/screens/userOrders")}
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"
@@ -295,7 +304,7 @@ const PaymentProcessingScreen: React.FC = () => {
       >
         <Pressable
           className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
-          onPress={() => router.push("/(tabs)/shop")}
+          onPress={() => router.replace("/(tabs)/shop")}
           disabled={status === "processing"}
         >
           {status === "processing" ? (

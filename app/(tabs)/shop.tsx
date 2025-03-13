@@ -900,20 +900,6 @@ const HomePage = () => {
             </>
           )}
         </ScrollView>
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-            backgroundColor: "#2BCC5A",
-            borderRadius: 50,
-            padding: 15,
-            elevation: 5,
-          }}
-          onPress={() => router.push("/home")}
-        >
-          <Ionicons name="scan" size={24} color="white" />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

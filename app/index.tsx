@@ -60,7 +60,7 @@ export default function Index() {
                 className="text-center text-xs text-white"
                 style={{ fontFamily: "Unbounded SemiBold" }}
               >
-                Shop Now & Save
+                Shop Now & Save!
               </Text>
             </Pressable>
           </View>

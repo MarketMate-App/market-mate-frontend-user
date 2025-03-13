@@ -20,7 +20,7 @@ type CartState = {
 
 const OrderSummaryScreen = () => {
   const [data, setData] = useState<{ total: number } | null>(null);
-  const cart = useCartStore((state) => (state as CartState).cart);
+  const cart = useCartStore((state) => (state as unknown as CartState).cart);
   useEffect(() => {
     if (cart.length === 0) {
       router.push("/");
