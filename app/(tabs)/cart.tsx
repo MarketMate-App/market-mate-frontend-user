@@ -142,6 +142,19 @@ const CartComponent = () => {
     0
   );
 
+  const storeAuthenticatedUser = async (user: {
+    phoneNumber: string;
+    [key: string]: any;
+  }) => {
+    try {
+      await SecureStore.setItemAsync("user", JSON.stringify(user));
+      console.log("User stored in secure store");
+    } catch (error) {
+      console.error("Failed to store user in secure store", error);
+    }
+  };
+  storeAuthenticatedUser({ phoneNumber: "0241234567" });
+
   const getSecureKey = async () => {
     const user = await SecureStore.getItemAsync("user");
     const parsedUser = user ? JSON.parse(user) : null;

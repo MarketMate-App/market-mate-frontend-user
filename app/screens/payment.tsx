@@ -105,6 +105,14 @@ const Payment = () => {
 
   const fetchLocation = async () => {
     const savedLocation = await SecureStore.getItemAsync("userLocation");
+    const user = await SecureStore.getItemAsync("user");
+    if (!user) {
+      const newUser = {
+        name: "John Doe",
+        phone: "233123456789",
+      };
+      await SecureStore.setItemAsync("user", JSON.stringify(newUser));
+    }
     if (savedLocation) {
       const coordinates = JSON.parse(savedLocation);
       setLocation(coordinates);

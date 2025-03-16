@@ -255,7 +255,7 @@ const PaymentProcessingScreen: React.FC = () => {
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Light" }}
+              style={{ fontFamily: "Unbounded Regular" }}
             >
               Your order has been confirmed. You will receive an SMS
               confirmation shortly.
@@ -272,7 +272,7 @@ const PaymentProcessingScreen: React.FC = () => {
               ))}
               {orderItems.length > 5 && (
                 <Text
-                  className="text-[#2BCC5A] p-3 rounded-full text-xs flex items-center justify-center"
+                  className="text-[#2BCC5A] p-3 rounded-full text-xs text-center items-center justify-center"
                   style={{
                     fontFamily: "Unbounded SemiBold",
                     width: 40,
@@ -280,7 +280,7 @@ const PaymentProcessingScreen: React.FC = () => {
                     backgroundColor: "#2BCC5A20",
                   }}
                 >
-                  {orderItems.length - 5}
+                  + {orderItems.length - 5}
                 </Text>
               )}
             </View>

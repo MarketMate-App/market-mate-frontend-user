@@ -31,7 +31,7 @@
           "configureAndroidBackup": true,
           "faceIDPermission": "Allow MarketMate to access your Face ID biometric data."
         }
-    ],
+      ],
       "expo-router",
       [
         "expo-splash-screen",
@@ -41,7 +41,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
