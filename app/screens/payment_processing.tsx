@@ -118,94 +118,18 @@ const PaymentProcessingScreen: React.FC = () => {
       return;
     }
 
-    const orderData = {
-      user,
-      items: cart.map(
-        ({ id, name, quantity, price, imageUrl, unitOfMeasure }) => ({
-          id,
-          name,
-          quantity,
-          price,
-          imageUrl,
-          unitOfMeasure,
-        })
-      ),
-      deliveryAddress: {
-        street: "123 Main Street",
-        city: "Takoradi",
-        state: "WS",
-        postalCode: "00233",
-        country: "Ghana",
-        // sending coordinates as [latitude, longitude]
-        coordinates: [
-          userLocation.coords.latitude,
-          userLocation.coords.longitude,
-        ],
-      },
-      payment: "65f1b2c4a3e7b2d123456789",
-      specialInstructions: "Leave the package at the front door.",
-    };
-
     try {
-      const response = await fetch("http://192.168.43.155:3000/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const data = await response.json();
-      if (data?.order?._id) {
-        setOrderItems(data.order.items);
-        await createDelivery(data.order);
-        clearCart();
-        setStatus("success");
-      } else {
-        throw new Error("Invalid response: Order ID missing");
+      if (cart.length === 0) {
+        throw new Error("No items in the cart");
       }
+      const items = [...cart];
+      setOrderItems(items);
+      clearCart();
+      setStatus("success");
     } catch (error) {
       console.error("Error creating order:", error);
       setStatus("error");
       Alert.alert("Order Error", "There was an issue processing your order.");
-    }
-  };
-
-  const createDelivery = async (order: Order) => {
-    const deliveryData = {
-      order: order._id,
-      courier: order.courier,
-      user: order.user,
-      route: {
-        type: "LineString",
-        // Reverse coordinates order if needed
-        coordinates: [
-          [
-            order.deliveryAddress.coordinates[1],
-            order.deliveryAddress.coordinates[0],
-          ],
-          [-0.25, 5.65],
-        ],
-      },
-      currentLocation: {
-        coordinates: [-0.21, 5.61],
-        timestamp: new Date().toISOString(),
-      },
-    };
-
-    try {
-      const response = await fetch("http://192.168.43.155:3000/api/delivery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(deliveryData),
-      });
-      const data = await response.json();
-      console.log("Delivery created:", data);
-    } catch (error) {
-      console.error("Error creating delivery:", error);
-      setStatus("error");
-      Alert.alert("Delivery Error", "Failed to create delivery.");
     }
   };
 
@@ -262,8 +186,8 @@ const PaymentProcessingScreen: React.FC = () => {
             </Text>
 
             <View className="p-3 w-full mb-8 flex-row items-center justify-start rounded-2xl bg-slate-50">
-              {orderItems.slice(0, 5).map((item) => (
-                <View key={item.id} className="mb-2">
+              {orderItems.slice(0, 5).map((item, index) => (
+                <View key={`order-item-${item.id}-${index}`} className="mb-2">
                   <Image
                     source={{ uri: item.imageUrl }}
                     style={{ width: 40, height: 40, borderRadius: 20 }}
@@ -272,6 +196,7 @@ const PaymentProcessingScreen: React.FC = () => {
               ))}
               {orderItems.length > 5 && (
                 <Text
+                  key="order-item-summary"
                   className="text-[#2BCC5A] p-3 rounded-full text-xs text-center items-center justify-center"
                   style={{
                     fontFamily: "Unbounded SemiBold",

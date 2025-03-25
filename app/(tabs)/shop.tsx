@@ -745,14 +745,14 @@ const HomePage = () => {
             </View>
           ) : (
             <>
+              {/* Top-selling essentials are shown first */}
               <View className="flex-row justify-between items-center mb-4">
                 <Text
-                  className="text-lg text-[#014E3C] "
+                  className="text-lg text-[#014E3C]"
                   style={{ fontFamily: "Unbounded Medium" }}
                 >
                   Essential Produce
                 </Text>
-
                 <TouchableOpacity
                   onPress={() => router.push("/")}
                   className="text-[#2BCC5A]"
@@ -771,11 +771,9 @@ const HomePage = () => {
                 className="mb-4"
               >
                 {localProducts
-                  .filter((product) =>
-                    ["Essential"].some((tag) => product.tags.includes(tag))
-                  )
-                  .sort(() => Math.random() - 0.5) // Randomize the order
-                  .slice(0, 10) // Limit to 7 products
+                  .filter((product) => product.tags.includes("Essential"))
+                  .sort(() => Math.random() - 0.5)
+                  .slice(0, 10)
                   .map((product) => (
                     <GridcardComponent
                       productId={product.id}
@@ -789,6 +787,88 @@ const HomePage = () => {
                   ))}
               </ScrollView>
 
+              {/* Next, feature fruits which are highly attractive to consumers */}
+              <Text
+                className="text-lg mb-4 text-[#014E3C]"
+                style={{ fontFamily: "Unbounded Medium" }}
+              >
+                Featured Fruits
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) => product.category === "Fruits")
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+
+              {/* Followed by fresh vegetables */}
+              <Text
+                className="text-lg mb-4 text-[#014E3C]"
+                style={{ fontFamily: "Unbounded Medium" }}
+              >
+                Fresh Veggies
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) => product.category === "Vegetables")
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+
+              {/* Then, promote protein-rich meats */}
+              <Text
+                className="text-lg mb-4 text-[#014E3C]"
+                style={{ fontFamily: "Unbounded Medium" }}
+              >
+                Grossing Meats
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                className="mb-4"
+              >
+                {localProducts
+                  .filter((product) => product.category === "Meats")
+                  .map((product) => (
+                    <GridcardComponent
+                      productId={product.id}
+                      key={product.id}
+                      name={product.name}
+                      price={product.price}
+                      imageUrl={product.imageUrl}
+                      discount={product.discount}
+                      unitOfMeasure={product.unitOfMeasure}
+                    />
+                  ))}
+              </ScrollView>
+
+              {/* For morning shoppers, show quick snack options */}
               {new Date().getHours() < 12 && (
                 <>
                   <Text
@@ -820,81 +900,6 @@ const HomePage = () => {
                   </ScrollView>
                 </>
               )}
-              <Text
-                className="text-lg mb-4 text-[#014E3C]"
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Fresh Veggies
-              </Text>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts
-                  .filter((product) => product.category === "Vegetables")
-                  .map((product) => (
-                    <GridcardComponent
-                      productId={product.id}
-                      key={product.id}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl}
-                      discount={product.discount}
-                      unitOfMeasure={product.unitOfMeasure}
-                    />
-                  ))}
-              </ScrollView>
-              <Text
-                className="text-lg mb-4 text-[#014E3C]"
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Featured Fruits
-              </Text>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts
-                  .filter((product) => product.category === "Fruits")
-                  .map((product) => (
-                    <GridcardComponent
-                      productId={product.id}
-                      key={product.id}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl}
-                      discount={product.discount}
-                      unitOfMeasure={product.unitOfMeasure}
-                    />
-                  ))}
-              </ScrollView>
-              <Text
-                className="text-lg mb-4 text-[#014E3C]"
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Grossing Meats
-              </Text>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts
-                  .filter((product) => product.category === "Meats")
-                  .map((product) => (
-                    <GridcardComponent
-                      productId={product.id}
-                      key={product.id}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl}
-                      discount={product.discount}
-                      unitOfMeasure={product.unitOfMeasure}
-                    />
-                  ))}
-              </ScrollView>
 
               <CategoriesComponent />
             </>

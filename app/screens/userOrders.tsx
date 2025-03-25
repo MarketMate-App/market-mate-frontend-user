@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
+import UserAvatar from "react-native-user-avatar";
+
 import {
   View,
   Text,
@@ -10,12 +12,17 @@ import {
   Pressable,
   BackHandler,
   ScrollView,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+  Linking,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
+import { isLoading } from "expo-font";
 
 type OrderStatus =
   | "pending"
@@ -31,6 +38,10 @@ interface Order {
   totalAmount: number;
   status: OrderStatus;
   items: any[];
+  payment: {
+    amount: number;
+  };
+  courier: any;
 }
 
 const statusConfig: Record<OrderStatus, { color: string; label: string }> = {
@@ -50,11 +61,19 @@ const TABS: { label: string; value: OrderFilter }[] = [
   { label: "Failed", value: "failed" },
 ];
 
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 const UserOrdersScreen: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<OrderFilter>("all");
+  const [expandedOrderIds, setExpandedOrderIds] = useState<string[]>([]);
   const navigation = useNavigation();
 
   // Intercept hardware back button to navigate to Profile screen.
@@ -70,27 +89,6 @@ const UserOrdersScreen: React.FC = () => {
     );
     return () => backHandler.remove();
   }, []);
-
-  // Helper function to fetch delivery status
-  const fetchDeliveryStatus = async (orderId: string): Promise<OrderStatus> => {
-    try {
-      const response = await fetch(
-        `http://192.168.43.155:3000/api/delivery/status/${orderId}`
-      );
-      const data = await response.json();
-      // Validate response is one of the allowed statuses
-      if (
-        typeof data === "string" &&
-        ["confirmed", "dispatched", "delivered", "failed"].includes(data)
-      ) {
-        return data as OrderStatus;
-      }
-      return "pending";
-    } catch (error) {
-      console.error("Failed to fetch delivery status", error);
-      return "pending";
-    }
-  };
 
   // Fetch orders with data validation and update status if needed.
   const fetchOrders = useCallback(async () => {
@@ -109,13 +107,12 @@ const UserOrdersScreen: React.FC = () => {
         `http://192.168.43.155:3000/api/orders/user/${parsedUser.phoneNumber}`
       );
       const data = await response.json();
-
+      setOrders(data);
       if (!Array.isArray(data)) {
         console.error("Unexpected response data:", data);
         return;
       }
 
-      // Ensure all orders have a valid structure
       const validatedOrders: Order[] = data
         .filter(
           (order: any): order is Order => order && order._id && order.createdAt
@@ -124,32 +121,6 @@ const UserOrdersScreen: React.FC = () => {
           ...order,
           status: order.status || "pending",
         }));
-
-      // Update each order with a current delivery status if needed.
-      const updatedOrders = await Promise.all(
-        validatedOrders.map(async (order) => {
-          try {
-            const newStatus = await fetchDeliveryStatus(order._id);
-            // Only update if newStatus is among our accepted statuses.
-            if (
-              [
-                "confirmed",
-                "dispatched",
-                "delivered",
-                "failed",
-                "pending",
-              ].includes(newStatus)
-            ) {
-              return { ...order, status: newStatus };
-            }
-            return order;
-          } catch (error) {
-            console.error("Error updating order status for:", order._id, error);
-            return order;
-          }
-        })
-      );
-      setOrders(updatedOrders);
     } catch (error) {
       console.error("Failed to fetch orders", error);
     } finally {
@@ -172,11 +143,11 @@ const UserOrdersScreen: React.FC = () => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="px-5 py-3"
+      className="px-5 py-3 bg-white"
     >
       {TABS.map((tab) => (
         <TouchableOpacity
-          className="px-3 py-2 rounded-full mr-3 text-center border-hairline"
+          className="px-3 py-2 rounded-full mr-3 mb-2 text-center border-hairline"
           key={tab.value}
           onPress={() => setSelectedFilter(tab.value)}
           style={{
@@ -231,74 +202,270 @@ const UserOrdersScreen: React.FC = () => {
     );
   };
 
-  // Render each order item.
-  const renderItem = ({ item }: { item: Order }) => (
-    <TouchableOpacity
-      style={{
-        backgroundColor: "#fff",
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 12,
-      }}
-      onPress={() => router.push(`/screens/trackDelivery/${item._id}` as any)}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: 8,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: "Unbounded Medium",
-            color: "#1F2937",
-          }}
-        >
-          Order #{item._id.slice(-6).toUpperCase()}
-        </Text>
-        <Text
-          style={{
-            fontSize: 10,
-            fontFamily: "Unbounded Regular",
-            color: "#6B7280",
-          }}
-        >
-          {moment(item.createdAt).format("MMM D, YYYY - h:mm A")}
-        </Text>
-      </View>
-      <View style={{ flexDirection: "row", gap: 16, marginBottom: 12 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontFamily: "Unbounded Regular",
-              color: "#4B5563",
-            }}
-          >
-            ₵{Number(item.totalAmount).toFixed(2)}
-          </Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <MaterialIcons name="shopping-basket" size={16} color="#666" />
-          <Text
-            style={{
-              fontSize: 12,
-              fontFamily: "Unbounded Regular",
-              color: "#4B5563",
-              marginLeft: 4,
-            }}
-          >
-            {item.items.length} Items
-          </Text>
-        </View>
-      </View>
-      {renderStatus(item.status)}
-    </TouchableOpacity>
-  );
+  const toggleExpansion = (orderId: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedOrderIds((prev) =>
+      prev.includes(orderId)
+        ? prev.filter((id) => id !== orderId)
+        : [...prev, orderId]
+    );
+  };
 
-  // Filter orders based on selected tab.
+  // Render each order item with expandable details.
+  const renderItem = ({ item }: { item: Order }) => {
+    const isExpanded = expandedOrderIds.includes(item._id);
+    return (
+      <>
+        <TouchableOpacity
+          className={`${isExpanded ? "mb-1" : "mb-3"} ${
+            isExpanded ? "rounded-t-3xl" : "rounded-2xl"
+          }`}
+          style={{
+            backgroundColor: "#fff",
+            padding: 16,
+          }}
+          onPress={() => toggleExpansion(item._id)}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: 8,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Unbounded Medium",
+                color: "#1F2937",
+              }}
+            >
+              Order #{item._id.slice(-6).toUpperCase()}
+            </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                fontFamily: "Unbounded Regular",
+                color: "#6B7280",
+              }}
+            >
+              {moment(item.createdAt).format("MMM D, YYYY - h:mm A")}
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", gap: 16, marginBottom: 12 }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Unbounded Regular",
+                  color: "#4B5563",
+                }}
+              >
+                ₵{Number(item.payment.amount).toFixed(2)}
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons name="shopping-basket" size={16} color="#4B5563" />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Unbounded Regular",
+                  color: "#4B5563",
+                  marginLeft: 4,
+                }}
+              >
+                {item.items.length} Items
+              </Text>
+            </View>
+          </View>
+          {renderStatus(item.status)}
+          {isExpanded && (
+            <View style={{ marginTop: 12 }}>
+              <Text
+                style={{
+                  fontFamily: "Unbounded Medium",
+                  fontSize: 14,
+                  marginBottom: 8,
+                  color: "#1F2937",
+                }}
+              >
+                Order Details
+              </Text>
+              {item.items.length ? (
+                item.items.map((itm, index) => (
+                  <Text
+                    key={index}
+                    style={{
+                      fontFamily: "Unbounded Regular",
+                      fontSize: 12,
+                      color: "#4B5563",
+                      marginBottom: 4,
+                    }}
+                  >
+                    • {itm.name || `Item ${index + 1}`}
+                  </Text>
+                ))
+              ) : (
+                <Text
+                  style={{
+                    fontFamily: "Unbounded Regular",
+                    fontSize: 12,
+                    color: "#4B5563",
+                  }}
+                >
+                  No items available.
+                </Text>
+              )}
+            </View>
+          )}
+        </TouchableOpacity>
+        {isExpanded && item.courier && (
+          <View
+            className="p-4 rounded-b-3xl"
+            style={{
+              backgroundColor: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            {/* <Text
+                style={{
+                  fontFamily: "Unbounded Medium",
+                  fontSize: 14,
+                  marginBottom: 8,
+                  color: "#1F2937",
+                }}
+              >
+                Courier Details
+              </Text> */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 8,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <UserAvatar
+                  name={item.courier.user.fullName}
+                  default={"Gideon Appau"}
+                  size={50}
+                />
+                <View style={{ marginLeft: 8 }}>
+                  <Text
+                    style={{
+                      fontFamily: "Unbounded Regular",
+                      fontSize: 12,
+                      color: "#4B5563",
+                    }}
+                  >
+                    {item.courier.user.fullName}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: "Unbounded Regular",
+                      fontSize: 10,
+                      color: "#6B7280",
+                    }}
+                  >
+                    Reg#: {item.courier.registrationNumber || "N/A"}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: "Unbounded Regular",
+                      fontSize: 10,
+                      color: "#6B7280",
+                    }}
+                  >
+                    {moment(item.courier.lastActive).fromNow()}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+              >
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(`tel:${item.courier.user.phoneNumber}`)
+                  }
+                  style={{
+                    padding: 8,
+                    backgroundColor: "#2BCC5A20",
+                    borderRadius: 20,
+                  }}
+                >
+                  <MaterialIcons name="call" size={20} color="#2BCC5A" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => router.push(`/chat/${item.courier.user._id}`)}
+                  style={{
+                    padding: 8,
+                    backgroundColor: "#2BCC5A20",
+                    borderRadius: 20,
+                  }}
+                >
+                  <MaterialIcons name="chat" size={20} color="#2BCC5A" />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {/* {(() => {
+                const getCourierStatusStyle = (status: string) => {
+                  // Customize these cases as needed
+                  switch (status.toLowerCase()) {
+                    case "available":
+                      return { color: "#4CAF50", label: "Online" };
+                    case "offline":
+                      return { color: "#F44336", label: "Offline" };
+                    case "on-delivery":
+                      return { color: "#FFC107", label: "On Delivery" };
+                    default:
+                      return {
+                        color: "#9E9E9E",
+                        label: status.charAt(0).toUpperCase() + status.slice(1),
+                      };
+                  }
+                };
+                const { color, label } = getCourierStatusStyle(
+                  item.courier.status
+                );
+                return (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: `${color}10`,
+                      padding: 8,
+                      borderRadius: 999,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: color,
+                        marginRight: 4,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: "Unbounded Regular",
+                        fontSize: 10,
+                        color: color,
+                      }}
+                    >
+                      {label.toLowerCase()}
+                    </Text>
+                  </View>
+                );
+              })()} */}
+          </View>
+        )}
+      </>
+    );
+  };
+
   const filteredOrders =
     selectedFilter === "all"
       ? orders
@@ -313,10 +480,7 @@ const UserOrdersScreen: React.FC = () => {
   }
 
   return (
-    <View
-      style={{ backgroundColor: "#F5F5F8", paddingBottom: 100 }}
-      className="h-screen"
-    >
+    <View style={{ paddingBottom: 50 }} className="bg-gray-100">
       <Stack.Screen
         options={{
           headerTitleAlign: "center",
@@ -346,7 +510,11 @@ const UserOrdersScreen: React.FC = () => {
         )}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 16,
+          paddingTop: 8,
+        }}
         ListEmptyComponent={
           <View
             style={{
