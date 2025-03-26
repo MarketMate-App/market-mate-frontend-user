@@ -6,6 +6,8 @@ import {
   ScrollView,
   Alert,
   Animated,
+  TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { router, Stack } from "expo-router";
@@ -213,7 +215,7 @@ const Payment = () => {
   });
 
   return (
-    <View className="flex-1 bg-[#f8fafc]">
+    <SafeAreaView className="flex-1 bg-[#f8fafc]">
       <Stack.Screen
         options={{
           headerTitleAlign: "center",
@@ -223,7 +225,7 @@ const Payment = () => {
         }}
       />
       {/* Delivery Progress Banner */}
-      <View className="bg-[#2BCC5A] px-4 py-3 flex-row items-center justify-between">
+      {/* <View className="bg-[#2BCC5A] px-4 py-3 flex-row items-center justify-between">
         <View>
           <Text
             className="text-white"
@@ -239,115 +241,194 @@ const Payment = () => {
           </Text>
         </View>
         <Ionicons name="location" size={20} color="white" />
-      </View>
+      </View> */}
 
       <ScrollView
         className="px-4 pt-4"
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{ paddingBottom: 50 }}
       >
         {/* Order Summary Section */}
-        <View className="bg-white rounded-lg p-4 shadow-sm">
-          <Text className="font-UnboundedMedium text-gray-800 text-lg mb-4">
-            Your Order Summary ({cart.length} Items)
-          </Text>
+        <View className=" bg-white rounded-3xl shadow-xs">
+          {/* Ticket Notch */}
+          <View className="absolute -top-3 left-8 right-8 h-3 bg-white rounded-t-full" />
 
-          {/* Expandable Pricing Section */}
-          <View className="space-y-2">
-            <View className="flex-row justify-between items-center">
-              <Text className="font-UnboundedLight text-gray-600">
-                Subtotal
-              </Text>
-              <Text className="font-UnboundedMedium text-gray-800">
-                GHS {data?.subtotal?.toFixed(2)}
-              </Text>
-            </View>
-
-            {expanded && (
-              <>
-                <View className="flex-row justify-between items-center">
-                  <View className="flex-row items-center space-x-2">
-                    <Ionicons name="car" size={16} color="#4b5563" />
-                    <Text className="font-UnboundedLight text-gray-600">
-                      Delivery Fee
+          <View className="p-6">
+            {/* Items Preview */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="mb-4"
+            >
+              {cart.map((item) => (
+                <View
+                  key={item.id}
+                  className="bg-[#f1f5f9] px-4 py-2 rounded-xl mr-3"
+                >
+                  <Text
+                    style={{ fontFamily: "Unbounded Regular" }}
+                    className="text-gray-700 text-xs"
+                  >
+                    {item.name}
+                  </Text>
+                  <View className="flex-row items-center mt-1">
+                    <Text
+                      style={{ fontFamily: "Unbounded Light" }}
+                      className="text-gray-500 text-xs mr-2"
+                    >
+                      ×{item.quantity}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: "Unbounded Light" }}
+                      className="text-[#2BCC5A] text-xs"
+                    >
+                      {item.unitOfMeasure}
                     </Text>
                   </View>
-                  <Text className="font-UnboundedMedium text-gray-800">
-                    GHS{" "}
-                    {(
-                      (data?.deliveryFee || 0) + (data?.distanceFee || 0)
-                    ).toFixed(2)}
-                  </Text>
                 </View>
+              ))}
+            </ScrollView>
 
-                {(data?.peakSurcharge ?? 0) > 0 && (
-                  <View className="flex-row justify-between items-center">
-                    <View className="flex-row items-center space-x-2">
-                      <Ionicons name="alert-circle" size={16} color="#dc2626" />
-                      <Text className="font-UnboundedLight text-red-600">
-                        Peak Hours Fee
+            {/* Pricing Breakdown */}
+            <View className="">
+              <View className="flex-row justify-between">
+                <Text
+                  className="text-gray-600 text-sm"
+                  style={{ fontFamily: "Unbounded Light" }}
+                >
+                  Subtotal
+                </Text>
+                <Text
+                  className="text-gray-900"
+                  style={{ fontFamily: "Unbounded Medium" }}
+                >
+                  GHS {data?.subtotal?.toFixed(2)}
+                </Text>
+              </View>
+
+              {expanded && (
+                <>
+                  <View className="flex-row justify-between">
+                    <View className="flex-row items-center gap-2">
+                      <Text
+                        className="text-gray-600 text-sm"
+                        style={{ fontFamily: "Unbounded Light" }}
+                      >
+                        Delivery
+                      </Text>
+                      <Ionicons name="bicycle" size={16} color="#4b5563" />
+                    </View>
+                    <Text
+                      className="text-gray-900"
+                      style={{ fontFamily: "Unbounded Medium" }}
+                    >
+                      GHS{" "}
+                      {(
+                        (data?.deliveryFee ?? 0) + (data?.distanceFee ?? 0)
+                      ).toFixed(2)}
+                    </Text>
+                  </View>
+
+                  {(data?.peakSurcharge ?? 0) > 0 && (
+                    <View className="flex-row justify-between">
+                      <View className="flex-row items-center gap-2">
+                        <Text
+                          className="text-red-600 text-sm"
+                          style={{ fontFamily: "Unbounded Light" }}
+                        >
+                          Peak Surcharge
+                        </Text>
+                        <Ionicons
+                          name="alert-circle"
+                          size={16}
+                          color="#ef4444"
+                        />
+                      </View>
+                      <Text
+                        className="text-red-600"
+                        style={{ fontFamily: "Unbounded Medium" }}
+                      >
+                        +GHS {data?.peakSurcharge?.toFixed(2) || "0.00"}
                       </Text>
                     </View>
-                    <Text className="font-UnboundedMedium text-red-600">
-                      +GHS {(data?.peakSurcharge ?? 0).toFixed(2)}
-                    </Text>
-                  </View>
-                )}
+                  )}
 
-                <View className="flex-row justify-between items-center">
-                  <View className="flex-row items-center space-x-2">
-                    <Ionicons
-                      name="shield-checkmark"
-                      size={16}
-                      color="#4b5563"
-                    />
-                    <Text className="font-UnboundedLight text-gray-600">
-                      Service Fee
+                  <View className="flex-row justify-between">
+                    <View className="flex-row items-center gap-2">
+                      <Text
+                        className="text-gray-600 text-sm"
+                        style={{ fontFamily: "Unbounded Light" }}
+                      >
+                        Platform Fee
+                      </Text>
+                      <Ionicons
+                        name="shield-checkmark"
+                        size={16}
+                        color="#4b5563"
+                      />
+                    </View>
+                    <Text
+                      className="text-gray-900"
+                      style={{ fontFamily: "Unbounded Medium" }}
+                    >
+                      GHS {data?.platformFee.toFixed(2)}
                     </Text>
                   </View>
-                  <Text className="font-UnboundedMedium text-gray-800">
-                    GHS {(data?.platformFee || 0).toFixed(2)}
+                </>
+              )}
+
+              {/* Total Amount */}
+              <View className="pt-4 mt-4 border-t border-dashed border-gray-200">
+                <View className="flex-row justify-between">
+                  <Text
+                    className="text-gray-900"
+                    style={{ fontFamily: "Unbounded Regular" }}
+                  >
+                    Total Amount
+                  </Text>
+                  <Text
+                    className="text-xl text-[#2BCC5A]"
+                    style={{ fontFamily: "Unbounded SemiBold" }}
+                  >
+                    GHS {data?.total?.toFixed(2)}
                   </Text>
                 </View>
-              </>
-            )}
-
-            <Pressable onPress={toggleDetails} className="pt-2">
-              <View className="flex-row items-center justify-center space-x-1">
-                <Animated.View
-                  style={{ transform: [{ rotate: rotateInterpolate }] }}
-                >
-                  <Ionicons name="chevron-down" size={16} color="#2BCC5A" />
-                </Animated.View>
-                <Text className="text-[#2BCC5A] font-UnboundedSemiBold text-sm">
-                  {expanded ? "Show Less" : "View Cost Breakdown"}
-                </Text>
-              </View>
-            </Pressable>
-
-            <View className="border-t border-gray-200 mt-3 pt-3">
-              <View className="flex-row justify-between items-center">
-                <Text className="font-UnboundedSemiBold text-gray-900 text-lg">
-                  Total Payment
-                </Text>
-                <Text className="font-UnboundedBold text-[#2BCC5A] text-xl">
-                  GHS {data?.total?.toFixed(2)}
-                </Text>
               </View>
             </View>
+
+            {/* Expand Button */}
+            <TouchableOpacity
+              onPress={toggleDetails}
+              className="flex-row items-center justify-center mt-6"
+            >
+              <Animated.View
+                style={{ transform: [{ rotate: rotateInterpolate }] }}
+              >
+                <Ionicons name="chevron-down" size={20} color="#2BCC5A" />
+              </Animated.View>
+              <Text
+                className="ml-2 text-[#2BCC5A] text-xs"
+                style={{ fontFamily: "Unbounded Light" }}
+              >
+                {expanded ? "Show less" : "View cost breakdown"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Payment Methods Section */}
-        <View className="mt-6">
-          <Text className="font-UnboundedMedium text-gray-800 text-lg mb-4">
+        <View className="mt-2 bg-white rounded-3xl shadow-xs p-6">
+          <Text
+            className=" text-gray-800 mb-4"
+            style={{ fontFamily: "Unbounded Regular" }}
+          >
             Choose Payment Method
           </Text>
 
-          <View className="flex-row gap-3">
+          <View className=" gap-3">
             {/* Mobile Money Option */}
             <Pressable
               onPress={() => setSelectedPayment("online")}
-              className={`flex-1 p-4 rounded-lg border-2 ${
+              className={`flex-1 p-4 rounded-2xl border-hairline ${
                 selectedPayment === "online"
                   ? "border-[#2BCC5A] bg-[#2BCC5A]/10"
                   : "border-gray-200 bg-white"
@@ -355,12 +436,13 @@ const Payment = () => {
             >
               <View className="items-center space-y-2">
                 <MaterialIcons
-                  name="phone-android"
-                  size={28}
+                  name="phone-iphone"
+                  size={24}
                   color={selectedPayment === "online" ? "#2BCC5A" : "#4b5563"}
                 />
                 <Text
-                  className={`font-UnboundedSemiBold text-sm ${
+                  style={{ fontFamily: "Unbounded Regular" }}
+                  className={`text-sm ${
                     selectedPayment === "online"
                       ? "text-[#2BCC5A]"
                       : "text-gray-700"
@@ -368,8 +450,11 @@ const Payment = () => {
                 >
                   Mobile Money
                 </Text>
-                <Text className="font-UnboundedLight text-gray-500 text-xs text-center">
-                  Instant payment via Momo/AirtelTigo
+                <Text
+                  className=" text-gray-500 text-[9px] text-center"
+                  style={{ fontFamily: "Unbounded Light" }}
+                >
+                  Instant payment via Momo.
                 </Text>
               </View>
             </Pressable>
@@ -377,7 +462,7 @@ const Payment = () => {
             {/* Cash on Delivery Option */}
             <Pressable
               onPress={() => setSelectedPayment("cash")}
-              className={`flex-1 p-4 rounded-lg border-2 ${
+              className={`flex-1 p-4 rounded-2xl border-hairline ${
                 selectedPayment === "cash"
                   ? "border-[#2BCC5A] bg-[#2BCC5A]/10"
                   : "border-gray-200 bg-white"
@@ -385,12 +470,13 @@ const Payment = () => {
             >
               <View className="items-center space-y-2">
                 <MaterialIcons
-                  name="money"
-                  size={28}
+                  name="wallet"
+                  size={24}
                   color={selectedPayment === "cash" ? "#2BCC5A" : "#4b5563"}
                 />
                 <Text
-                  className={`font-UnboundedSemiBold text-sm ${
+                  style={{ fontFamily: "Unbounded Regular" }}
+                  className={` text-sm ${
                     selectedPayment === "cash"
                       ? "text-[#2BCC5A]"
                       : "text-gray-700"
@@ -398,21 +484,15 @@ const Payment = () => {
                 >
                   Cash on Delivery
                 </Text>
-                <Text className="font-UnboundedLight text-gray-500 text-xs text-center">
+                <Text
+                  style={{ fontFamily: "Unbounded Light" }}
+                  className=" text-gray-500 text-[9px] text-center"
+                >
                   Pay when you receive items
                 </Text>
               </View>
             </Pressable>
           </View>
-        </View>
-
-        {/* Trust Badges */}
-        <View className="mt-6 flex-row justify-center space-x-4">
-          <Ionicons name="lock-closed" size={20} color="#2BCC5A" />
-          <Text className="font-UnboundedLight text-gray-600 text-xs text-center">
-            256-bit SSL Encryption • PCI DSS Compliant\nApproved by Bank of
-            Ghana
-          </Text>
         </View>
       </ScrollView>
 
@@ -429,19 +509,23 @@ const Payment = () => {
             <ActivityIndicator color="white" />
           ) : (
             <>
-              <Ionicons name="lock-closed" size={20} color="white" />
-              <Text className="font-UnboundedSemiBold text-white text-sm">
-                Confirm Secure Payment
+              <Text
+                className="text-white text-xs"
+                style={{ fontFamily: "Unbounded SemiBold" }}
+              >
+                Continue to order
               </Text>
             </>
           )}
         </Pressable>
-        <Text className="font-UnboundedLight text-gray-500 text-xs text-center mt-2">
-          By continuing, you agree to our Terms of Service\nPowered by Hubtel
-          Payments
+        <Text
+          style={{ fontFamily: "Unbounded Light" }}
+          className="text-gray-500 text-xs text-center mt-2"
+        >
+          By continuing, you agree to our Terms of Services
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
