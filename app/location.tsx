@@ -123,7 +123,11 @@ const LocationScreen: FC<LocationScreenProps> = () => {
         </View>
       ) : (
         <>
-          <MapView style={styles.map} region={region}>
+          <MapView
+            style={styles.map}
+            region={region}
+            showsMyLocationButton={true}
+          >
             {location && (
               <Marker
                 coordinate={{

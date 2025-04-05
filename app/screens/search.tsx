@@ -35,6 +35,7 @@ const SearchScreen = () => {
   ];
 
   interface Product {
+    _id: any;
     id: number;
     name: string;
     category: string;
@@ -213,7 +214,7 @@ const SearchScreen = () => {
         <FlatList
           data={filteredProducts}
           renderItem={({ item }) => <ProductCard product={item} />}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item._id.toString()}
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
           refreshControl={

@@ -377,7 +377,15 @@ const UserOrdersScreen: React.FC = () => {
                       color: "#6B7280",
                     }}
                   >
-                    {moment(item.courier.lastActive).fromNow()}
+                    {item.courier.estimatedArrival
+                      ? `ETA: ${moment(
+                          item.courier.estimatedArrival
+                        ).fromNow()} (${moment(
+                          item.courier.estimatedArrival
+                        ).format("h:mm A")})`
+                      : `Last active: ${moment(
+                          item.courier.lastActive
+                        ).fromNow()}`}
                   </Text>
                 </View>
               </View>

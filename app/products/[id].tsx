@@ -16,7 +16,8 @@ import GridcardComponent from "../components/gridcard";
 import { useCartStore } from "../store/cartStore";
 
 interface Product {
-  id: number;
+  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -37,7 +38,9 @@ const DetailsPage = () => {
   const [productsArray, setProductsArray] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(0);
 
-  const cart = useCartStore((state) => (state as { cart: Product[] }).cart);
+  const cart = useCartStore(
+    (state) => (state as unknown as { cart: Product[] }).cart
+  );
   const addToCart = useCartStore(
     (state) => (state as { addToCart: Function }).addToCart
   );
@@ -61,9 +64,9 @@ const DetailsPage = () => {
         setProductsArray(productsArray);
       }
 
-      const productId = Number(id);
+      const productId = id;
       const storedProduct = productsArray.find(
-        (product: Product) => product.id === productId
+        (product: Product) => product._id === productId
       );
 
       if (storedProduct) {
@@ -82,10 +85,11 @@ const DetailsPage = () => {
 
   useEffect(() => {
     fetchProduct();
+    console.log("Product ID:", id);
   }, [id]);
 
   useEffect(() => {
-    const existingProduct = cart.find((item) => item.id === Number(id));
+    const existingProduct = cart.find((item) => item.id === id);
     if (existingProduct) {
       setQuantity(existingProduct.quantity ?? 0);
     }
@@ -258,17 +262,17 @@ const DetailsPage = () => {
                   {productsArray
                     .filter(
                       (p: Product) =>
-                        p.category === product.category && p.id !== product.id
+                        p.category === product.category && p._id !== product.id
                     )
                     .slice(0, 4)
                     .map((similarProduct: Product) => (
                       <GridcardComponent
-                        key={similarProduct.id}
+                        key={similarProduct._id}
                         name={similarProduct.name}
                         price={similarProduct.price}
                         unitOfMeasure={similarProduct.unitOfMeasure}
                         imageUrl={similarProduct.imageUrl}
-                        productId={similarProduct.id}
+                        productId={similarProduct._id}
                       />
                     ))}
                 </ScrollView>

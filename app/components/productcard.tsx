@@ -21,7 +21,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   return (
     <View key={product.id} className="flex-row items-center justify-between">
       <Link
-        href={`/products/${product.id}`}
+        href={`/products/${product._id}`}
         className="flex-row items-center justify-center gap-4"
       >
         <Image
@@ -40,7 +40,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             className="text-gray-500 text-xs mb-4"
             style={{ fontFamily: "Unbounded Light" }}
           >
-            1 {product.unitOfMeasure}
+            {product.unitOfMeasure}
           </Text>
         </View>
       </Link>

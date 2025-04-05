@@ -30,8 +30,8 @@ const HeaderComponent = () => {
     fetchLocation();
   }, []);
   return (
-    <View className="flex-row items-center justify-between w-full mb-4">
-      <Link href={"/home"}>
+    <View className="flex-row items-center justify-between w-full mb-4 px-2">
+      <Link href={"/location"}>
         <View>
           <Text
             style={{ fontFamily: "Gilroy Medium" }}

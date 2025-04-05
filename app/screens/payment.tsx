@@ -52,9 +52,38 @@ const Payment = () => {
   const [user, setUser] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<CartItem[]>([]);
 
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number => {
+    const R = 6371; // Radius of the Earth in km
+    const toRadians = (deg: number) => (deg * Math.PI) / 180;
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+  const marketLocation = { latitude: 4.9209, longitude: -1.7587 }; // Coordinates for Takoradi Market
+  const rawDistance = calculateDistance(
+    marketLocation.latitude,
+    marketLocation.longitude,
+    userLocation?.coords.latitude || 0,
+    userLocation?.coords.longitude || 0
+  );
+  const maxAllowedDistance = 50; // maximum allowed distance in km
+  const distance =
+    rawDistance > maxAllowedDistance ? maxAllowedDistance : rawDistance;
   const body = {
     isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
-    distance: 5,
+    distance: distance,
     promoCode: "",
     items: cart.map((item) => ({
       id: item.id,
@@ -153,11 +182,14 @@ const Payment = () => {
     };
 
     try {
-      const response = await fetch("http://192.168.43.155:3000/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/orders`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -193,6 +225,7 @@ const Payment = () => {
   };
 
   useEffect(() => {
+    console.log(process.env.EXPO_PUBLIC_TEST);
     fetchLocation();
     if (cart.length === 0) router.replace("/");
     fetchTotal();
@@ -497,13 +530,12 @@ const Payment = () => {
       </ScrollView>
 
       {/* Sticky Confirm Button */}
-      <View className="bg-white pt-4 px-4 pb-6 border-t border-gray-100">
+      <View className="bg-white pt-4 px-4 pb-10 border-t border-gray-100">
         <Pressable
           onPress={handlePayment}
           className={`w-full py-4 rounded-full ${
             loading ? "bg-gray-400" : "bg-[#2BCC5A]"
           } flex-row items-center justify-center space-x-2`}
-          android_ripple={{ color: "#229544" }}
         >
           {loading ? (
             <ActivityIndicator color="white" />
