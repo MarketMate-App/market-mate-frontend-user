@@ -262,9 +262,9 @@ const DetailsPage = () => {
                   {productsArray
                     .filter(
                       (p: Product) =>
-                        p.category === product.category && p._id !== product.id
+                        p.category === product.category && p._id !== product._id
                     )
-                    .slice(0, 4)
+                    .slice(0, 5)
                     .map((similarProduct: Product) => (
                       <GridcardComponent
                         key={similarProduct._id}

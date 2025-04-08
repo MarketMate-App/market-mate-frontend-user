@@ -17,6 +17,7 @@ import { router, Stack } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 const DeliveryAddressScreen = () => {
   const [name, setName] = useState("");
@@ -30,49 +31,96 @@ const DeliveryAddressScreen = () => {
   const addressRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
 
-  const validatePhone = (number: string) => {
-    const cleaned = number.replace(/\D/g, "");
-    return cleaned.length === 9; // Ghanaian phone number validation
-  };
-
   const saveDetails = async () => {
     if (!name || !country || !address) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
-    // if (!validatePhone(phone)) {
-    //   Alert.alert("Error", "Please enter a valid Ghanaian phone number");
-    //   return;
-    // }
-
     setLoading(true);
     try {
-      await AsyncStorage.setItem(
-        "@deliveryAddress",
-        JSON.stringify({ name, country, address })
-      );
-      setTimeout(() => {
+      const token = await SecureStore.getItemAsync("jwtToken");
+      if (!token) {
         setLoading(false);
-        Alert.alert("Success", "Details saved successfully");
-        router.push("/(tabs)/shop");
-      }, 1000);
+        Alert.alert("Error", "User is not authenticated");
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/auth/profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            fullName: name,
+            address: {
+              street: address,
+              region: country,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        setLoading(false);
+        const errorData = await response.json();
+        Alert.alert("Error", errorData.message || "Failed to save details");
+        return;
+      }
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        const userDetails = {
+          fullName: name,
+          address: {
+            street: address,
+            region: country,
+            country: "Ghana",
+          },
+        };
+        await saveUserDetails(userDetails);
+        Alert.alert("Success", "Details saved successfully!");
+        router.replace("/home");
+      }
     } catch (error) {
       setLoading(false);
       Alert.alert("Error", "Failed to save details");
+    }
+  };
+  const saveUserDetails = async (details: {
+    fullName: string;
+    address: {
+      street: string;
+      region: string;
+      country: string;
+    };
+  }) => {
+    if (!name || !country || !address) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await AsyncStorage.setItem("@userDetails", JSON.stringify(details));
+      console.log("User details saved to local storage");
+    } catch (error) {
+      console.error("Failed to save user details to local storage", error);
     }
   };
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const details = await AsyncStorage.getItem("@deliveryAddress");
+        const details = await AsyncStorage.getItem("@userDetails");
         if (details) {
-          const { name, country, address, phone } = JSON.parse(details);
-          setName(name);
-          setCountry(country);
-          setAddress(address);
-          setPhone(phone);
+          const { fullName, address } = JSON.parse(details);
+          setName(fullName);
+          setCountry(address.region);
+          setAddress(address.street);
         }
       } catch (error) {
         console.log(error);
@@ -91,14 +139,20 @@ const DeliveryAddressScreen = () => {
           <ScrollView className="flex-1 bg-white p-3">
             <Stack.Screen
               options={{
-                headerShown: false,
+                headerTitleAlign: "center",
+                title: "",
+                headerShadowVisible: false,
+                headerTitleStyle: {
+                  fontFamily: "Unbounded Regular",
+                  fontSize: 14,
+                },
               }}
             />
             <Text
               className="text-3xl mb-3"
               style={{ fontFamily: "Unbounded Regular" }}
             >
-              Tell Us About Yourself
+              Tell us about yourself.
             </Text>
             <Text
               className="text-gray-500 text-xs mb-8"
@@ -106,7 +160,6 @@ const DeliveryAddressScreen = () => {
             >
               Please enter your details below.
             </Text>
-
             <View className="bg-white border-hairline items-center gap-2 border-gray-200 mb-4 rounded-xl">
               <FloatingLabelInput
                 label="Full name"
@@ -174,7 +227,7 @@ const DeliveryAddressScreen = () => {
                 onSubmitEditing={() => addressRef.current?.focus()}
               />
               <FloatingLabelInput
-                label="Address"
+                label="Street Address"
                 animationDuration={50}
                 labelStyles={{
                   fontFamily: "Unbounded Light",

@@ -1,5 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,25 +11,120 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import { FloatingLabelInput } from "react-native-floating-label-input";
-
+import * as SecureStore from "expo-secure-store";
 const AuthPage = () => {
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleContinue = () => {
-    // Remove any spaces from the input
-    const cleanedPhone = phone.replace(/\s/g, "");
-    // Validate that the number contains exactly 9 digits
+  const clearStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      await SecureStore.deleteItemAsync("jwtToken");
+      console.log("All data cleared from local storage and async storage.");
+    } catch (error) {
+      console.error("Error clearing storage:", error);
+    }
+  };
+
+  const validatePhoneNumber = (phoneNumber: string): boolean => {
+    const cleanedPhone = phoneNumber.replace(/\s/g, "");
     const ghanaianPhoneRegex = /^\d{9}$/;
-    if (!ghanaianPhoneRegex.test(cleanedPhone)) {
-      Alert.alert("Oops!", "Please enter a valid Ghanaian phone number.");
+    return ghanaianPhoneRegex.test(cleanedPhone);
+  };
+
+  const handleContinue = async () => {
+    if (!phone) {
+      Alert.alert("Error", "Phone number cannot be empty.");
       return;
     }
-    // Proceed with authentication or navigation
-    Alert.alert("Success!", "Welcome aboard. Let's get started!");
-    router.push("/otp");
+
+    if (!validatePhoneNumber(phone)) {
+      Alert.alert(
+        "Invalid Phone Number",
+        "Please enter a valid Ghanaian phone number (9 digits)."
+      );
+      return;
+    }
+
+    const formattedPhone = phone.replace(/\s/g, "");
+    const formattedPhoneNumber = `+233${formattedPhone}`;
+    console.log(formattedPhoneNumber);
+
+    // Save number to AsyncStorage
+
+    try {
+      await AsyncStorage.setItem("@phoneNumber", formattedPhoneNumber);
+      console.log("Phone number saved successfully.");
+    } catch (error) {
+      console.error("Error saving phone number:", error);
+    }
+
+    setLoading(true); // Start loading
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/auth/send-otp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phoneNumber: formattedPhoneNumber,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to send OTP");
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        console.log("OTP sent successfully:", data);
+        Alert.alert(
+          "Success",
+          "OTP sent successfully. Please check your phone."
+        );
+        router.push("/otp");
+      } else {
+        Alert.alert("Error", data.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      Alert.alert(
+        "Error",
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred. Please try again."
+      );
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
+  useEffect(() => {
+    const backAction = () => {
+      router.push("/home");
+      return true; // Prevent default back action
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup on unmount
+  }, []);
+  useEffect(() => {
+    const initialize = async () => {
+      await clearStorage();
+    };
+    initialize();
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -101,18 +197,23 @@ const AuthPage = () => {
             onPress={handleContinue}
             className="w-full mt-4 bg-[#2BCC5A] py-5 rounded-full border border-white"
             style={{ backgroundColor: "#2BCC5A" }}
+            disabled={loading}
           >
-            <Text
-              className="text-white text-xs text-center"
-              style={{ fontFamily: "Unbounded SemiBold" }}
-            >
-              Continue
-            </Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text
+                className="text-white text-xs text-center"
+                style={{ fontFamily: "Unbounded SemiBold" }}
+              >
+                Continue
+              </Text>
+            )}
           </Pressable>
         </View>
 
         <View className="w-full">
-          <Text
+          {/* <Text
             className="text-center text-gray-500 text-xs mb-3"
             style={{ fontFamily: "Unbounded Regular" }}
           >
@@ -138,7 +239,7 @@ const AuthPage = () => {
             >
               Continue with Google
             </Text>
-          </Pressable>
+          </Pressable> */}
           <Text
             className="text-xs text-gray-500 mt-4 text-center"
             style={{ fontFamily: "Unbounded Regular" }}

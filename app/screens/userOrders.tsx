@@ -93,25 +93,32 @@ const UserOrdersScreen: React.FC = () => {
   // Fetch orders with data validation and update status if needed.
   const fetchOrders = useCallback(async () => {
     try {
-      const user = await SecureStore.getItemAsync("user");
-      if (!user) {
-        console.error("User not found in SecureStore");
-        return;
-      }
-      const parsedUser = JSON.parse(user);
-      if (!parsedUser.phoneNumber) {
-        console.error("Phone number is missing in user data");
+      setIsLoading(true);
+      const token = await SecureStore.getItemAsync("jwtToken");
+      if (!token) {
+        console.error("No token found in secure storage.");
         return;
       }
       const response = await fetch(
-        `http://192.168.43.155:3000/api/orders/user/${parsedUser.phoneNumber}`
+        `${process.env.EXPO_PUBLIC_API_URL}/api/orders/user`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
       const data = await response.json();
-      setOrders(data);
       if (!Array.isArray(data)) {
-        console.error("Unexpected response data:", data);
+        console.error("Invalid data format", data);
         return;
       }
+      setOrders(data);
 
       const validatedOrders: Order[] = data
         .filter(
@@ -302,7 +309,7 @@ const UserOrdersScreen: React.FC = () => {
                       marginBottom: 4,
                     }}
                   >
-                    • {itm.name || `Item ${index + 1}`}
+                    • {itm.name || `Item ${index + 1}`} x{itm.quantity}
                   </Text>
                 ))
               ) : (
@@ -347,8 +354,7 @@ const UserOrdersScreen: React.FC = () => {
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <UserAvatar
-                  name={item.courier.user.fullName}
-                  default={"Gideon Appau"}
+                  name={item.courier.user.fullName || "Market Mate"}
                   size={50}
                 />
                 <View style={{ marginLeft: 8 }}>
@@ -359,7 +365,25 @@ const UserOrdersScreen: React.FC = () => {
                       color: "#4B5563",
                     }}
                   >
-                    {item.courier.user.fullName}
+                    {item.courier.user.fullName || "Your MarketMate"}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: "Unbounded Regular",
+                      fontSize: 10,
+                      color: "#6B7280",
+                      marginBottom: 4,
+                    }}
+                  >
+                    Registration Number:{" "}
+                    <Text
+                      style={{
+                        fontFamily: "Unbounded SemiBold",
+                        color: "#374151",
+                      }}
+                    >
+                      {item.courier.registrationNumber || "N/A"}
+                    </Text>
                   </Text>
                   <Text
                     style={{
@@ -368,24 +392,15 @@ const UserOrdersScreen: React.FC = () => {
                       color: "#6B7280",
                     }}
                   >
-                    Reg#: {item.courier.registrationNumber || "N/A"}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: "Unbounded Regular",
-                      fontSize: 10,
-                      color: "#6B7280",
-                    }}
-                  >
-                    {item.courier.estimatedArrival
-                      ? `ETA: ${moment(
-                          item.courier.estimatedArrival
-                        ).fromNow()} (${moment(
-                          item.courier.estimatedArrival
-                        ).format("h:mm A")})`
-                      : `Last active: ${moment(
-                          item.courier.lastActive
-                        ).fromNow()}`}
+                    {item.status === "pending"
+                      ? "Awaiting confirmation"
+                      : item.status === "confirmed"
+                      ? "Preparing your order"
+                      : item.status === "dispatched"
+                      ? "On the way!"
+                      : item.status === "delivered"
+                      ? "Delivered successfully"
+                      : "Order failed"}
                   </Text>
                 </View>
               </View>
@@ -404,7 +419,7 @@ const UserOrdersScreen: React.FC = () => {
                 >
                   <MaterialIcons name="call" size={20} color="#2BCC5A" />
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => router.push(`/chat/${item.courier.user._id}`)}
                   style={{
                     padding: 8,
@@ -413,7 +428,7 @@ const UserOrdersScreen: React.FC = () => {
                   }}
                 >
                   <MaterialIcons name="chat" size={20} color="#2BCC5A" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
             {/* {(() => {

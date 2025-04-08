@@ -18,7 +18,7 @@ interface GridcardProps {
   imageUrl: string;
   discount?: number;
   unitOfMeasure?: string;
-  productId?: number;
+  productId?: string;
   layout?: "vertical" | "horizontal" | "full";
   originRegion?: string;
   isGhanaGrown?: boolean;

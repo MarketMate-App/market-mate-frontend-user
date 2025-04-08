@@ -2,7 +2,6 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Pressable,
   ScrollView,
   Alert,
   Animated,
@@ -14,8 +13,11 @@ import { router, Stack } from "expo-router";
 import { useCartStore } from "../store/cartStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
+import { Paystack, paystackProps } from "react-native-paystack-webview";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Payment = () => {
+  const paystackWebViewRef = useRef<paystackProps.PayStackRef>();
   type CartItem = {
     id: number;
     name: string;
@@ -97,7 +99,7 @@ const Payment = () => {
     setTotalError(null);
     try {
       const response = await fetch(
-        "http://192.168.43.155:3000/api/calculate-total",
+        `${process.env.EXPO_PUBLIC_API_URL}/api/calculate-total`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -125,16 +127,6 @@ const Payment = () => {
 
   const fetchLocation = async () => {
     const savedLocation = await SecureStore.getItemAsync("userLocation");
-    const userFromStore = await SecureStore.getItemAsync("user");
-    if (!userFromStore) {
-      const newUser = {
-        name: "John Doe",
-        phone: "233123456789",
-      };
-      await SecureStore.setItemAsync("user", JSON.stringify(newUser));
-    } else {
-      setUser(JSON.parse(userFromStore));
-    }
     if (savedLocation) {
       const coordinates = JSON.parse(savedLocation);
       setUserLocation(coordinates);
@@ -143,73 +135,108 @@ const Payment = () => {
     }
   };
 
+  const fetchUser = async () => {
+    try {
+      const userDetails = await AsyncStorage.getItem("@userDetails");
+      if (userDetails) {
+        setUser(JSON.parse(userDetails));
+      } else {
+        console.warn("No user details found in storage.");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
   const createOrder = async () => {
-    const amount = data?.total;
-    if (!user || !userLocation || cart.length === 0) {
-      Alert.alert("Error", "Missing required information. Please try again.");
-      router.replace("/(tabs)/shop");
+    if (!userLocation || !user || cart.length === 0 || !data) {
+      Alert.alert(
+        "Missing Information",
+        "Please ensure your location, user details, cart items, and total data are available before proceeding."
+      );
       return;
     }
-
-    const orderData = {
-      user,
-      items: cart.map(
-        ({ id, name, quantity, price, imageUrl, unitOfMeasure }) => ({
-          id,
-          name,
-          quantity,
-          price,
-          imageUrl,
-          unitOfMeasure,
-        })
-      ),
-      deliveryAddress: {
-        street: "123 Main Street",
-        city: "Takoradi",
-        state: "WS",
-        postalCode: "00233",
-        country: "Ghana",
-        coordinates: [
-          userLocation.coords.latitude,
-          userLocation.coords.longitude,
-        ],
-      },
-      payment: {
-        amount: amount,
-        method: "cash-on-delivery",
-      },
-      courier: "67dbf39b18342fc23a061fee",
-    };
-
     try {
+      const jwtToken = await SecureStore.getItemAsync("jwtToken");
+      if (!jwtToken) {
+        throw new Error("Authentication token not found. Please log in again.");
+      }
+
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/orders`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderData),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify({
+            courier: "67dbf39b18342fc23a061fee",
+            items: cart.map((item) => ({
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+              imageUrl: item.imageUrl,
+              discount: 0, // Assuming no discount for now
+              unitOfMeasure: item.unitOfMeasure,
+              total: item.price * item.quantity,
+            })),
+            totalAmount: data?.total,
+            deliveryAddress: {
+              street: user?.address?.street || "123 Main Street", // Replace with actual address
+              city: user?.address?.city || "Accra", // Replace with actual city
+              state: user?.address?.state || "Greater Accra", // Replace with actual state
+              postalCode: user?.address?.postalCode || "00233", // Replace with actual postal code
+              country: user?.address?.country || "Ghana", // Replace with actual country
+              coordinates: [
+                userLocation?.coords.longitude || 0,
+                userLocation?.coords.latitude || 0,
+              ],
+            },
+            payment: {
+              amount: data?.total,
+              method:
+                selectedPayment === "cash"
+                  ? "cash-on-delivery"
+                  : "mobile-money",
+              status: selectedPayment === "cash" ? "pending" : "completed",
+              transactionId: null, // Replace with actual transaction ID if available
+            },
+            specialInstructions:
+              user?.specialInstructions || "Leave at the front door.", // Replace with actual instructions
+            status: "confirmed",
+            packagingType: "standard",
+            orderType: "instant",
+          }),
         }
       );
 
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const data = await response.json();
-      if (data?.order?._id) {
-        setOrderItems(data.order.items);
-      } else {
-        throw new Error("Invalid response: Order ID missing");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create order.");
       }
+
+      const orderData = await response.json();
+      console.log(orderData);
+      console.log("Order created successfully:", orderData);
     } catch (error) {
       console.error("Error creating order:", error);
-      Alert.alert("Order Error", "There was an issue processing your order.");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while creating the order.";
+      Alert.alert("Order Error", errorMessage);
     }
   };
-
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (userLocation === null) {
       Alert.alert("Location Required", "Please set a delivery location.");
       router.push("/location");
+      return;
+    }
+    const jwtToken = await SecureStore.getItemAsync("jwtToken");
+    if (!jwtToken) {
+      Alert.alert("Authentication Required", "Please log in again.");
+      router.replace("/auth");
       return;
     }
     if (selectedPayment === "cash") {
@@ -217,16 +244,18 @@ const Payment = () => {
       router.replace("/screens/payment_processing");
       return;
     } else {
-      Alert.alert(
-        "Payment Error",
-        "Online payment is not supported yet. Please select Cash on Delivery."
-      );
+      // Uncomment the line below to initiate online payment
+      // Alert.alert(
+      //   "Payment Error",
+      //   "Online payment is not supported yet. Please select Cash on Delivery."
+      // );
+      paystackWebViewRef.current?.startTransaction();
     }
   };
 
   useEffect(() => {
-    console.log(process.env.EXPO_PUBLIC_TEST);
     fetchLocation();
+    fetchUser();
     if (cart.length === 0) router.replace("/");
     fetchTotal();
   }, []);
@@ -280,6 +309,29 @@ const Payment = () => {
         className="px-4 pt-4"
         contentContainerStyle={{ paddingBottom: 50 }}
       >
+        <View style={{ flex: 1 }}>
+          <Paystack
+            paystackKey="pk_test_e3c1f3c5212dcc83a5baa2c47c7cd3526fbe3980"
+            paystackSecretKey="sk_test_e71eb18fcb4d9bba3a999a75e41e773831d583f1"
+            // paystackSecretKey="sk_live_99e1351b4c69b9ffba5f262e81fa338809d94369"
+            // paystackKey="pk_live_a01465c40ffb49e70308bc7109ad5ffb054163ab"
+            billingName="MarketMate"
+            channels={["mobile_money", "ussd"]}
+            currency="GHS"
+            billingEmail="customer@marketmate.com"
+            amount={data?.total ?? 0} // Amount in GHS
+            onCancel={(e) => {
+              // handle response here
+            }}
+            onSuccess={(res) => {
+              // handle response here
+              createOrder();
+              router.replace("/screens/payment_processing");
+              console.log(res);
+            }}
+            ref={paystackWebViewRef}
+          />
+        </View>
         {/* Order Summary Section */}
         <View className=" bg-white rounded-3xl shadow-xs">
           {/* Ticket Notch */}
@@ -459,7 +511,7 @@ const Payment = () => {
 
           <View className=" gap-3">
             {/* Mobile Money Option */}
-            <Pressable
+            <TouchableOpacity
               onPress={() => setSelectedPayment("online")}
               className={`flex-1 p-4 rounded-2xl border-hairline ${
                 selectedPayment === "online"
@@ -490,10 +542,10 @@ const Payment = () => {
                   Instant payment via Momo.
                 </Text>
               </View>
-            </Pressable>
+            </TouchableOpacity>
 
             {/* Cash on Delivery Option */}
-            <Pressable
+            <TouchableOpacity
               onPress={() => setSelectedPayment("cash")}
               className={`flex-1 p-4 rounded-2xl border-hairline ${
                 selectedPayment === "cash"
@@ -524,14 +576,14 @@ const Payment = () => {
                   Pay when you receive items
                 </Text>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
 
       {/* Sticky Confirm Button */}
       <View className="bg-white pt-4 px-4 pb-10 border-t border-gray-100">
-        <Pressable
+        <TouchableOpacity
           onPress={handlePayment}
           className={`w-full py-4 rounded-full ${
             loading ? "bg-gray-400" : "bg-[#2BCC5A]"
@@ -549,7 +601,7 @@ const Payment = () => {
               </Text>
             </>
           )}
-        </Pressable>
+        </TouchableOpacity>
         <Text
           style={{ fontFamily: "Unbounded Light" }}
           className="text-gray-500 text-xs text-center mt-2"

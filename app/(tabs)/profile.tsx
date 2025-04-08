@@ -8,13 +8,39 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import SwitchComponent from "../components/switch";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserAvatar from "react-native-user-avatar";
 
 const ProfilePage = () => {
+  const [user, setUser] = useState<{ fullName: string; phoneNumber: string }>({
+    fullName: "",
+    phoneNumber: "",
+  });
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const fetchUserDetails = async () => {
+    try {
+      const userDetails = await AsyncStorage.getItem("@userDetails");
+      const phone = await AsyncStorage.getItem("@phoneNumber");
+      if (phone) {
+        setPhoneNumber(phone);
+        console.log("Phone number fetched:", phone);
+      }
+      const parsedDetails = userDetails ? JSON.parse(userDetails) : {};
+      setUser({
+        fullName: parsedDetails.fullName || "",
+        phoneNumber: parsedDetails.phoneNumber || "",
+      });
+      console.log("User details fetched:", parsedDetails);
+    } catch (error) {
+      console.error("Failed to fetch user details from local storage", error);
+    }
+  };
+
   type FeatherIconName =
     | "package"
     | "map-pin"
@@ -55,20 +81,20 @@ const ProfilePage = () => {
   ];
 
   const preferenceItems = [
-    {
-      title: "Settings",
-      icon: "settings" as FeatherIconName,
-      navigateTo: "SettingsScreen",
-    },
-    {
-      title: "Help & Support",
-      icon: "help-circle" as FeatherIconName,
-      navigateTo: "HelpSupportScreen",
-    },
+    // {
+    //   title: "Settings",
+    //   icon: "settings" as FeatherIconName,
+    //   navigateTo: "SettingsScreen",
+    // },
+    // {
+    //   title: "Help & Support",
+    //   icon: "help-circle" as FeatherIconName,
+    //   navigateTo: "HelpSupportScreen",
+    // },
     {
       title: "Log Out",
       icon: "log-out" as FeatherIconName,
-      navigateTo: "Logout", // or implement logout logic in navigation callback
+      navigateTo: "logout", // or implement logout logic in navigation callback
     },
   ];
 
@@ -144,7 +170,7 @@ const ProfilePage = () => {
               if (item.type === "toggle") {
                 handleToggle(item.title);
               } else if (item.navigateTo) {
-                router.push(item.navigateTo as any);
+                router.replace(item.navigateTo as any);
               }
             }}
           >
@@ -180,125 +206,152 @@ const ProfilePage = () => {
       </View>
     );
   };
-
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
   return (
     <SafeAreaView>
       <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            backgroundColor: "#FFF",
-            padding: 12,
-          }}
-        >
-          <Image
-            source={require("@/assets/images/avatar.jpg")}
+        {user.fullName ? (
+          <View
             style={{
-              width: 96,
-              height: 96,
-              marginBottom: 32,
-              marginTop: 32,
-              borderRadius: 999,
-            }}
-          />
-          <Text
-            style={[
-              { marginBottom: 8, fontSize: 20 },
-              { fontFamily: "Unbounded Regular" },
-            ]}
-          >
-            Coffestories
-          </Text>
-          <Text
-            style={[
-              { marginBottom: 16, fontSize: 14, color: "#6B7280" },
-              { fontFamily: "Unbounded Light" },
-            ]}
-          >
-            mark.brock@icloud.com
-          </Text>
-
-          <Pressable
-            style={{
-              paddingVertical: 20,
-              width: "56%",
-              borderRadius: 999,
-              marginBottom: 32,
-              borderWidth: StyleSheet.hairlineWidth,
-              borderColor: "#014E3C",
+              flex: 1,
+              alignItems: "center",
+              backgroundColor: "#FFF",
+              padding: 12,
             }}
           >
+            <View className="mb-8 mt-8 flex-row items-center justify-center">
+              <UserAvatar name={user.fullName || "Customer"} size={96} />
+            </View>
             <Text
               style={[
-                { textAlign: "center", fontSize: 12, color: "#014E3C" },
-                { fontFamily: "Unbounded SemiBold" },
+                { marginBottom: 8, fontSize: 20 },
+                { fontFamily: "Unbounded Regular" },
               ]}
             >
-              Edit Profile
+              {user.fullName}
             </Text>
-          </Pressable>
-
-          <Text
-            style={[
-              {
-                textAlign: "right",
-                fontSize: 10,
-                color: "#6B7280",
-                marginBottom: 8,
-              },
-              { fontFamily: "Unbounded Light" },
-            ]}
+            <Text
+              style={[
+                { marginBottom: 16, fontSize: 14, color: "#6B7280" },
+                { fontFamily: "Unbounded Light" },
+              ]}
+            >
+              {phoneNumber}
+            </Text>
+            <Pressable
+              onPressIn={() => {
+                router.push("/screens/delivery_address");
+              }}
+              style={{
+                paddingVertical: 20,
+                width: "56%",
+                borderRadius: 999,
+                marginBottom: 32,
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: "#014E3C",
+              }}
+            >
+              <Text
+                style={[
+                  { textAlign: "center", fontSize: 12, color: "#014E3C" },
+                  { fontFamily: "Unbounded SemiBold" },
+                ]}
+              >
+                Edit Profile
+              </Text>
+            </Pressable>
+            <Text
+              style={[
+                {
+                  textAlign: "right",
+                  fontSize: 10,
+                  color: "#6B7280",
+                  marginBottom: 8,
+                },
+                { fontFamily: "Unbounded Light" },
+              ]}
+            >
+              My Account
+            </Text>
+            <ItemList items={menuItems} />
+            {/* <Text
+              style={[
+                {
+                  textAlign: "right",
+                  fontSize: 10,
+                  color: "#6B7280",
+                  marginBottom: 8,
+                },
+                { fontFamily: "Unbounded Light" },
+              ]}
+            >
+              Address & Payment
+            </Text>
+            <ItemList items={importantItems} />
+            <Text
+              style={[
+                {
+                  textAlign: "right",
+                  fontSize: 10,
+                  color: "#6B7280",
+                  marginBottom: 8,
+                },
+                { fontFamily: "Unbounded Light" },
+              ]}
+            >
+              Security
+            </Text>
+            <ItemList items={securityItems} isSecurity /> */}
+            <Text
+              style={[
+                {
+                  textAlign: "right",
+                  fontSize: 10,
+                  color: "#6B7280",
+                  marginBottom: 8,
+                },
+                { fontFamily: "Unbounded Light" },
+              ]}
+            >
+              Preference
+            </Text>
+            <ItemList items={preferenceItems} />
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#FFF",
+              padding: 12,
+            }}
           >
-            My Account
-          </Text>
-          <ItemList items={menuItems} />
-
-          <Text
-            style={[
-              {
-                textAlign: "right",
-                fontSize: 10,
-                color: "#6B7280",
-                marginBottom: 8,
-              },
-              { fontFamily: "Unbounded Light" },
-            ]}
-          >
-            Address & Payment
-          </Text>
-          <ItemList items={importantItems} />
-
-          <Text
-            style={[
-              {
-                textAlign: "right",
-                fontSize: 10,
-                color: "#6B7280",
-                marginBottom: 8,
-              },
-              { fontFamily: "Unbounded Light" },
-            ]}
-          >
-            Security
-          </Text>
-          <ItemList items={securityItems} isSecurity />
-
-          <Text
-            style={[
-              {
-                textAlign: "right",
-                fontSize: 10,
-                color: "#6B7280",
-                marginBottom: 8,
-              },
-              { fontFamily: "Unbounded Light" },
-            ]}
-          >
-            Preference
-          </Text>
-          <ItemList items={preferenceItems} />
-        </View>
+            <Text style={{ fontFamily: "Unbounded Light" }}>
+              Please log in to view your profile and access important features.
+            </Text>
+            <Pressable
+              style={{
+                paddingVertical: 12,
+                paddingHorizontal: 24,
+                borderRadius: 999,
+                backgroundColor: "#014E3C",
+              }}
+              onPress={() => router.push("/auth")}
+            >
+              <Text
+                style={[
+                  { textAlign: "center", fontSize: 14, color: "#FFF" },
+                  { fontFamily: "Unbounded SemiBold" },
+                ]}
+              >
+                Log In
+              </Text>
+            </Pressable>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

@@ -13,6 +13,7 @@ import { router } from "expo-router";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type CartItem = {
   id: number;
@@ -118,7 +119,7 @@ const CartItemComponent = memo(
 );
 
 const CartComponent = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasLocation, setHasLocation] = useState(true);
   const [coupon, setCoupon] = useState("");
   const [couponDetails, setCouponDetails] = useState<{
     valid: boolean;
@@ -141,32 +142,21 @@ const CartComponent = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
-
-  const storeAuthenticatedUser = async (user: {
-    phoneNumber: string;
-    [key: string]: any;
-  }) => {
-    try {
-      await SecureStore.setItemAsync("user", JSON.stringify(user));
-      console.log("User stored in secure store");
-    } catch (error) {
-      console.error("Failed to store user in secure store", error);
-    }
-  };
-  storeAuthenticatedUser({ phoneNumber: "0241234567" });
-
-  const getSecureKey = async () => {
-    const user = await SecureStore.getItemAsync("user");
-    const parsedUser = user ? JSON.parse(user) : null;
-    if (parsedUser && parsedUser.phoneNumber) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  };
-
   useEffect(() => {
-    getSecureKey();
+    const fetchLocation = async () => {
+      try {
+        const location = await SecureStore.getItemAsync("userLocation");
+        if (location) {
+          setHasLocation(true);
+          console.log(location);
+        } else {
+          setHasLocation(false);
+        }
+      } catch (error) {
+        console.error("Error fetching location:", error);
+      }
+    };
+    fetchLocation();
   }, []);
 
   const handleCouponApply = async () => {
@@ -418,7 +408,11 @@ const CartComponent = () => {
           }`}
           onPress={() => {
             if (cart.length > 0) {
-              router.push(isAuthenticated ? "/screens/payment" : "/auth");
+              if (hasLocation) {
+                router.push("/screens/payment");
+              } else {
+                router.push("/location");
+              }
             }
           }}
           disabled={cart.length === 0}

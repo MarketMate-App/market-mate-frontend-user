@@ -20,7 +20,7 @@ interface GridcardProps {
   imageUrl: string;
   discount?: number;
   unitOfMeasure?: string;
-  productId?: number;
+  productId?: string;
   layout?: "vertical" | "horizontal" | "full";
   originRegion?: string;
   isGhanaGrown?: boolean;
@@ -40,13 +40,8 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
   purchasesToday,
 }) => {
   const [heartFilled, setHeartFilled] = useState(false);
-  const { width: screenWidth } = Dimensions.get("window");
 
-  // Layout configuration
-  const isVertical = layout === "vertical";
   const isFull = layout === "full";
-  const containerWidth = isFull ? screenWidth - 32 : isVertical ? 180 : 300;
-  const imageHeight = isFull ? 200 : isVertical ? 100 : 80;
 
   const [quantity, setQuantity] = useState(0);
 
@@ -142,7 +137,7 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
   );
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { width: isFull ? "100%" : "48%" }]}>
       <Image
         style={styles.image}
         resizeMode="contain"
@@ -163,12 +158,12 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
       >
         {unitOfMeasure}
       </Text>
-      {purchasesToday && purchasesToday > 10 && (
+      {purchasesToday !== undefined && purchasesToday > 10 && (
         <Text
           className="text-gray-500 text-xs mb-1"
           style={{ fontFamily: "Unbounded Light" }}
         >
-          {purchasesToday}+ bought today
+          {`${purchasesToday}+ bought today`}
         </Text>
       )}
       {renderPriceDisplay()}
@@ -212,7 +207,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flex: 1,
     marginRight: 5,
-    width: "48%",
   },
   image: {
     width: "100%",

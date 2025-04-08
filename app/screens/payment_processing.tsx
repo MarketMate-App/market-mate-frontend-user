@@ -76,9 +76,7 @@ const PaymentProcessingScreen: React.FC = () => {
     useCallback(() => {
       const loadUserData = async () => {
         try {
-          const userData = await SecureStore.getItemAsync("user");
           const locationData = await SecureStore.getItemAsync("userLocation");
-          if (userData) setUser(JSON.parse(userData));
           if (locationData) setUserLocation(JSON.parse(locationData));
         } catch (error) {
           console.error("Error retrieving SecureStore data:", error);
@@ -105,13 +103,13 @@ const PaymentProcessingScreen: React.FC = () => {
   }, [fadeAnim]);
 
   useEffect(() => {
-    if (user && userLocation) {
+    if (userLocation) {
       createOrder();
     }
-  }, [user, userLocation]);
+  }, [userLocation]);
 
   const createOrder = async () => {
-    if (!user || !userLocation?.coords || cart.length === 0) {
+    if (!userLocation?.coords || cart.length === 0) {
       setStatus("error");
       Alert.alert("Error", "Missing required information. Please try again.");
       router.replace("/(tabs)/shop");
@@ -153,11 +151,11 @@ const PaymentProcessingScreen: React.FC = () => {
               className="text-lg text-gray-700 mb-4"
               style={{ fontFamily: "Unbounded Medium" }}
             >
-              Processing Payment
+              Processing Order
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Light" }}
+              style={{ fontFamily: "Unbounded Regular" }}
             >
               Please wait while we verify your details. This usually takes 30
               seconds.

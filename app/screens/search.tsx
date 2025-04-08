@@ -14,6 +14,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import ProductCard from "../components/productcard"; // Import the ProductCard component
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Shopcard from "../components/shopcard";
 
 const SearchScreen = () => {
   const categories = [
@@ -213,9 +214,21 @@ const SearchScreen = () => {
       {!loading && filteredProducts.length > 0 && (
         <FlatList
           data={filteredProducts}
-          renderItem={({ item }) => <ProductCard product={item} />}
+          renderItem={({ item }) => (
+            <Shopcard
+              name={item.name}
+              price={item.price}
+              imageUrl={item.imageUrl}
+              productId={item._id}
+              unitOfMeasure={item.unitOfMeasure}
+              purchasesToday={5} // Mock data for purchases today
+            />
+          )}
+          initialNumToRender={20}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
           keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

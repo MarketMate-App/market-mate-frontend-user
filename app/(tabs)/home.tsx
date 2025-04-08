@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Image,
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { router, useFocusEffect } from "expo-router";
@@ -17,6 +18,8 @@ import CategoriesComponent from "../components/categories";
 import GridcardComponent from "../components/gridcard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
+import GuestBanner from "../components/guestbanner";
+import * as SecureStore from "expo-secure-store";
 
 interface Product {
   _id: number | undefined;
@@ -33,20 +36,54 @@ interface Product {
 const HomePage = () => {
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<{ fullName: string }>({ fullName: "" });
+  const fetchUserDetails = async () => {
+    try {
+      const userDetails = await AsyncStorage.getItem("@userDetails");
+      if (userDetails) {
+        const parsedDetails = JSON.parse(userDetails);
+        setUser({
+          fullName: parsedDetails.fullName,
+        });
+        console.log("User details fetched:", parsedDetails);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details from local storage", error);
+    }
+  };
 
+  const saveUserDetails = async (details: {
+    phoneNumber: string;
+    fullName: string;
+    profilePicture: string;
+    address: {
+      street: string;
+      region: string;
+      country: string;
+    };
+    wishlist: string[];
+  }) => {
+    try {
+      await AsyncStorage.setItem("@userDetails", JSON.stringify(details));
+      console.log("User details saved to local storage");
+    } catch (error) {
+      console.error("Failed to save user details to local storage", error);
+    }
+  };
   // Load products from AsyncStorage
   const loadFromLocalStorage = async (): Promise<void> => {
     try {
       const jsonValue = await AsyncStorage.getItem("@products");
       if (jsonValue) {
-        setLocalProducts(JSON.parse(jsonValue));
+        const parsedProducts: Product[] = JSON.parse(jsonValue);
+        setLocalProducts(parsedProducts);
+        console.log("Loaded products from local storage");
       }
     } catch (e) {
       console.error("Failed to load products from local storage", e);
     }
   };
 
-  // Save products to AsyncStorage
   const saveToLocalStorage = async (products: Product[]): Promise<void> => {
     try {
       await AsyncStorage.setItem("@products", JSON.stringify(products));
@@ -56,10 +93,8 @@ const HomePage = () => {
     }
   };
 
-  // Fetch products from the API and update local storage and state
   const fetchData = async (): Promise<void> => {
     try {
-      setLoading(true);
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/products`
       );
@@ -70,26 +105,60 @@ const HomePage = () => {
       if (data && data.length > 0) {
         setLocalProducts(data);
         await saveToLocalStorage(data);
+        console.log("Fetched and updated products from API");
       }
     } catch (err) {
       console.error("Failed to fetch products", err);
+    }
+  };
+
+  const syncData = async (): Promise<void> => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@products");
+      if (jsonValue) {
+        console.log("Displaying offline data first...");
+        const parsedProducts: Product[] = JSON.parse(jsonValue);
+        setLocalProducts(parsedProducts);
+      }
+
+      // Wait for a short period before fetching fresh data
+      setTimeout(async () => {
+        const isConnected = await checkInternetConnection();
+        if (isConnected) {
+          console.log("Internet connection available, fetching fresh data...");
+          await fetchData();
+        } else {
+          console.log("No internet connection, staying with offline data...");
+        }
+      }, 5000); // Wait for 5 seconds before fetching fresh data
+    } catch (err) {
+      console.error("Error during data sync", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Initial load: get from local storage then fetch new data
+  const checkInternetConnection = async (): Promise<boolean> => {
+    try {
+      const response = await fetch("https://www.google.com", {
+        method: "HEAD",
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  };
+
   useEffect(() => {
     const initializeProducts = async () => {
-      await loadFromLocalStorage();
-      await fetchData();
+      await syncData();
     };
+    fetchUserDetails();
     initializeProducts();
   }, []);
 
-  // Pull-to-refresh handler using the latest fetchData logic
   const onRefresh = useCallback(() => {
-    fetchData();
+    syncData();
   }, []);
 
   // Handle Android hardware back button
@@ -120,6 +189,25 @@ const HomePage = () => {
             <RefreshControl refreshing={loading} onRefresh={onRefresh} />
           }
         >
+          <View className="mb-4">
+            {/* Greeting Banner */}
+            <View>
+              <Text style={{ fontFamily: "Unbounded Regular" }}>
+                {(() => {
+                  const hour = new Date().getHours();
+                  const greeting =
+                    hour < 12 ? "Ayekooo" : hour < 18 ? "Akwaaba" : "Welcome";
+                  // Assume userName comes from backend; fallback to a gender-neutral term if not present.
+                  const displayName =
+                    user.fullName.trim().length > 0
+                      ? user.fullName.split(" ")[0]
+                      : "customer";
+                  return `${greeting}, ${displayName}!`;
+                })()}
+              </Text>
+            </View>
+          </View>
+          {user.fullName.trim().length === 0 && <GuestBanner />}
           {loading ? (
             <View className="flex-1 justify-center items-center">
               <LottieView
@@ -137,7 +225,7 @@ const HomePage = () => {
                   className="text-lg text-[#014E3C]"
                   style={{ fontFamily: "Unbounded Medium" }}
                 >
-                  Essential Produce
+                  Top Picks
                 </Text>
                 <TouchableOpacity
                   onPress={() => router.push("/")}

@@ -2,38 +2,33 @@ import { router } from "expo-router";
 import React from "react";
 import { View, Pressable, Text } from "react-native";
 
-// components/GuestBanner.js
 export default function GuestBanner() {
   return (
-    <View className="bg-[#2BCC5A]/10 p-3 rounded-2xl border border-[#2BCC5A]">
-      <Text
-        className="text-[#2BCC5A] text-sm"
-        style={{ fontFamily: "Unbounded Regular" }}
-      >
-        Sign up with your phone number to:
-      </Text>
-      <View className="mt-1">
-        <Text className="text-xs" style={{ fontFamily: "Unbounded Regular" }}>
-          ✓ Save your cart
-        </Text>
-        <Text className="text-xs" style={{ fontFamily: "Unbounded Regular" }}>
-          ✓ Track orders
-        </Text>
-        <Text className="text-xs" style={{ fontFamily: "Unbounded Regular" }}>
-          ✓ Earn rewards
-        </Text>
-      </View>
-      <Pressable
-        className="bg-[#2BCC5A] py-2 px-4 rounded-full mt-2 self-start"
-        onPress={() => router.push("/auth")}
-      >
+    <View className="bg-[#2BCC5A]/5 px-3 py-2 rounded-lg border border-[#2BCC5A]/20 mb-4">
+      <View className="flex-row flex-wrap items-center justify-between">
         <Text
-          className="text-white text-xs"
-          style={{ fontFamily: "Unbounded Medium" }}
+          className="text-[#2BCC5A]/90 text-[10px] mr-2"
+          style={{ fontFamily: "Unbounded Regular" }}
         >
-          Continue with Phone Number
+          Use your phone number to unlock exclusive deals, save your cart, and
+          track every order with ease. It's fast, secure, and tailored just for
+          you!
         </Text>
-      </Pressable>
+        <Pressable
+          onPress={() => router.push("/auth")}
+          className="border-b border-[#2BCC5A] pb-0.5 active:opacity-80"
+          accessibilityRole="button"
+          accessibilityLabel="Join now"
+          accessibilityHint="Navigates to the sign-up page"
+        >
+          <Text
+            className="text-[#2BCC5A] text-[11px]"
+            style={{ fontFamily: "Unbounded Medium" }}
+          >
+            Join now!
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
