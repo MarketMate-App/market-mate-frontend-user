@@ -104,7 +104,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       await SecureStore.setItemAsync("userLocation", JSON.stringify(loc));
       console.log("Location saved", loc);
       alert("Location saved successfully");
-      router.back();
+      router.replace("/(tabs)/shop");
     } catch (error) {
       Alert.alert("Error", "Failed to save location");
     }

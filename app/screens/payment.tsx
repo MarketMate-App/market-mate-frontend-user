@@ -235,7 +235,7 @@ const Payment = () => {
     }
     const jwtToken = await SecureStore.getItemAsync("jwtToken");
     if (!jwtToken) {
-      Alert.alert("Authentication Required", "Please log in again.");
+      Alert.alert("Authentication Required", "Please log in to continue.");
       router.replace("/auth");
       return;
     }

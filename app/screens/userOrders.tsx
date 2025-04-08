@@ -79,7 +79,7 @@ const UserOrdersScreen: React.FC = () => {
   // Intercept hardware back button to navigate to Profile screen.
   useEffect(() => {
     const backAction = () => {
-      router.replace("/profile");
+      router.back();
       return true;
     };
 
@@ -354,7 +354,7 @@ const UserOrdersScreen: React.FC = () => {
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <UserAvatar
-                  name={item.courier.user.fullName || "Market Mate"}
+                  name={item.courier.user.fullName ?? "Market Mate"}
                   size={50}
                 />
                 <View style={{ marginLeft: 8 }}>

@@ -157,7 +157,7 @@ const CartComponent = () => {
       }
     };
     fetchLocation();
-  }, []);
+  }, [hasLocation]);
 
   const handleCouponApply = async () => {
     try {

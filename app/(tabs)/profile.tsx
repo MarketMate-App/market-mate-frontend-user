@@ -222,7 +222,7 @@ const ProfilePage = () => {
             }}
           >
             <View className="mb-8 mt-8 flex-row items-center justify-center">
-              <UserAvatar name={user.fullName || "Customer"} size={96} />
+              <UserAvatar name={user.fullName ?? "Market Mate"} size={96} />
             </View>
             <Text
               style={[
