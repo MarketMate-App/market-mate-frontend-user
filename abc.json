@@ -1,4 +1,4 @@
-const products = [
+ [
   {
        "name": "Watermelon",
     "price": 22,
@@ -951,7 +951,7 @@ const products = [
     "price": 850,
     "imageUrl": "https://ik.imagekit.io/corsa/images/frytol-oil.jpg",
     "discount": 0,
-    "unitOfMeasure": "25 litres",
+z    "unitOfMeasure": "25 litres",
     "category": "Oils",
     "tags": ["Commercial", "Bulk"],
     "description":
@@ -978,5 +978,5 @@ const products = [
     "tags": ["Bulk", "Stews"],
     "description":
       "25kg bucket of ripe tomatoes for large-scale cooking. Ideal for chop bars, event catering, or homemade sauce preservation.",
-  },
-];
+  }
+]

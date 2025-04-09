@@ -43,7 +43,7 @@ const HomePage = () => {
       if (userDetails) {
         const parsedDetails = JSON.parse(userDetails);
         setUser({
-          fullName: parsedDetails.fullName,
+          fullName: parsedDetails.fullName || "customer",
         });
         console.log("User details fetched:", parsedDetails);
       }
@@ -70,7 +70,7 @@ const HomePage = () => {
       console.error("Failed to save user details to local storage", error);
     }
   };
-  // Load products from AsyncStorage
+
   const loadFromLocalStorage = async (): Promise<void> => {
     try {
       const jsonValue = await AsyncStorage.getItem("@products");
@@ -94,6 +94,7 @@ const HomePage = () => {
   };
 
   const fetchData = async (): Promise<void> => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/products`
@@ -109,10 +110,14 @@ const HomePage = () => {
       }
     } catch (err) {
       console.error("Failed to fetch products", err);
+      Alert.alert("Error", "Failed to fetch products. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const syncData = async (): Promise<void> => {
+    setLoading(true);
     try {
       const jsonValue = await AsyncStorage.getItem("@products");
       if (jsonValue) {
@@ -121,18 +126,20 @@ const HomePage = () => {
         setLocalProducts(parsedProducts);
       }
 
-      // Wait for a short period before fetching fresh data
-      setTimeout(async () => {
-        const isConnected = await checkInternetConnection();
-        if (isConnected) {
-          console.log("Internet connection available, fetching fresh data...");
-          await fetchData();
-        } else {
-          console.log("No internet connection, staying with offline data...");
-        }
-      }, 5000); // Wait for 5 seconds before fetching fresh data
+      const isConnected = await checkInternetConnection();
+      if (isConnected) {
+        console.log("Internet connection available, fetching fresh data...");
+        await fetchData();
+      } else {
+        console.log("No internet connection, staying with offline data...");
+        Alert.alert(
+          "Offline Mode",
+          "No internet connection. Displaying offline data."
+        );
+      }
     } catch (err) {
       console.error("Error during data sync", err);
+      Alert.alert("Error", "Failed to sync data. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -157,8 +164,10 @@ const HomePage = () => {
     initializeProducts();
   }, []);
 
-  const onRefresh = useCallback(() => {
-    syncData();
+  const onRefresh = useCallback(async () => {
+    setLoading(true);
+    await syncData();
+    setLoading(false);
   }, []);
 
   // Handle Android hardware back button
@@ -197,11 +206,13 @@ const HomePage = () => {
                   const hour = new Date().getHours();
                   const greeting =
                     hour < 12 ? "Ayekooo" : hour < 18 ? "Akwaaba" : "Welcome";
-                  // Assume userName comes from backend; fallback to a gender-neutral term if not present.
+
+                  // Ensure user.fullName is a valid string and fallback to "customer" if not
                   const displayName =
-                    user.fullName.trim().length > 0
-                      ? user.fullName.split(" ")[0]
+                    user?.fullName && typeof user.fullName === "string"
+                      ? user.fullName.trim().split(" ")[0] || "customer"
                       : "customer";
+
                   return `${greeting}, ${displayName}!`;
                 })()}
               </Text>
@@ -245,15 +256,13 @@ const HomePage = () => {
                 className="mb-4"
               >
                 {localProducts
-                  .filter((product) =>
-                    product.tags.includes("Essential".toLowerCase())
-                  )
+                  .filter((product) => product.tags.includes("essential"))
                   .sort(() => Math.random() - 0.5)
                   .slice(0, 10)
                   .map((product) => (
                     <GridcardComponent
                       key={product._id}
-                      productId={product._id}
+                      productId={product._id ? String(product._id) : undefined}
                       name={product.name}
                       price={product.price}
                       imageUrl={product.imageUrl}
@@ -279,11 +288,13 @@ const HomePage = () => {
                 {localProducts &&
                   localProducts
                     .filter(
-                      (product) => product.category === "Fruits".toLowerCase()
+                      (product) => product.category.toLowerCase() === "fruits"
                     )
                     .map((product) => (
                       <GridcardComponent
-                        productId={product._id}
+                        productId={
+                          product._id ? String(product._id) : undefined
+                        }
                         key={product._id}
                         name={product.name}
                         price={product.price}
@@ -308,11 +319,11 @@ const HomePage = () => {
               >
                 {localProducts
                   .filter(
-                    (product) => product.category === "Vegetables".toLowerCase()
+                    (product) => product.category.toLowerCase() === "vegetables"
                   )
                   .map((product) => (
                     <GridcardComponent
-                      productId={product._id}
+                      productId={product._id ? String(product._id) : undefined}
                       key={product._id}
                       name={product.name}
                       price={product.price}
@@ -337,11 +348,11 @@ const HomePage = () => {
               >
                 {localProducts
                   .filter(
-                    (product) => product.category === "Meats".toLowerCase()
+                    (product) => product.category.toLowerCase() === "meats"
                   )
                   .map((product) => (
                     <GridcardComponent
-                      productId={product._id}
+                      productId={product._id ? String(product._id) : undefined}
                       key={product._id}
                       name={product.name}
                       price={product.price}
@@ -370,7 +381,9 @@ const HomePage = () => {
                       .filter((product) => product.tags.includes("Nutritious"))
                       .map((product) => (
                         <GridcardComponent
-                          productId={product._id}
+                          productId={
+                            product._id ? String(product._id) : undefined
+                          }
                           key={product._id}
                           name={product.name}
                           price={product.price}

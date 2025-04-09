@@ -8,6 +8,7 @@ import {
   Text,
   View,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 
 export default function Index() {
@@ -51,7 +52,7 @@ export default function Index() {
               Discover unbeatable deals on fresh produce and everyday
               essentials. Enjoy a seamless shopping experience tailored for you.
             </Text>
-            <Pressable
+            <TouchableOpacity
               onPress={() => router.push("/shop")}
               accessibilityLabel="Start shopping now"
               className="w-full bg-[#2BCC5A] px-8 py-5 rounded-full"
@@ -62,7 +63,7 @@ export default function Index() {
               >
                 Shop Now & Save!
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </LinearGradient>
       </ImageBackground>

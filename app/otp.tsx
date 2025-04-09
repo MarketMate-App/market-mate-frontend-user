@@ -30,12 +30,14 @@ const OtpPage = () => {
         if (storedPhoneNumber) {
           const hiddenNumber = storedPhoneNumber.replace(
             /^(\d{3})\d{4}(\d{2})$/,
-            "$1****$2"
+            (_, prefix, suffix) => `${prefix}****${suffix}`
           );
           setPhoneNumber(hiddenNumber);
+        } else {
+          console.warn("No phone number found in storage.");
         }
       } catch (error) {
-        console.error("Error fetching phone number:", error);
+        console.error("Failed to fetch phone number from storage:", error);
       }
     };
     fetchPhoneNumber();
@@ -89,7 +91,7 @@ const OtpPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to verify OTP");
+        // Alert.alert(errorData.message || "Failed to verify OTP");
       }
 
       const data = await response.json();
@@ -123,13 +125,13 @@ const OtpPage = () => {
         if (await SecureStore.getItemAsync("jwtToken")) {
           console.log("Token saved successfully.");
           Alert.alert("Success", "OTP verified successfully!");
-          router.push("/screens/delivery_address");
+          router.replace("/screens/delivery_address");
         }
       } else {
         Alert.alert("Error", data.message || "Failed to verify OTP");
       }
     } catch (error) {
-      console.error("Error verifying OTP:", error);
+      // console.error("Error verifying OTP:", error);
       Alert.alert(
         "Error",
         error instanceof Error
@@ -212,13 +214,15 @@ const OtpPage = () => {
             className="text-3xl mb-3"
             style={{ fontFamily: "Unbounded Regular" }}
           >
-            Enter OTP
+            Verify Your Identity
           </Text>
           <Text
             className="text-gray-500 text-xs mb-8"
             style={{ fontFamily: "Unbounded Regular" }}
           >
-            Please enter the one-time password sent to {phoneNumber}.
+            To keep your account secure, please enter the one-time password we
+            sent to {phoneNumber}. This step ensures only you can access your
+            account.
           </Text>
 
           <View className="flex-row items-center border border-gray-200 rounded-2xl w-full mb-2">
