@@ -7,10 +7,9 @@ import {
   Pressable,
   Image,
   Platform,
-  TouchableOpacity,
 } from "react-native";
 import { useCartStore } from "../store/cartStore";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import * as SecureStore from "expo-secure-store";
@@ -82,7 +81,7 @@ const CartItemComponent = memo(
               className="text-gray-500 text-xs mb-4"
               style={{ fontFamily: "Unbounded Light" }}
             >
-              {item.unitOfMeasure}
+              1 {item.unitOfMeasure}
             </Text>
           </View>
         </View>
@@ -94,24 +93,24 @@ const CartItemComponent = memo(
             ₵{formattedPrice}
           </Text>
           <View className="flex-row items-center gap-2">
-            <TouchableOpacity
+            <Pressable
               onPress={handleDecrement}
               className="border-hairline border-gray-300 rounded-full p-1"
             >
               <Entypo name="minus" size={20} color="gray" />
-            </TouchableOpacity>
+            </Pressable>
             <Text
               className="mx-2 text-gray-500 text-sm"
               style={{ fontFamily: "Unbounded Regular" }}
             >
               {item.quantity}
             </Text>
-            <TouchableOpacity
+            <Pressable
               onPress={handleIncrement}
               className="border-hairline border-gray-300 rounded-full p-1 bg-black"
             >
               <Entypo name="plus" size={20} color="white" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </View>
@@ -143,30 +142,28 @@ const CartComponent = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
-  useFocusEffect(
-    useCallback(() => {
-      const fetchLocation = async () => {
-        try {
-          const location = await SecureStore.getItemAsync("userLocation");
-          if (location) {
-            setHasLocation(true);
-            console.log(location);
-          } else {
-            setHasLocation(false);
-          }
-        } catch (error) {
-          console.error("Error fetching location:", error);
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const location = await SecureStore.getItemAsync("userLocation");
+        if (location) {
+          setHasLocation(true);
+          console.log(location);
+        } else {
+          setHasLocation(false);
         }
-      };
-      fetchLocation();
-    }, [])
-  );
+      } catch (error) {
+        console.error("Error fetching location:", error);
+      }
+    };
+    fetchLocation();
+  }, [hasLocation]);
 
   const handleCouponApply = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/verify-coupon`,
+        "http://192.168.43.155:3000/api/verify-coupon",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -240,7 +237,7 @@ const CartComponent = () => {
               </Text>
             </View>
             <View className="flex-row justify-end mb-4">
-              <TouchableOpacity
+              <Pressable
                 className="px-4 py-2 bg-red-500 rounded-full flex-row items-center justify-center"
                 onPress={handleClearCart}
               >
@@ -256,7 +253,7 @@ const CartComponent = () => {
                 >
                   Remove all items
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </>
         )}
@@ -287,7 +284,7 @@ const CartComponent = () => {
               Fill up your cart with fresh groceries and everyday essentials.
               Start shopping now!
             </Text>
-            <TouchableOpacity
+            <Pressable
               className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
               onPress={() => router.push("/home")}
             >
@@ -297,7 +294,7 @@ const CartComponent = () => {
               >
                 View trending items
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
         {cart.length > 0 && (
@@ -338,7 +335,7 @@ const CartComponent = () => {
                   }}
                 />
                 {coupon.length > 0 && (
-                  <TouchableOpacity
+                  <Pressable
                     className="bg-[#2BCC5A] absolute right-2 px-4 py-2 rounded-full ml-2"
                     onPress={
                       couponDetails ? handleCouponRemove : handleCouponApply
@@ -351,7 +348,7 @@ const CartComponent = () => {
                     >
                       {couponDetails ? "Remove" : "Apply"}
                     </Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 )}
               </View>
               {couponDetails?.valid && (
@@ -362,9 +359,9 @@ const CartComponent = () => {
                   >
                     {coupon} applied. {couponDetails?.discount}% off
                   </Text>
-                  <TouchableOpacity onPress={handleCouponRemove}>
+                  <Pressable onPress={handleCouponRemove}>
                     <MaterialIcons name="close" size={16} color="#166534" />
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               )}
             </View>
@@ -375,16 +372,16 @@ const CartComponent = () => {
               >
                 Free Delivery Progress
               </Text>
-              <View className="w-full bg-gray-200 rounded-full h-2.5 mb-2 overflow-hidden">
+              <View className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
                 <View
                   className="bg-[#2BCC5A] h-2.5 rounded-full"
                   style={{
-                    width: `${(totalPrice / 500) * 100}%`,
+                    width: `${(totalPrice / 250) * 100}%`,
                     maxWidth: "100%",
                   }}
                 />
               </View>
-              {totalPrice >= 500 ? (
+              {totalPrice >= 250 ? (
                 <Text
                   className="text-green-600 text-xs"
                   style={{ fontFamily: "Unbounded Regular" }}
@@ -396,7 +393,7 @@ const CartComponent = () => {
                   className="text-gray-600 text-xs"
                   style={{ fontFamily: "Unbounded Regular" }}
                 >
-                  Add GHS {(500 - totalPrice).toFixed(2)} more to qualify for
+                  Add GHS {(250 - totalPrice).toFixed(2)} more to qualify for
                   free delivery.
                 </Text>
               )}
@@ -405,7 +402,7 @@ const CartComponent = () => {
         )}
       </ScrollView>
       <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
-        <TouchableOpacity
+        <Pressable
           className={`bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white ${
             cart.length === 0 ? "opacity-50" : ""
           }`}
@@ -426,7 +423,7 @@ const CartComponent = () => {
           >
             Go to Checkout
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </>
   );

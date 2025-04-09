@@ -79,7 +79,7 @@ const UserOrdersScreen: React.FC = () => {
   // Intercept hardware back button to navigate to Profile screen.
   useEffect(() => {
     const backAction = () => {
-      router.replace("/profile");
+      router.back();
       return true;
     };
 
@@ -354,7 +354,7 @@ const UserOrdersScreen: React.FC = () => {
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <UserAvatar
-                  name={item.courier.user.fullName || "Market Mate"}
+                  name={item.courier.user.fullName ?? "Market Mate"}
                   size={50}
                 />
                 <View style={{ marginLeft: 8 }}>
@@ -503,7 +503,7 @@ const UserOrdersScreen: React.FC = () => {
   }
 
   return (
-    <View style={{ paddingBottom: 50 }} className="bg-[#ffffff90]">
+    <View style={{ paddingBottom: 50 }} className="bg-gray-100">
       <Stack.Screen
         options={{
           headerTitleAlign: "center",
@@ -539,35 +539,60 @@ const UserOrdersScreen: React.FC = () => {
           paddingTop: 8,
         }}
         ListEmptyComponent={
-          <View className="flex-1 items-center justify-center">
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 50,
+            }}
+          >
             <Image
               source={require("@/assets/images/empty-cart.png")}
-              className="w-64 h-64 mb-8"
+              style={{ width: 256, height: 256, marginBottom: 16 }}
             />
             <Text
-              className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "Unbounded Medium" }}
+              style={{
+                fontFamily: "Unbounded Medium",
+                fontSize: 18,
+                color: "#4B5563",
+                marginBottom: 8,
+              }}
             >
-              No orders yet?
+              No orders found
             </Text>
             <Text
-              className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Light" }}
+              style={{
+                textAlign: "center",
+                width: 320,
+                color: "#6B7280",
+                fontFamily: "Unbounded Light",
+                fontSize: 12,
+                marginBottom: 16,
+              }}
             >
-              Explore our wide range of products and find something you love.
-              Start shopping now and make your first order today!
+              Start placing orders to track your purchases here.
             </Text>
-            <TouchableOpacity
-              className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
+            <Pressable
+              style={{
+                width: "56%",
+                paddingVertical: 12,
+                borderRadius: 999,
+                borderWidth: 1,
+                borderColor: "#014E3C",
+                alignItems: "center",
+              }}
               onPress={() => router.push("/home")}
             >
               <Text
-                className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{
+                  color: "#014E3C",
+                  fontFamily: "Unbounded SemiBold",
+                  fontSize: 12,
+                }}
               >
-                Browse popular products
+                View trending items
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         }
         refreshControl={

@@ -83,7 +83,7 @@ const DeliveryAddressScreen = () => {
         };
         await saveUserDetails(userDetails);
         Alert.alert("Success", "Details saved successfully!");
-        router.replace("/shop");
+        router.replace("/home");
       }
     } catch (error) {
       setLoading(false);
@@ -160,7 +160,7 @@ const DeliveryAddressScreen = () => {
             >
               Please enter your details below.
             </Text>
-            <KeyboardAvoidingView className="bg-white border-hairline items-center gap-2 border-gray-200 mb-4 rounded-xl">
+            <View className="bg-white border-hairline items-center gap-2 border-gray-200 mb-4 rounded-xl">
               <FloatingLabelInput
                 label="Full name"
                 labelStyles={{
@@ -212,7 +212,6 @@ const DeliveryAddressScreen = () => {
                 customLabelStyles={{ colorFocused: "#9ca3af" }}
                 value={country}
                 hint="ex: Western Region"
-                defaultValue="Western Region"
                 hintTextColor="#9ca3af"
                 onChangeText={(value) => setCountry(value)}
                 containerStyles={{
@@ -309,7 +308,7 @@ const DeliveryAddressScreen = () => {
                   returnKeyType="done"
                 />
               </View> */}
-            </KeyboardAvoidingView>
+            </View>
           </ScrollView>
 
           <View

@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
-  TouchableOpacity,
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
@@ -119,10 +118,8 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       />
       {loading ? (
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={"#2BCC5A"} />
-          <Text style={styles.infoText}>
-            Fetching your location, please wait...
-          </Text>
+          <ActivityIndicator size="large" color={"#0000ff"} />
+          <Text style={styles.infoText}>Loading your location...</Text>
         </View>
       ) : (
         <>
@@ -154,7 +151,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
               <Button title="Search Location" onPress={handleLocationInput} />
             </View> */}
             <View style={styles.buttonRow}>
-              <TouchableOpacity
+              <Pressable
                 className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
                 onPress={() => handleUseCurrentLocation()}
               >
@@ -164,7 +161,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
                 >
                   Use Current Location
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </>

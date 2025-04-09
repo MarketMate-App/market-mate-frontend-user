@@ -54,14 +54,38 @@ const Payment = () => {
   const [user, setUser] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<CartItem[]>([]);
 
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number => {
+    const R = 6371; // Radius of the Earth in km
+    const toRadians = (deg: number) => (deg * Math.PI) / 180;
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+  const marketLocation = { latitude: 4.9209, longitude: -1.7587 }; // Coordinates for Takoradi Market
+  const rawDistance = calculateDistance(
+    marketLocation.latitude,
+    marketLocation.longitude,
+    userLocation?.coords.latitude || 0,
+    userLocation?.coords.longitude || 0
+  );
+  const maxAllowedDistance = 50; // maximum allowed distance in km
+  const distance =
+    rawDistance > maxAllowedDistance ? maxAllowedDistance : rawDistance;
   const body = {
     isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
-    location: userLocation
-      ? {
-          latitude: userLocation.coords.latitude,
-          longitude: userLocation.coords.longitude,
-        }
-      : { latitude: 0, longitude: 0 }, // Default to 0,0 if userLocation is null
+    distance: distance,
     promoCode: "",
     items: cart.map((item) => ({
       id: item.id,
@@ -73,49 +97,18 @@ const Payment = () => {
   const fetchTotal = async () => {
     setLoading(true);
     setTotalError(null);
-
     try {
-      // Fetch location from SecureStore before proceeding
-      const savedLocation = await SecureStore.getItemAsync("userLocation");
-      if (!savedLocation) {
-        throw new Error("User location is missing or invalid.");
-      }
-
-      const coordinates = JSON.parse(savedLocation);
-      setUserLocation(coordinates);
-
-      if (!process.env.EXPO_PUBLIC_API_URL) {
-        throw new Error("API URL is not defined in environment variables.");
-      }
-
-      const requestBody = {
-        isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
-        location: {
-          latitude: coordinates.coords.latitude || 0,
-          longitude: coordinates.coords.longitude || 0,
-        },
-        promoCode: "",
-        items: cart.map((item) => ({
-          id: item.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      };
-
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/calculate-total`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(body),
         }
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${response.status}`
-        );
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const totalData: TotalData = await response.json();
@@ -125,7 +118,7 @@ const Payment = () => {
       setTotalError(error.message || "An unknown error occurred");
       Alert.alert(
         "Oops!",
-        "We couldn't calculate the total. Please check your location and try again."
+        "We couldn't calculate the total. Please try again."
       );
     } finally {
       setLoading(false);
@@ -177,6 +170,7 @@ const Payment = () => {
             Authorization: `Bearer ${jwtToken}`,
           },
           body: JSON.stringify({
+            courier: "67dbf39b18342fc23a061fee",
             items: cart.map((item) => ({
               name: item.name,
               price: item.price,
@@ -234,13 +228,6 @@ const Payment = () => {
     }
   };
   const handlePayment = async () => {
-    if (!data?.total || data.total <= 0) {
-      Alert.alert(
-        "Invalid Total",
-        "The total amount is missing or invalid. Please try again."
-      );
-      return;
-    }
     if (userLocation === null) {
       Alert.alert("Location Required", "Please set a delivery location.");
       router.push("/location");
@@ -257,35 +244,20 @@ const Payment = () => {
       router.replace("/screens/payment_processing");
       return;
     } else {
-      if (!data?.total || data.total <= 0) {
-        Alert.alert(
-          "Invalid Total",
-          "The total amount is missing or invalid. Please try again."
-        );
-        return;
-      }
+      // Uncomment the line below to initiate online payment
+      // Alert.alert(
+      //   "Payment Error",
+      //   "Online payment is not supported yet. Please select Cash on Delivery."
+      // );
       paystackWebViewRef.current?.startTransaction();
     }
   };
 
   useEffect(() => {
-    const initialize = async () => {
-      await fetchLocation();
-      await fetchUser();
-
-      if (cart.length === 0) {
-        router.replace("/");
-        return;
-      }
-
-      if (!userLocation?.coords) {
-        await fetchLocation();
-      }
-
-      fetchTotal();
-    };
-
-    initialize();
+    fetchLocation();
+    fetchUser();
+    if (cart.length === 0) router.replace("/");
+    fetchTotal();
   }, []);
   // ... Keep all type definitions and state declarations ...
   const [expanded, setExpanded] = useState(false);
@@ -305,7 +277,7 @@ const Payment = () => {
   });
 
   return (
-    <SafeAreaView className="bg-[#f8fafc]">
+    <SafeAreaView className="flex-1 bg-[#f8fafc]">
       <Stack.Screen
         options={{
           headerTitleAlign: "center",
@@ -335,17 +307,16 @@ const Payment = () => {
 
       <ScrollView
         className="px-4 pt-4"
-        contentContainerStyle={{ paddingBottom: 50, position: "relative" }}
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 50 }}
       >
         <View style={{ flex: 1 }}>
           <Paystack
-            paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
-            paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
-            // paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_SECRET_KEY}`}
-            // paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY}`}
+            paystackKey="pk_test_e3c1f3c5212dcc83a5baa2c47c7cd3526fbe3980"
+            paystackSecretKey="sk_test_e71eb18fcb4d9bba3a999a75e41e773831d583f1"
+            // paystackSecretKey="sk_live_99e1351b4c69b9ffba5f262e81fa338809d94369"
+            // paystackKey="pk_live_a01465c40ffb49e70308bc7109ad5ffb054163ab"
             billingName="MarketMate"
-            channels={["mobile_money"]}
+            channels={["mobile_money", "ussd"]}
             currency="GHS"
             billingEmail="customer@marketmate.com"
             amount={data?.total ?? 0} // Amount in GHS
@@ -411,16 +382,12 @@ const Payment = () => {
                 >
                   Subtotal
                 </Text>
-                {loading ? (
-                  <ActivityIndicator size="small" color="#2BCC5A" />
-                ) : (
-                  <Text
-                    className="text-gray-900"
-                    style={{ fontFamily: "Unbounded Medium" }}
-                  >
-                    GHS {data?.subtotal?.toFixed(2) || "0.00"}
-                  </Text>
-                )}
+                <Text
+                  className="text-gray-900"
+                  style={{ fontFamily: "Unbounded Medium" }}
+                >
+                  GHS {data?.subtotal?.toFixed(2)}
+                </Text>
               </View>
 
               {expanded && (
@@ -442,7 +409,7 @@ const Payment = () => {
                       GHS{" "}
                       {(
                         (data?.deliveryFee ?? 0) + (data?.distanceFee ?? 0)
-                      ).toFixed(2) || "0.00"}
+                      ).toFixed(2)}
                     </Text>
                   </View>
 
@@ -453,7 +420,7 @@ const Payment = () => {
                           className="text-red-600 text-sm"
                           style={{ fontFamily: "Unbounded Light" }}
                         >
-                          Busy Hour fee
+                          Peak Surcharge
                         </Text>
                         <Ionicons
                           name="alert-circle"
@@ -488,7 +455,7 @@ const Payment = () => {
                       className="text-gray-900"
                       style={{ fontFamily: "Unbounded Medium" }}
                     >
-                      GHS {data?.platformFee.toFixed(2) || "0.00"}
+                      GHS {data?.platformFee.toFixed(2)}
                     </Text>
                   </View>
                 </>
@@ -503,16 +470,12 @@ const Payment = () => {
                   >
                     Total Amount
                   </Text>
-                  {loading ? (
-                    <ActivityIndicator size="small" color="#2BCC5A" />
-                  ) : (
-                    <Text
-                      className="text-xl text-[#2BCC5A]"
-                      style={{ fontFamily: "Unbounded SemiBold" }}
-                    >
-                      GHS {data?.total?.toFixed(2) || "0.00"}
-                    </Text>
-                  )}
+                  <Text
+                    className="text-xl text-[#2BCC5A]"
+                    style={{ fontFamily: "Unbounded SemiBold" }}
+                  >
+                    GHS {data?.total?.toFixed(2)}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -619,10 +582,10 @@ const Payment = () => {
       </ScrollView>
 
       {/* Sticky Confirm Button */}
-      <View className="bg-white pt-4 fixed bottom-0 px-4 pb-10 border-t border-gray-100">
+      <View className="bg-white pt-4 px-4 pb-10 border-t border-gray-100">
         <TouchableOpacity
           onPress={handlePayment}
-          className={`w-full py-5 rounded-full ${
+          className={`w-full py-4 rounded-full ${
             loading ? "bg-gray-400" : "bg-[#2BCC5A]"
           } flex-row items-center justify-center space-x-2`}
         >
@@ -639,6 +602,12 @@ const Payment = () => {
             </>
           )}
         </TouchableOpacity>
+        <Text
+          style={{ fontFamily: "Unbounded Light" }}
+          className="text-gray-500 text-xs text-center mt-2"
+        >
+          By continuing, you agree to our Terms of Services
+        </Text>
       </View>
     </SafeAreaView>
   );

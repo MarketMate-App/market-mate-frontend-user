@@ -15,28 +15,12 @@ import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserAvatar from "react-native-user-avatar";
-import * as SecureStore from "expo-secure-store";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<{ fullName: string; phoneNumber: string }>({
     fullName: "",
     phoneNumber: "",
   });
-  const [token, setToken] = useState("");
-  const fetchToken = async () => {
-    try {
-      const token = await SecureStore.getItemAsync("jwtToken");
-      if (token) {
-        setToken(token);
-        console.log("Token fetched:", token);
-      } else {
-        console.log("No token found");
-      }
-    } catch (error) {
-      console.error("Failed to fetch token from secure storage", error);
-    }
-  };
-
   const [phoneNumber, setPhoneNumber] = useState("");
   const fetchUserDetails = async () => {
     try {
@@ -48,9 +32,8 @@ const ProfilePage = () => {
       }
       const parsedDetails = userDetails ? JSON.parse(userDetails) : {};
       setUser({
-        fullName: parsedDetails.fullName?.trim() || "Valued Shopper",
-        phoneNumber:
-          parsedDetails.phoneNumber?.trim() || "Phone number not available",
+        fullName: parsedDetails.fullName || "",
+        phoneNumber: parsedDetails.phoneNumber || "",
       });
       console.log("User details fetched:", parsedDetails);
     } catch (error) {
@@ -224,13 +207,12 @@ const ProfilePage = () => {
     );
   };
   useEffect(() => {
-    fetchToken();
     fetchUserDetails();
   }, []);
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView>
       <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
-        {token ? (
+        {user.fullName ? (
           <View
             style={{
               flex: 1,
@@ -240,7 +222,7 @@ const ProfilePage = () => {
             }}
           >
             <View className="mb-8 mt-8 flex-row items-center justify-center">
-              <UserAvatar name={user.fullName || "Market Mate"} size={96} />
+              <UserAvatar name={user.fullName ?? "Market Mate"} size={96} />
             </View>
             <Text
               style={[
@@ -258,7 +240,7 @@ const ProfilePage = () => {
             >
               {phoneNumber}
             </Text>
-            <TouchableOpacity
+            <Pressable
               onPressIn={() => {
                 router.push("/screens/delivery_address");
               }}
@@ -272,15 +254,14 @@ const ProfilePage = () => {
               }}
             >
               <Text
-                className="text-xs"
                 style={[
-                  { textAlign: "center", color: "#014E3C" },
+                  { textAlign: "center", fontSize: 12, color: "#014E3C" },
                   { fontFamily: "Unbounded SemiBold" },
                 ]}
               >
                 Edit Profile
               </Text>
-            </TouchableOpacity>
+            </Pressable>
             <Text
               style={[
                 {
@@ -339,44 +320,36 @@ const ProfilePage = () => {
             <ItemList items={preferenceItems} />
           </View>
         ) : (
-          <View className="p-4 flex-1 bg-white">
-            <Text
-              className="text-3xl mb-3"
-              style={{ fontFamily: "Unbounded Regular" }}
-            >
-              Welcome Back!
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#FFF",
+              padding: 12,
+            }}
+          >
+            <Text style={{ fontFamily: "Unbounded Light" }}>
+              Please log in to view your profile and access important features.
             </Text>
-            <Text
-              className="text-gray-500 text-xs mb-8"
-              style={{ fontFamily: "Unbounded Regular" }}
-            >
-              Log in to unlock your personalized experience, manage your orders,
-              and access exclusive features tailored just for you.
-            </Text>
-
-            <TouchableOpacity
-              onPressIn={() => {
-                router.push("/auth");
-              }}
+            <Pressable
               style={{
-                paddingVertical: 20,
-                width: "56%",
+                paddingVertical: 12,
+                paddingHorizontal: 24,
                 borderRadius: 999,
-                marginBottom: 32,
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: "#014E3C",
+                backgroundColor: "#014E3C",
               }}
+              onPress={() => router.push("/auth")}
             >
               <Text
-                className="text-xs"
                 style={[
-                  { textAlign: "center", color: "#014E3C" },
+                  { textAlign: "center", fontSize: 14, color: "#FFF" },
                   { fontFamily: "Unbounded SemiBold" },
                 ]}
               >
-                Continue to Login
+                Log In
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
       </ScrollView>

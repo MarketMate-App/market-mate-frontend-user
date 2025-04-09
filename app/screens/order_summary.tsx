@@ -43,7 +43,7 @@ const OrderSummaryScreen = () => {
         price: item.price,
       })),
     };
-    fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/calculate-total`, {
+    fetch("http://192.168.43.155:3000/api/calculate-total", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
