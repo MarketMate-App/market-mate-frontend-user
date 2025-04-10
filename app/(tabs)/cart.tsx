@@ -373,7 +373,7 @@ const CartComponent = () => {
                 className="text-xs text-gray-500 mb-2"
                 style={{ fontFamily: "Unbounded Regular" }}
               >
-                Free Delivery Progress
+                Enjoy free delivery in Takoradi
               </Text>
               <View className="w-full bg-gray-200 rounded-full h-2.5 mb-2 overflow-hidden">
                 <View
@@ -396,8 +396,8 @@ const CartComponent = () => {
                   className="text-gray-600 text-xs"
                   style={{ fontFamily: "Unbounded Regular" }}
                 >
-                  Add GHS {(500 - totalPrice).toFixed(2)} more to qualify for
-                  free delivery.
+                  You are just {(500 - totalPrice).toFixed(2)} away from free
+                  delivery.
                 </Text>
               )}
             </View>

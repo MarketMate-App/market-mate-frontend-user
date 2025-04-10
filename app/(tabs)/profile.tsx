@@ -14,11 +14,16 @@ import SwitchComponent from "../components/switch";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import UserAvatar from "react-native-user-avatar";
 import * as SecureStore from "expo-secure-store";
+import UserAvatar from "../components/userAvatar";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<{ fullName: string; phoneNumber: string }>({
+  const [user, setUser] = useState<{
+    profilePicture: any;
+    fullName: string;
+    phoneNumber: string;
+  }>({
+    profilePicture: null,
     fullName: "",
     phoneNumber: "",
   });
@@ -48,6 +53,7 @@ const ProfilePage = () => {
       }
       const parsedDetails = userDetails ? JSON.parse(userDetails) : {};
       setUser({
+        profilePicture: parsedDetails.profilePicture || null,
         fullName: parsedDetails.fullName?.trim() || "Valued Shopper",
         phoneNumber:
           parsedDetails.phoneNumber?.trim() || "Phone number not available",
@@ -229,7 +235,11 @@ const ProfilePage = () => {
   }, []);
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        horizontal={false}
+        showsVerticalScrollIndicator={false}
+        className="bg-[#ffffff90]"
+      >
         {token ? (
           <View
             style={{
@@ -240,7 +250,11 @@ const ProfilePage = () => {
             }}
           >
             <View className="mb-8 mt-8 flex-row items-center justify-center">
-              <UserAvatar name={user.fullName || "Market Mate"} size={96} />
+              <UserAvatar
+                name={user.fullName}
+                size={120}
+                imageUrl={user?.profilePicture}
+              />
             </View>
             <Text
               style={[

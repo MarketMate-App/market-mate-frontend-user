@@ -177,6 +177,7 @@ const Payment = () => {
             Authorization: `Bearer ${jwtToken}`,
           },
           body: JSON.stringify({
+            courier: "67dbf39b18342fc23a061fee",
             items: cart.map((item) => ({
               name: item.name,
               price: item.price,

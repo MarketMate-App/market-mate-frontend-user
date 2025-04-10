@@ -51,14 +51,22 @@ const LocationScreen: FC<LocationScreenProps> = () => {
         return;
       }
 
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      setRegion({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-        latitudeDelta: INITIAL_REGION.latitudeDelta,
-        longitudeDelta: INITIAL_REGION.longitudeDelta,
-      });
+      try {
+        const currentLocation = await Location.getCurrentPositionAsync({});
+        setLocation(currentLocation);
+        setRegion({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          latitudeDelta: INITIAL_REGION.latitudeDelta,
+          longitudeDelta: INITIAL_REGION.longitudeDelta,
+        });
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          "Failed to acquire current location. Please ensure location services are enabled."
+        );
+        console.error("Error fetching current location:", error);
+      }
     } catch (error) {
       setErrorMsg("Failed to get current location");
       Alert.alert("Error", "Failed to get current location");

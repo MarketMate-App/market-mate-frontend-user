@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import UserAvatar from "react-native-user-avatar";
 
 import {
   View,
@@ -23,6 +22,7 @@ import * as SecureStore from "expo-secure-store";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
 import { isLoading } from "expo-font";
+import UserAvatar from "../components/userAvatar";
 
 type OrderStatus =
   | "pending"
@@ -77,19 +77,6 @@ const UserOrdersScreen: React.FC = () => {
   const navigation = useNavigation();
 
   // Intercept hardware back button to navigate to Profile screen.
-  useEffect(() => {
-    const backAction = () => {
-      router.replace("/profile");
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-    return () => backHandler.remove();
-  }, []);
-
   // Fetch orders with data validation and update status if needed.
   const fetchOrders = useCallback(async () => {
     try {
@@ -334,16 +321,6 @@ const UserOrdersScreen: React.FC = () => {
               marginBottom: 12,
             }}
           >
-            {/* <Text
-                style={{
-                  fontFamily: "Unbounded Medium",
-                  fontSize: 14,
-                  marginBottom: 8,
-                  color: "#1F2937",
-                }}
-              >
-                Courier Details
-              </Text> */}
             <View
               style={{
                 flexDirection: "row",
@@ -354,8 +331,9 @@ const UserOrdersScreen: React.FC = () => {
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <UserAvatar
-                  name={item.courier.user.fullName || "Market Mate"}
                   size={50}
+                  imageUrl={item.courier.user.profilePicture}
+                  name={item.courier.user.fullName}
                 />
                 <View style={{ marginLeft: 8 }}>
                   <Text

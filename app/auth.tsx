@@ -7,12 +7,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  Pressable,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
   BackHandler,
+  TouchableOpacity,
 } from "react-native";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import * as SecureStore from "expo-secure-store";
@@ -193,7 +193,7 @@ const AuthPage = () => {
             />
           </View>
 
-          <Pressable
+          <TouchableOpacity
             onPress={handleContinue}
             className="w-full mt-4 bg-[#2BCC5A] py-5 rounded-full border border-white"
             style={{ backgroundColor: "#2BCC5A" }}
@@ -209,7 +209,7 @@ const AuthPage = () => {
                 Continue
               </Text>
             )}
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         <View className="w-full">
@@ -219,7 +219,7 @@ const AuthPage = () => {
           >
             Or sign in with
           </Text>
-          <Pressable
+          <TouchableOpacity
             onPress={() =>
               Alert.alert(
                 "Coming Soon",
@@ -239,7 +239,7 @@ const AuthPage = () => {
             >
               Continue with Google
             </Text>
-          </Pressable> */}
+          </TouchableOpacity> */}
           <Text
             className="text-xs text-gray-500 mt-4 text-center"
             style={{ fontFamily: "Unbounded Regular" }}

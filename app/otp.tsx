@@ -7,8 +7,8 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
-  Pressable,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, Stack } from "expo-router";
@@ -22,32 +22,30 @@ const OtpPage = () => {
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch phone number from AsyncStorage
   useEffect(() => {
     const fetchPhoneNumber = async () => {
       try {
         const storedPhoneNumber = await AsyncStorage.getItem("@phoneNumber");
         if (storedPhoneNumber) {
-          const hiddenNumber = storedPhoneNumber.replace(
-            /^(\d{3})\d{4}(\d{2})$/,
-            (_, prefix, suffix) => `${prefix}****${suffix}`
+          setPhoneNumber(
+            storedPhoneNumber.replace(
+              /^(\d{3})\d{4}(\d{2})$/,
+              (_, prefix, suffix) => `${prefix}****${suffix}`
+            )
           );
-          setPhoneNumber(hiddenNumber);
         } else {
           console.warn("No phone number found in storage.");
         }
       } catch (error) {
-        console.error("Failed to fetch phone number from storage:", error);
+        console.error("Failed to fetch phone number:", error);
       }
     };
     fetchPhoneNumber();
   }, []);
 
-  // Countdown timer for resend button
   useEffect(() => {
-    let timer: NodeJS.Timeout;
     if (resendDisabled && counter > 0) {
-      timer = setInterval(() => {
+      const timer = setInterval(() => {
         setCounter((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
@@ -57,14 +55,13 @@ const OtpPage = () => {
           return prev - 1;
         });
       }, 1000);
+      return () => clearInterval(timer);
     }
-    return () => clearInterval(timer);
   }, [resendDisabled, counter]);
 
   const handleContinue = async () => {
-    const otpRegex = /^\d{6}$/;
-    if (!otpRegex.test(otp)) {
-      Alert.alert("Error", "Please enter a valid 6-digit OTP.");
+    if (!/^\d{6}$/.test(otp)) {
+      Alert.alert("Invalid OTP", "Please enter a valid 6-digit OTP.");
       return;
     }
 
@@ -72,125 +69,110 @@ const OtpPage = () => {
     try {
       const storedPhoneNumber = await AsyncStorage.getItem("@phoneNumber");
       if (!storedPhoneNumber) {
-        throw new Error("Phone number not found. Please try again.");
+        Alert.alert(
+          "Missing Information",
+          "We couldn't find your phone number. Please try again."
+        );
+        return;
       }
 
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/auth/verify-otp`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            phoneNumber: storedPhoneNumber,
-            otp,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phoneNumber: storedPhoneNumber, otp }),
         }
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        // Alert.alert(errorData.message || "Failed to verify OTP");
+        const errorData = await response.json().catch(() => null);
+        Alert.alert(
+          "Verification Failed",
+          errorData?.message || "We couldn't verify your OTP. Please try again."
+        );
+        return;
       }
 
       const data = await response.json();
       if (data.success) {
-        console.log(data);
-        const saveUserDetails = async (details: {
-          phoneNumber: string;
-          fullName: string;
-          profilePicture: string;
-          address: {
-            street: string;
-            region: string;
-            country: string;
-          };
-          wishlist: string[];
-        }) => {
-          try {
-            await AsyncStorage.setItem("@userDetails", JSON.stringify(details));
-            console.log("User details saved to local storage");
-          } catch (error) {
-            console.error(
-              "Failed to save user details to local storage",
-              error
-            );
-          }
-        };
-        saveUserDetails(data.user);
-        // Save user details to AsyncStorage
-        // Save jwt token to secure store
-        await SecureStore.setItemAsync("jwtToken", data.token);
-        if (await SecureStore.getItemAsync("jwtToken")) {
-          console.log("Token saved successfully.");
-          Alert.alert("Success", "OTP verified successfully!");
-          router.replace("/screens/delivery_address");
-        }
+        await saveUserDetails(data.user);
+        await saveToken(data.token);
+        Alert.alert("Success", "Your OTP has been verified successfully!");
+        router.replace("/screens/delivery_address");
       } else {
-        Alert.alert("Error", data.message || "Failed to verify OTP");
+        Alert.alert(
+          "Verification Failed",
+          data.message || "The OTP you entered is incorrect."
+        );
       }
     } catch (error) {
-      // console.error("Error verifying OTP:", error);
+      console.error("Error verifying OTP:", error);
       Alert.alert(
-        "Error",
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred. Please try again."
+        "Unexpected Error",
+        "Something went wrong. Please try again."
       );
     } finally {
       setLoading(false);
     }
   };
-  // Alert.alert("Success", "OTP verified successfully!");
-  // router.push("/screens/delivery_address");
+
+  const saveUserDetails = async (details: any) => {
+    try {
+      await AsyncStorage.setItem("@userDetails", JSON.stringify(details));
+    } catch (error) {
+      console.error("Failed to save user details:", error);
+      Alert.alert(
+        "Storage Error",
+        "We couldn't save your user details. Some features may not work."
+      );
+    }
+  };
+
+  const saveToken = async (token: string) => {
+    try {
+      await SecureStore.setItemAsync("jwtToken", token);
+    } catch (error) {
+      console.error("Failed to save token:", error);
+      Alert.alert(
+        "Storage Error",
+        "We couldn't save your authentication token. Please log in again."
+      );
+      throw error;
+    }
+  };
 
   const handleResendOtp = async () => {
     setLoading(true);
     try {
       const storedPhoneNumber = await AsyncStorage.getItem("@phoneNumber");
       if (!storedPhoneNumber) {
-        throw new Error("Phone number not found. Please try again.");
+        Alert.alert("Error", "Phone number not found. Please try again.");
+        return;
       }
 
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/auth/send-otp`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            phoneNumber: storedPhoneNumber,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phoneNumber: storedPhoneNumber }),
         }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to send OTP");
+        Alert.alert("Error", errorData.message || "Failed to send OTP.");
+        return;
       }
 
-      const data = await response.json();
-      if (data.success) {
-        Alert.alert(
-          "Success",
-          "OTP resent successfully. Please check your phone."
-        );
-        console.log(data);
-
-        setResendDisabled(true);
-        setCounter(30);
-      } else {
-        throw new Error(data.message || "Failed to send OTP");
-      }
+      Alert.alert("Success", "OTP resent successfully.");
+      setResendDisabled(true);
+      setCounter(30);
     } catch (error) {
-      console.error("Error sending OTP:", error);
       Alert.alert(
         "Error",
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred. Please try again."
+        error instanceof Error ? error.message : "An unexpected error occurred."
       );
     } finally {
       setLoading(false);
@@ -198,17 +180,11 @@ const OtpPage = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         className="flex-1 bg-white p-5 justify-between"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Stack.Screen
-          options={{
-            headerShown: false,
-            presentation: "modal",
-          }}
-        />
         <View>
           <Text
             className="text-3xl mb-3"
@@ -221,8 +197,14 @@ const OtpPage = () => {
             style={{ fontFamily: "Unbounded Regular" }}
           >
             To keep your account secure, please enter the one-time password we
-            sent to {phoneNumber}. This step ensures only you can access your
-            account.
+            sent to{" "}
+            <Text
+              className="text-black text-xs"
+              style={{ fontFamily: "Unbounded SemiBold" }}
+            >
+              {phoneNumber}
+            </Text>
+            .
           </Text>
 
           <View className="flex-row items-center border border-gray-200 rounded-2xl w-full mb-2">
@@ -255,7 +237,7 @@ const OtpPage = () => {
             />
           </View>
 
-          <Pressable
+          <TouchableOpacity
             onPress={handleContinue}
             className="w-full mt-4 bg-[#2BCC5A] py-5 rounded-full border border-white"
             style={{ backgroundColor: "#2BCC5A" }}
@@ -266,7 +248,7 @@ const OtpPage = () => {
             >
               Verify
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         <View className="w-full">
@@ -276,7 +258,7 @@ const OtpPage = () => {
           >
             Didn't receive your OTP?
           </Text>
-          <Pressable
+          <TouchableOpacity
             onPress={handleResendOtp}
             disabled={resendDisabled || loading}
             className="flex-row items-center justify-center py-4 rounded-full border border-gray-200"
@@ -292,7 +274,7 @@ const OtpPage = () => {
                 Resend OTP {resendDisabled && `(${counter})`}
               </Text>
             )}
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

@@ -71,16 +71,18 @@ const HomePage = () => {
     }
   };
 
-  const loadFromLocalStorage = async (): Promise<void> => {
+  const loadFromLocalStorage = async (): Promise<Product[] | null> => {
     try {
       const jsonValue = await AsyncStorage.getItem("@products");
       if (jsonValue) {
         const parsedProducts: Product[] = JSON.parse(jsonValue);
-        setLocalProducts(parsedProducts);
         console.log("Loaded products from local storage");
+        return parsedProducts;
       }
+      return null;
     } catch (e) {
       console.error("Failed to load products from local storage", e);
+      return null;
     }
   };
 
@@ -93,8 +95,7 @@ const HomePage = () => {
     }
   };
 
-  const fetchData = async (): Promise<void> => {
-    setLoading(true);
+  const fetchFromAPI = async (): Promise<Product[] | null> => {
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/products`
@@ -103,71 +104,60 @@ const HomePage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data: Product[] = await response.json();
-      if (data && data.length > 0) {
-        setLocalProducts(data);
-        await saveToLocalStorage(data);
-        console.log("Fetched and updated products from API");
-      }
+      console.log("Fetched products from API");
+      return data;
     } catch (err) {
-      console.error("Failed to fetch products", err);
+      console.error("Failed to fetch products from API", err);
       Alert.alert("Error", "Failed to fetch products. Please try again later.");
-    } finally {
-      setLoading(false);
+      return null;
     }
   };
 
-  const syncData = async (): Promise<void> => {
+  const initializeProducts = async (): Promise<void> => {
     setLoading(true);
     try {
-      const jsonValue = await AsyncStorage.getItem("@products");
-      if (jsonValue) {
-        console.log("Displaying offline data first...");
-        const parsedProducts: Product[] = JSON.parse(jsonValue);
-        setLocalProducts(parsedProducts);
-      }
-
-      const isConnected = await checkInternetConnection();
-      if (isConnected) {
-        console.log("Internet connection available, fetching fresh data...");
-        await fetchData();
+      const localData = await loadFromLocalStorage();
+      if (localData && localData.length > 0) {
+        setLocalProducts(localData);
+        console.log("Using products from local storage");
       } else {
-        console.log("No internet connection, staying with offline data...");
-        Alert.alert(
-          "Offline Mode",
-          "No internet connection. Displaying offline data."
-        );
+        console.log("No local data found, fetching from API...");
+        const apiData = await fetchFromAPI();
+        if (apiData && apiData.length > 0) {
+          setLocalProducts(apiData);
+          await saveToLocalStorage(apiData);
+        }
       }
     } catch (err) {
-      console.error("Error during data sync", err);
-      Alert.alert("Error", "Failed to sync data. Please try again later.");
+      console.error("Error initializing products", err);
+      Alert.alert("Error", "Failed to load products. Please try again later.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const checkInternetConnection = async (): Promise<boolean> => {
-    try {
-      const response = await fetch("https://www.google.com", {
-        method: "HEAD",
-      });
-      return response.ok;
-    } catch {
-      return false;
     }
   };
 
   useEffect(() => {
-    const initializeProducts = async () => {
-      await syncData();
-    };
     fetchUserDetails();
     initializeProducts();
   }, []);
 
   const onRefresh = useCallback(async () => {
     setLoading(true);
-    await syncData();
-    setLoading(false);
+    try {
+      const apiData = await fetchFromAPI();
+      if (apiData && apiData.length > 0) {
+        setLocalProducts(apiData);
+        await saveToLocalStorage(apiData);
+      }
+    } catch (err) {
+      console.error("Error refreshing products", err);
+      Alert.alert(
+        "Error",
+        "Failed to refresh products. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // Handle Android hardware back button

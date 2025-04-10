@@ -1,59 +1,66 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProductCard from "../components/shopcard";
+import LottieView from "lottie-react-native";
+
 import HeaderComponent from "../components/header";
 
-// Utility function for seeded randomization
-const seededShuffle = (array: any, seed: number) => {
-  const random = (s: number) => {
-    const x = Math.sin(s) * 10000;
-    return x - Math.floor(x);
-  };
-
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(random(seed + i) * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
-
 const App = () => {
-  const [products, setProducts] = useState<
-    {
-      _id: string;
-      name: string;
-      price: number;
-      imageUrl: string;
-      discount: number;
-      unitOfMeasure: string;
-    }[]
-  >([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const url = `${process.env.EXPO_PUBLIC_API_URL}/api/products`;
 
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      await AsyncStorage.setItem("products", JSON.stringify(data)); // Cache products in local storage
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const loadProducts = async () => {
+    try {
+      const cachedProducts = await AsyncStorage.getItem("products");
+      if (cachedProducts) {
+        setProducts(JSON.parse(cachedProducts));
+        setLoading(false);
+      } else {
+        await fetchProducts();
+      }
+    } catch (error) {
+      console.error("Error loading products from storage:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const seed = 8987; // Replace with your desired seed value
-        const shuffledData = seededShuffle(data, seed);
-        setProducts(shuffledData);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+    loadProducts();
   }, []);
 
-  const renderItem = ({
-    item,
-  }: {
-    item: {
-      _id: string;
-      name: string;
-      price: number;
-      imageUrl: string;
-      discount: number;
-      unitOfMeasure: string;
-    };
-  }) => (
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts();
+  };
+
+  const renderItem = ({ item }) => (
     <ProductCard
       key={item._id}
       name={item.name}
@@ -65,6 +72,19 @@ const App = () => {
     />
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          style={{ width: 100, height: 100 }}
+          autoPlay
+          loop
+          source={require("@/assets/animations/bounce.json")}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <HeaderComponent />
@@ -75,6 +95,9 @@ const App = () => {
         numColumns={2}
         contentContainerStyle={styles.productList}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );
@@ -84,33 +107,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
-    backgroundColor: "#ffffff50",
+    backgroundColor: "#ffffff10",
   },
   productList: {
     paddingBottom: 10,
   },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+  loadingContainer: {
     flex: 1,
-    gap: 5,
-    width: "48%",
-  },
-  image: {
-    width: "100%",
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  price: {
-    fontSize: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

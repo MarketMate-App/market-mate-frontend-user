@@ -4,6 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import "../global.css";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +22,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     const checkFirstTimeUser = async () => {
+      if (Platform.OS === "ios") {
+        router.replace("/(tabs)/shop");
+      }
       const isFirstTime = await AsyncStorage.getItem("isFirstTimeUser");
       if (isFirstTime === null) {
         // First time user
@@ -37,12 +41,6 @@ export default function RootLayout() {
       checkFirstTimeUser();
     }
   }, [loaded]);
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-      router.push("/(tabs)/shop");
-    }
-  }, [loaded]);
 
   if (!loaded) {
     return null;
@@ -53,6 +51,14 @@ export default function RootLayout() {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="auth"
+        options={{
+          headerShadowVisible: false,
+          headerTitle: "",
+          statusBarBackgroundColor: "transparent",
+        }}
+      />
+      <Stack.Screen
+        name="otp"
         options={{
           headerShadowVisible: false,
           headerTitle: "",
