@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import "../global.css";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -18,6 +19,24 @@ export default function RootLayout() {
     "Unbounded Light": require("../assets/fonts/Unbounded-Light.ttf"),
   });
 
+  useEffect(() => {
+    const checkFirstTimeUser = async () => {
+      const isFirstTime = await AsyncStorage.getItem("isFirstTimeUser");
+      if (isFirstTime === null) {
+        // First time user
+        await AsyncStorage.setItem("isFirstTimeUser", "false");
+        router.replace("/");
+      } else {
+        // Not first time user
+        router.replace("/(tabs)/shop");
+      }
+    };
+
+    if (loaded) {
+      SplashScreen.hideAsync();
+      checkFirstTimeUser();
+    }
+  }, [loaded]);
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();

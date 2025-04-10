@@ -5,9 +5,9 @@ import {
   ActivityIndicator,
   Image,
   ScrollView,
-  Pressable,
   SafeAreaView,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { Stack, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -145,27 +145,42 @@ const DetailsPage = () => {
       {loading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#2BCC5A" />
-          <Text className="mt-4" style={{ fontFamily: "Unbounded Regular" }}>
-            Loading product details...
+          <Text
+            className="mt-4 text-gray-500 text-xs text-center"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            Hang tight! We're fetching the product details for you...
           </Text>
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-red-500 text-center">{error}</Text>
-          <Pressable
-            className="mt-4 px-6 py-3 rounded-full bg-[#2BCC5A]"
+          <Text
+            className="text-red-500 text-center"
+            style={{ fontFamily: "Unbounded Regular" }}
+          >
+            Oops! Something went wrong.
+          </Text>
+          <Text
+            className="text-gray-500 text-xs text-center mt-2"
+            style={{ fontFamily: "Unbounded Light" }}
+          >
+            Unable to load product details. Please check your connection and try
+            again.
+          </Text>
+          <TouchableOpacity
+            className="mt-6 px-6 py-3 rounded-full bg-[#2BCC5A]"
             onPress={handleRetry}
           >
             <Text
               style={{ fontFamily: "Unbounded Regular" }}
               className="text-xs text-white"
             >
-              Retry
+              Try Again
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       ) : product ? (
-        <>
+        <SafeAreaView>
           <ScrollView
             className="flex-1"
             horizontal={false}
@@ -280,11 +295,11 @@ const DetailsPage = () => {
             </View>
           </ScrollView>
           <View
-            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0"
+            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-10 left-0 right-0"
             style={{ paddingBottom: Platform.OS === "ios" ? 20 : 12 }}
           >
             {quantity === 0 ? (
-              <Pressable
+              <TouchableOpacity
                 hitSlop={20}
                 className="px-6 flex-1 py-4 rounded-full border-hairline border-gray-300 flex-row items-center justify-center gap-4"
                 onPress={handleAddToCart}
@@ -296,30 +311,30 @@ const DetailsPage = () => {
                 >
                   Add to cart
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             ) : (
               <View className="items-center justify-center flex-1">
                 <View className="flex-row items-center gap-2 mb-1">
-                  <Pressable
+                  <TouchableOpacity
                     hitSlop={20}
                     className="px-4 py-2 rounded-full border-hairline border-gray-300"
                     onPress={() => handleQuantityChange(quantity - 1)}
                   >
                     <Ionicons name="remove" size={24} color={"black"} />
-                  </Pressable>
+                  </TouchableOpacity>
                   <Text
                     style={{ fontFamily: "Unbounded Regular" }}
                     className="text-lg text-black"
                   >
                     {quantity}
                   </Text>
-                  <Pressable
+                  <TouchableOpacity
                     hitSlop={20}
                     className="px-4 py-2 rounded-full border-hairline border-gray-200"
                     onPress={() => handleQuantityChange(quantity + 1)}
                   >
                     <Ionicons name="add" size={24} color={"black"} />
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
                 <Text>
                   <Text
@@ -338,7 +353,7 @@ const DetailsPage = () => {
               </View>
             )}
 
-            <Pressable
+            <TouchableOpacity
               hitSlop={20}
               className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center "
             >
@@ -348,11 +363,16 @@ const DetailsPage = () => {
               >
                 Buy now
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
-        </>
+        </SafeAreaView>
       ) : (
-        <Text className="text-center">404 - Product not found</Text>
+        <Text
+          className="text-center text-xs text-gray-500 mt-4"
+          style={{ fontFamily: "Unbounded SemiBold" }}
+        >
+          404 - Product not found
+        </Text>
       )}
     </View>
   );
