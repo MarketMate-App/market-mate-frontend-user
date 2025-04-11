@@ -366,24 +366,37 @@ const UserOrdersScreen: React.FC = () => {
                   >
                     {item.courier.user.fullName || "Your MarketMate"}
                   </Text>
-                  <Text
-                    style={{
-                      fontFamily: "Unbounded Regular",
-                      fontSize: 10,
-                      color: "#6B7280",
-                      marginBottom: 4,
-                    }}
-                  >
-                    Registration Number:{" "}
+                  {item.courier.vehicle.registrationNumber ? (
                     <Text
                       style={{
                         fontFamily: "Unbounded SemiBold",
+                        fontSize: 10,
                         color: "#374151",
+                        marginBottom: 4,
                       }}
                     >
-                      {item.courier.registrationNumber || "N/A"}
+                      {item.courier.vehicle.registrationNumber}
                     </Text>
-                  </Text>
+                  ) : (
+                    <Text
+                      style={{
+                        fontFamily: "Unbounded Regular",
+                        fontSize: 10,
+                        color: "#6B7280",
+                        marginBottom: 4,
+                      }}
+                    >
+                      Registration Number:{" "}
+                      <Text
+                        style={{
+                          fontFamily: "Unbounded SemiBold",
+                          color: "#374151",
+                        }}
+                      >
+                        N/A
+                      </Text>
+                    </Text>
+                  )}
                   <Text
                     style={{
                       fontFamily: "Unbounded Regular",
