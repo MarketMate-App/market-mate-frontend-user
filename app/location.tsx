@@ -113,7 +113,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       await SecureStore.setItemAsync("userLocation", JSON.stringify(loc));
       console.log("Location saved", loc);
       alert("Location saved successfully");
-      router.replace("/(tabs)/shop");
+      router.replace("/(tabs)/cart");
     } catch (error) {
       Alert.alert("Error", "Failed to save location");
     }
@@ -146,7 +146,6 @@ const LocationScreen: FC<LocationScreenProps> = () => {
                   longitude: location.coords.longitude,
                 }}
                 title="Your Location"
-                image={require("@/assets/images/marker.png")}
               />
             )}
           </MapView>

@@ -164,8 +164,15 @@ const Payment = () => {
     }
     try {
       const jwtToken = await SecureStore.getItemAsync("jwtToken");
+      const items = await AsyncStorage.multiGet([
+        "@phoneNumber",
+        "@userDetails",
+      ]);
       if (!jwtToken) {
         throw new Error("Authentication token not found. Please log in again.");
+      }
+      if (!items) {
+        throw new Error("User not found. Please log in again.");
       }
 
       const response = await fetch(

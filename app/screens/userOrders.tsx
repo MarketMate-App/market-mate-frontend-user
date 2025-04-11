@@ -122,7 +122,28 @@ const UserOrdersScreen: React.FC = () => {
       setRefreshing(false);
     }
   }, []);
+  useEffect(() => {
+    const preventBackNavigation = () => {
+      router.replace("/profile");
+    };
 
+    const handleBeforeRemove = (e: any) => {
+      e.preventDefault();
+      preventBackNavigation();
+    };
+
+    const backHandler = () => {
+      preventBackNavigation();
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backHandler
+    );
+
+    return () => subscription.remove();
+  }, [router]);
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
@@ -488,19 +509,6 @@ const UserOrdersScreen: React.FC = () => {
           title: "My Orders",
           headerShadowVisible: false,
           headerTitleStyle: { fontFamily: "Unbounded Medium", fontSize: 14 },
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                if (router.canGoBack()) {
-                  router.back();
-                } else {
-                  router.replace("/profile");
-                }
-              }}
-            >
-              <MaterialIcons name="arrow-back" size={24} color="#000" />
-            </TouchableOpacity>
-          ),
         }}
       />
       {renderTabs()}

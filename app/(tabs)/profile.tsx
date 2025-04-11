@@ -2,8 +2,7 @@ import {
   View,
   Text,
   SafeAreaView,
-  Image,
-  Pressable,
+  ActivityIndicator,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -11,59 +10,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import SwitchComponent from "../components/switch";
-import { useNavigation } from "@react-navigation/native";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import UserAvatar from "../components/userAvatar";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<{
-    profilePicture: any;
-    fullName: string;
-    phoneNumber: string;
-  }>({
-    profilePicture: null,
-    fullName: "",
-    phoneNumber: "",
-  });
-  const [token, setToken] = useState("");
-  const fetchToken = async () => {
-    try {
-      const token = await SecureStore.getItemAsync("jwtToken");
-      if (token) {
-        setToken(token);
-        console.log("Token fetched:", token);
-      } else {
-        console.log("No token found");
-      }
-    } catch (error) {
-      console.error("Failed to fetch token from secure storage", error);
-    }
-  };
-
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const fetchUserDetails = async () => {
-    try {
-      const userDetails = await AsyncStorage.getItem("@userDetails");
-      const phone = await AsyncStorage.getItem("@phoneNumber");
-      if (phone) {
-        setPhoneNumber(phone);
-        console.log("Phone number fetched:", phone);
-      }
-      const parsedDetails = userDetails ? JSON.parse(userDetails) : {};
-      setUser({
-        profilePicture: parsedDetails.profilePicture || null,
-        fullName: parsedDetails.fullName?.trim() || "Valued Shopper",
-        phoneNumber:
-          parsedDetails.phoneNumber?.trim() || "Phone number not available",
-      });
-      console.log("User details fetched:", parsedDetails);
-    } catch (error) {
-      console.error("Failed to fetch user details from local storage", error);
-    }
-  };
-
   type FeatherIconName =
     | "package"
     | "map-pin"
@@ -229,10 +181,72 @@ const ProfilePage = () => {
       </View>
     );
   };
+  const [user, setUser] = useState<{
+    profilePicture: any;
+    fullName: string;
+    phoneNumber: string;
+  }>({
+    profilePicture: null,
+    fullName: "",
+    phoneNumber: "",
+  });
+  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const fetchToken = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("jwtToken");
+      if (token) {
+        setToken(token);
+        console.log("Token fetched:", token);
+      } else {
+        console.log("No token found");
+      }
+    } catch (error) {
+      console.error("Failed to fetch token from secure storage", error);
+    }
+  };
+
+  const fetchUserDetails = async () => {
+    try {
+      const userDetails = await AsyncStorage.getItem("@userDetails");
+      const phone = await AsyncStorage.getItem("@phoneNumber");
+      if (phone) {
+        setPhoneNumber(phone);
+        console.log("Phone number fetched:", phone);
+      }
+      const parsedDetails = userDetails ? JSON.parse(userDetails) : {};
+      setUser({
+        profilePicture: parsedDetails.profilePicture || null,
+        fullName: parsedDetails.fullName?.trim() || "Valued Shopper",
+        phoneNumber:
+          parsedDetails.phoneNumber?.trim() || "Phone number not available",
+      });
+      console.log("User details fetched:", parsedDetails);
+    } catch (error) {
+      console.error("Failed to fetch user details from local storage", error);
+    }
+  };
+
   useEffect(() => {
-    fetchToken();
-    fetchUserDetails();
+    const initialize = async () => {
+      await fetchToken();
+      await fetchUserDetails();
+      setLoading(false); // Set loading to false after fetching data
+    };
+    initialize();
   }, []);
+
+  if (loading) {
+    // Show loader while fetching data
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-white">
+        <ActivityIndicator size="large" color="#014E3C" />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1">
       <ScrollView
@@ -309,34 +323,6 @@ const ProfilePage = () => {
               My Account
             </Text>
             <ItemList items={menuItems} />
-            {/* <Text
-              style={[
-                {
-                  textAlign: "right",
-                  fontSize: 10,
-                  color: "#6B7280",
-                  marginBottom: 8,
-                },
-                { fontFamily: "Unbounded Light" },
-              ]}
-            >
-              Address & Payment
-            </Text>
-            <ItemList items={importantItems} />
-            <Text
-              style={[
-                {
-                  textAlign: "right",
-                  fontSize: 10,
-                  color: "#6B7280",
-                  marginBottom: 8,
-                },
-                { fontFamily: "Unbounded Light" },
-              ]}
-            >
-              Security
-            </Text>
-            <ItemList items={securityItems} isSecurity /> */}
             <Text
               style={[
                 {

@@ -12,7 +12,7 @@ const logout = () => {
       const userLocation = await SecureStore.getItemAsync("userLocation");
       const token = await SecureStore.getItemAsync("jwtToken");
       // Clear AsyncStorage
-      await AsyncStorage.clear();
+      await AsyncStorage.multiRemove(["@phoneNumber", "@userDetails"]);
 
       // Clear SecureStore
       await SecureStore.deleteItemAsync("jwtToken");

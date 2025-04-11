@@ -1,5 +1,7 @@
 // types.ts
 export default interface Product {
+    rating: number;
+    _id: any;
     id: string;
     name: string;
     price: number;

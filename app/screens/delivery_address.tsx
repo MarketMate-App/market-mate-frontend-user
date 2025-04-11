@@ -11,9 +11,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
-import { router, Stack } from "expo-router";
+import { useRouter, Stack } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +22,7 @@ import * as SecureStore from "expo-secure-store";
 
 const DeliveryAddressScreen = () => {
   const [name, setName] = useState("");
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState("Western Region");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,30 @@ const DeliveryAddressScreen = () => {
   const countryRef = useRef<TextInput>(null);
   const addressRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
+  const router = useRouter();
 
+  useEffect(() => {
+    const preventBackNavigation = () => {
+      router.replace("/profile");
+    };
+
+    const handleBeforeRemove = (e: any) => {
+      e.preventDefault();
+      preventBackNavigation();
+    };
+
+    const backHandler = () => {
+      preventBackNavigation();
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backHandler
+    );
+
+    return () => subscription.remove();
+  }, [router]);
   const saveDetails = async () => {
     if (!name || !country || !address) {
       Alert.alert("Error", "Please fill in all fields");
@@ -45,7 +69,20 @@ const DeliveryAddressScreen = () => {
         Alert.alert("Error", "User is not authenticated");
         return;
       }
+      const storedDetails = await AsyncStorage.getItem("@userDetails");
+      if (storedDetails) {
+        const parsedDetails = JSON.parse(storedDetails);
+        const isSameDetails =
+          parsedDetails.fullName === name &&
+          parsedDetails.address.street === address &&
+          parsedDetails.address.region === country;
 
+        if (isSameDetails) {
+          setLoading(false);
+          Alert.alert("Info", "No changes detected in your details.");
+          return;
+        }
+      }
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/auth/profile`,
         {
@@ -73,31 +110,21 @@ const DeliveryAddressScreen = () => {
 
       const responseData = await response.json();
       if (responseData.success) {
-        const userDetails = {
-          fullName: name,
-          address: {
-            street: address,
-            region: country,
-            country: "Ghana",
-          },
-        };
-        await saveUserDetails(userDetails);
-        Alert.alert("Success", "Details saved successfully!");
-        router.replace("/shop");
+        console.log(responseData);
+
+        await saveUserDetails(responseData.user);
+        Alert.alert(
+          "Success",
+          "Your details have been saved successfully! Thank you for providing your information."
+        );
+        router.replace("/profile");
       }
     } catch (error) {
       setLoading(false);
       Alert.alert("Error", "Failed to save details");
     }
   };
-  const saveUserDetails = async (details: {
-    fullName: string;
-    address: {
-      street: string;
-      region: string;
-      country: string;
-    };
-  }) => {
+  const saveUserDetails = async (details: any) => {
     if (!name || !country || !address) {
       Alert.alert("Error", "Please fill in all fields");
       return;
@@ -116,7 +143,11 @@ const DeliveryAddressScreen = () => {
     const fetchDetails = async () => {
       try {
         const details = await AsyncStorage.getItem("@userDetails");
+        console.log(details);
         if (details) {
+          await AsyncStorage.removeItem("products");
+          console.log(await AsyncStorage.getAllKeys());
+
           const { fullName, address } = JSON.parse(details);
           setName(fullName);
           setCountry(address.region);

@@ -22,7 +22,7 @@ const AuthPage = () => {
 
   const clearStorage = async () => {
     try {
-      await AsyncStorage.clear();
+      await AsyncStorage.multiRemove(["@phoneNumber", "@userDetails"]);
       await SecureStore.deleteItemAsync("jwtToken");
       console.log("All data cleared from local storage and async storage.");
     } catch (error) {

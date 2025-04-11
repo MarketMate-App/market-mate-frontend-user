@@ -79,7 +79,7 @@ const CartItemComponent = memo(
                 : item.name}
             </Text>
             <Text
-              className="text-gray-500 text-xs mb-4"
+              className="text-gray-500 text-xs mb-4 capitalize"
               style={{ fontFamily: "Unbounded Light" }}
             >
               {item.unitOfMeasure}

@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -6,177 +7,241 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator,
   RefreshControl,
-  Image,
 } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
 import { router, useFocusEffect } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
 import HeaderComponent from "../components/header";
 import CategoriesComponent from "../components/categories";
 import GridcardComponent from "../components/gridcard";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import LottieView from "lottie-react-native";
 import GuestBanner from "../components/guestbanner";
-import * as SecureStore from "expo-secure-store";
-
-interface Product {
-  _id: number | undefined;
-  id: number;
-  name: string;
-  price: number;
-  imageUrl: string;
-  discount: number;
-  unitOfMeasure: string;
-  category: string;
-  tags: string[];
-}
+import Product from "../types/product";
 
 const HomePage = () => {
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<{ fullName: string }>({ fullName: "" });
-  const fetchUserDetails = async () => {
+
+  const fetchUserDetails = useCallback(async () => {
     try {
       const userDetails = await AsyncStorage.getItem("@userDetails");
       if (userDetails) {
         const parsedDetails = JSON.parse(userDetails);
-        setUser({
-          fullName: parsedDetails.fullName || "customer",
-        });
-        console.log("User details fetched:", parsedDetails);
+        setUser({ fullName: parsedDetails.fullName || "customer" });
       }
     } catch (error) {
-      console.error("Failed to fetch user details from local storage", error);
+      console.error("Failed to fetch user details", error);
     }
-  };
+  }, []);
 
-  const saveUserDetails = async (details: {
-    phoneNumber: string;
-    fullName: string;
-    profilePicture: string;
-    address: {
-      street: string;
-      region: string;
-      country: string;
-    };
-    wishlist: string[];
-  }) => {
-    try {
-      await AsyncStorage.setItem("@userDetails", JSON.stringify(details));
-      console.log("User details saved to local storage");
-    } catch (error) {
-      console.error("Failed to save user details to local storage", error);
-    }
-  };
-
-  const loadFromLocalStorage = async (): Promise<Product[] | null> => {
+  const loadFromLocalStorage = useCallback(async (): Promise<
+    Product[] | null
+  > => {
     try {
       const jsonValue = await AsyncStorage.getItem("@products");
-      if (jsonValue) {
-        const parsedProducts: Product[] = JSON.parse(jsonValue);
-        console.log("Loaded products from local storage");
-        return parsedProducts;
-      }
-      return null;
+      return jsonValue ? JSON.parse(jsonValue) : null;
     } catch (e) {
       console.error("Failed to load products from local storage", e);
       return null;
     }
-  };
+  }, []);
 
-  const saveToLocalStorage = async (products: Product[]): Promise<void> => {
-    try {
-      await AsyncStorage.setItem("@products", JSON.stringify(products));
-      console.log("Products saved to local storage");
-    } catch (e) {
-      console.error("Failed to save products to local storage", e);
-    }
-  };
+  const saveToLocalStorage = useCallback(
+    async (products: Product[]): Promise<void> => {
+      try {
+        await AsyncStorage.setItem("@products", JSON.stringify(products));
+      } catch (e) {
+        console.error("Failed to save products to local storage", e);
+      }
+    },
+    []
+  );
 
-  const fetchFromAPI = async (): Promise<Product[] | null> => {
+  const fetchFromAPI = useCallback(async (): Promise<Product[] | null> => {
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/api/products`
       );
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: Product[] = await response.json();
-      console.log("Fetched products from API");
-      return data;
+      return await response.json();
     } catch (err) {
       console.error("Failed to fetch products from API", err);
       Alert.alert("Error", "Failed to fetch products. Please try again later.");
       return null;
     }
-  };
+  }, []);
 
-  const initializeProducts = async (): Promise<void> => {
+  const initializeProducts = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
       const localData = await loadFromLocalStorage();
-      if (localData && localData.length > 0) {
+      if (localData?.length) {
         setLocalProducts(localData);
-        console.log("Using products from local storage");
       } else {
-        console.log("No local data found, fetching from API...");
         const apiData = await fetchFromAPI();
-        if (apiData && apiData.length > 0) {
+        if (apiData?.length) {
           setLocalProducts(apiData);
           await saveToLocalStorage(apiData);
         }
       }
     } catch (err) {
       console.error("Error initializing products", err);
-      Alert.alert("Error", "Failed to load products. Please try again later.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchFromAPI, loadFromLocalStorage, saveToLocalStorage]);
 
   useEffect(() => {
     fetchUserDetails();
     initializeProducts();
-  }, []);
+  }, [fetchUserDetails, initializeProducts]);
 
   const onRefresh = useCallback(async () => {
     setLoading(true);
     try {
       const apiData = await fetchFromAPI();
-      if (apiData && apiData.length > 0) {
+      if (apiData?.length) {
         setLocalProducts(apiData);
         await saveToLocalStorage(apiData);
       }
     } catch (err) {
       console.error("Error refreshing products", err);
-      Alert.alert(
-        "Error",
-        "Failed to refresh products. Please try again later."
-      );
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchFromAPI, saveToLocalStorage]);
 
-  // Handle Android hardware back button
-  const handleBackPress = () => {
+  const handleBackPress = useCallback(() => {
     Alert.alert("Exit", "Are you sure you want to exit?", [
-      { text: "Cancel", onPress: () => null, style: "cancel" },
+      { text: "Cancel", style: "cancel" },
       { text: "YES", onPress: () => BackHandler.exitApp() },
     ]);
     return true;
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       BackHandler.addEventListener("hardwareBackPress", handleBackPress);
-      return () => {
+      return () =>
         BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
-      };
     }, [handleBackPress])
   );
+
+  const greetingMessage = useMemo(() => {
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? "Ayekooo" : hour < 18 ? "Akwaaba" : "Welcome";
+    const displayName = user?.fullName?.trim().split(" ")[0] || "customer";
+    return `${greeting}, ${displayName}!`;
+  }, [user]);
+
+  const filteredProducts = useMemo(() => {
+    const essentials = localProducts.filter((product) =>
+      product.tags.includes("vegetables")
+    );
+    const fruits = localProducts.filter(
+      (product) => product.category.toLowerCase() === "fruits"
+    );
+    const vegetables = localProducts.filter(
+      (product) => product.category.toLowerCase() === "vegetables"
+    );
+    const meats = localProducts.filter(
+      (product) => product.category.toLowerCase() === "meats"
+    );
+    const snacks =
+      new Date().getHours() < 12
+        ? localProducts.filter((product) => product.tags.includes("Nutritious"))
+        : [];
+    const discounts = localProducts.filter((product) => product.discount > 0);
+    const bundles = localProducts.filter((product) =>
+      product.tags.includes("bundle")
+    );
+    const ghanaianMarket = localProducts.filter((product) =>
+      product.tags.includes("ghanaian")
+    );
+    const beverages = localProducts.filter(
+      (product) => product.category.toLowerCase() === "beverages"
+    );
+    const dairy = localProducts.filter(
+      (product) => product.category.toLowerCase() === "dairy"
+    );
+    const bakery = localProducts.filter(
+      (product) => product.category.toLowerCase() === "bakery"
+    );
+    const seafood = localProducts.filter(
+      (product) => product.category.toLowerCase() === "seafood"
+    );
+    const topRated = localProducts.filter((product) => product.rating >= 4.5);
+    const frozenFoods = localProducts.filter(
+      (product) => product.category.toLowerCase() === "frozen foods"
+    );
+    const pantry = localProducts.filter(
+      (product) => product.category.toLowerCase() === "pantry"
+    );
+    const organic = localProducts.filter((product) =>
+      product.tags.includes("organic")
+    );
+    const quickMeals = localProducts.filter((product) =>
+      product.tags.includes("quick meal")
+    );
+    const babyCare = localProducts.filter(
+      (product) => product.category.toLowerCase() === "baby care"
+    );
+    const healthAndWellness = localProducts.filter(
+      (product) => product.category.toLowerCase() === "health and wellness"
+    );
+    const cleaningSupplies = localProducts.filter(
+      (product) => product.category.toLowerCase() === "cleaning supplies"
+    );
+    const petCare = localProducts.filter(
+      (product) => product.category.toLowerCase() === "pet care"
+    );
+    const internationalCuisine = localProducts.filter((product) =>
+      product.tags.includes("international")
+    );
+    const mealBundles = localProducts.filter((product) =>
+      product.tags.includes("meal bundle")
+    );
+    const festiveSpecials = localProducts.filter((product) =>
+      product.tags.includes("festive")
+    );
+    const tubers = localProducts.filter((product) =>
+      product.tags.includes("tubers")
+    );
+    const newArrivals = localProducts.filter((product) =>
+      product.tags.includes("new")
+    );
+
+    return {
+      essentials,
+      fruits,
+      vegetables,
+      meats,
+      snacks,
+      discounts,
+      bundles,
+      ghanaianMarket,
+      beverages,
+      dairy,
+      bakery,
+      seafood,
+      frozenFoods,
+      pantry,
+      organic,
+      quickMeals,
+      babyCare,
+      healthAndWellness,
+      cleaningSupplies,
+      petCare,
+      internationalCuisine,
+      mealBundles,
+      festiveSpecials,
+      topRated,
+      tubers,
+      newArrivals,
+    };
+  }, [localProducts]);
 
   return (
     <SafeAreaView className="flex-1">
@@ -189,24 +254,9 @@ const HomePage = () => {
           }
         >
           <View className="mb-4">
-            {/* Greeting Banner */}
-            <View>
-              <Text style={{ fontFamily: "Unbounded Regular" }}>
-                {(() => {
-                  const hour = new Date().getHours();
-                  const greeting =
-                    hour < 12 ? "Ayekooo" : hour < 18 ? "Akwaaba" : "Welcome";
-
-                  // Ensure user.fullName is a valid string and fallback to "customer" if not
-                  const displayName =
-                    user?.fullName && typeof user.fullName === "string"
-                      ? user.fullName.trim().split(" ")[0] || "customer"
-                      : "customer";
-
-                  return `${greeting}, ${displayName}!`;
-                })()}
-              </Text>
-            </View>
+            <Text style={{ fontFamily: "Unbounded Regular" }}>
+              {greetingMessage}
+            </Text>
           </View>
           {user.fullName.trim().length === 0 && <GuestBanner />}
           {loading ? (
@@ -220,172 +270,49 @@ const HomePage = () => {
             </View>
           ) : (
             <>
-              {/* Essential Produce section */}
-              <View className="flex-row justify-between items-center mb-4">
-                <Text
-                  className="text-lg text-[#014E3C]"
-                  style={{ fontFamily: "Unbounded Medium" }}
-                >
-                  Top Picks
-                </Text>
-                <TouchableOpacity
-                  onPress={() => router.push("/")}
-                  className="text-[#2BCC5A]"
-                >
-                  <Text
-                    style={{ fontFamily: "Unbounded Light" }}
-                    className="text-gray-700 text-xs underline"
-                  >
-                    See More
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts
-                  .filter((product) => product.tags.includes("essential"))
-                  .sort(() => Math.random() - 0.5)
-                  .slice(0, 10)
-                  .map((product) => (
-                    <GridcardComponent
-                      key={product._id}
-                      productId={product._id ? String(product._id) : undefined}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl}
-                      discount={product.discount}
-                      unitOfMeasure={product.unitOfMeasure}
-                      layout="horizontal"
-                    />
-                  ))}
-              </ScrollView>
-
-              {/* Featured Fruits */}
-              <Text
-                className="text-lg mb-4 text-[#014E3C]"
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Featured Fruits
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts &&
-                  localProducts
-                    .filter(
-                      (product) => product.category.toLowerCase() === "fruits"
-                    )
-                    .map((product) => (
-                      <GridcardComponent
-                        productId={
-                          product._id ? String(product._id) : undefined
-                        }
-                        key={product._id}
-                        name={product.name}
-                        price={product.price}
-                        imageUrl={product.imageUrl}
-                        discount={product.discount}
-                        unitOfMeasure={product.unitOfMeasure}
-                      />
-                    ))}
-              </ScrollView>
-
-              {/* Fresh Vegetables */}
-              <Text
-                className="text-lg mb-4 text-[#014E3C]"
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Fresh Veggies
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts
-                  .filter(
-                    (product) => product.category.toLowerCase() === "vegetables"
+              {/* Render sections dynamically */}
+              {Object.entries(filteredProducts).map(
+                ([key, products]) =>
+                  products.length > 0 && (
+                    <View key={key}>
+                      <Text
+                        className="text-lg mb-4 text-[#014E3C]"
+                        style={{ fontFamily: "Unbounded Medium" }}
+                      >
+                        {key.charAt(0).toUpperCase() +
+                          key.slice(1).replace(/s$/, "")}
+                      </Text>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        className="mb-4"
+                      >
+                        {products.map(
+                          (product: {
+                            _id: React.Key | null | undefined;
+                            name: string;
+                            price: number;
+                            imageUrl: string;
+                            discount: number | undefined;
+                            unitOfMeasure: string | undefined;
+                          }) => (
+                            <GridcardComponent
+                              key={product._id}
+                              productId={
+                                product._id ? String(product._id) : undefined
+                              }
+                              name={product.name}
+                              price={product.price}
+                              imageUrl={product.imageUrl}
+                              discount={product.discount}
+                              unitOfMeasure={product.unitOfMeasure}
+                            />
+                          )
+                        )}
+                      </ScrollView>
+                    </View>
                   )
-                  .map((product) => (
-                    <GridcardComponent
-                      productId={product._id ? String(product._id) : undefined}
-                      key={product._id}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl}
-                      discount={product.discount}
-                      unitOfMeasure={product.unitOfMeasure}
-                    />
-                  ))}
-              </ScrollView>
-
-              {/* Grossing Meats */}
-              <Text
-                className="text-lg mb-4 text-[#014E3C]"
-                style={{ fontFamily: "Unbounded Medium" }}
-              >
-                Grossing Meats
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                className="mb-4"
-              >
-                {localProducts
-                  .filter(
-                    (product) => product.category.toLowerCase() === "meats"
-                  )
-                  .map((product) => (
-                    <GridcardComponent
-                      productId={product._id ? String(product._id) : undefined}
-                      key={product._id}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl}
-                      discount={product.discount}
-                      unitOfMeasure={product.unitOfMeasure}
-                    />
-                  ))}
-              </ScrollView>
-
-              {/* Quick Snacks (morning only) */}
-              {new Date().getHours() < 12 && (
-                <>
-                  <Text
-                    className="text-lg mb-4 text-[#014E3C]"
-                    style={{ fontFamily: "Unbounded Medium" }}
-                  >
-                    Quick Snacks
-                  </Text>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    className="mb-4"
-                  >
-                    {localProducts
-                      .filter((product) => product.tags.includes("Nutritious"))
-                      .map((product) => (
-                        <GridcardComponent
-                          productId={
-                            product._id ? String(product._id) : undefined
-                          }
-                          key={product._id}
-                          name={product.name}
-                          price={product.price}
-                          imageUrl={product.imageUrl}
-                          discount={product.discount}
-                          unitOfMeasure={product.unitOfMeasure}
-                        />
-                      ))}
-                  </ScrollView>
-                </>
               )}
-
               <CategoriesComponent />
             </>
           )}
