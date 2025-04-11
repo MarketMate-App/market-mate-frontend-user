@@ -21,8 +21,8 @@ const logout = () => {
 
       // Restart the app
       if (Updates.reloadAsync) {
-        console.log("Token before logout:", token);
-        console.log("User location before logout:", userLocation);
+        // console.log("Token before logout:", token);
+        // console.log("User location before logout:", userLocation);
 
         // Ensure sensitive data is cleared before restarting
         if (token || userLocation) {
@@ -33,10 +33,10 @@ const logout = () => {
         // Reload the app to apply changes
         await Updates.reloadAsync();
       } else {
-        console.warn("Updates.reloadAsync is not available.");
+        // console.warn("Updates.reloadAsync is not available.");
       }
     } catch (error) {
-      console.error("Error during logout:", error);
+      // console.error("Error during logout:", error);
     }
   };
 

@@ -31,7 +31,7 @@ const HomePage = () => {
         setUser({ fullName: parsedDetails.fullName || "customer" });
       }
     } catch (error) {
-      console.error("Failed to fetch user details", error);
+      // console.error("Failed to fetch user details", error);
     }
   }, []);
 
@@ -42,7 +42,7 @@ const HomePage = () => {
       const jsonValue = await AsyncStorage.getItem("@products");
       return jsonValue ? JSON.parse(jsonValue) : null;
     } catch (e) {
-      console.error("Failed to load products from local storage", e);
+      // console.error("Failed to load products from local storage", e);
       return null;
     }
   }, []);
@@ -52,7 +52,7 @@ const HomePage = () => {
       try {
         await AsyncStorage.setItem("@products", JSON.stringify(products));
       } catch (e) {
-        console.error("Failed to save products to local storage", e);
+        // console.error("Failed to save products to local storage", e);
       }
     },
     []
@@ -67,7 +67,7 @@ const HomePage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       return await response.json();
     } catch (err) {
-      console.error("Failed to fetch products from API", err);
+      // console.error("Failed to fetch products from API", err);
       Alert.alert("Error", "Failed to fetch products. Please try again later.");
       return null;
     }
@@ -87,7 +87,7 @@ const HomePage = () => {
         }
       }
     } catch (err) {
-      console.error("Error initializing products", err);
+      // console.error("Error initializing products", err);
     } finally {
       setLoading(false);
     }
@@ -107,7 +107,7 @@ const HomePage = () => {
         await saveToLocalStorage(apiData);
       }
     } catch (err) {
-      console.error("Error refreshing products", err);
+      // console.error("Error refreshing products", err);
     } finally {
       setLoading(false);
     }

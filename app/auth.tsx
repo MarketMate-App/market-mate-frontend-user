@@ -24,9 +24,9 @@ const AuthPage = () => {
     try {
       await AsyncStorage.multiRemove(["@phoneNumber", "@userDetails"]);
       await SecureStore.deleteItemAsync("jwtToken");
-      console.log("All data cleared from local storage and async storage.");
+      // console.log("All data cleared from local storage and async storage.");
     } catch (error) {
-      console.error("Error clearing storage:", error);
+      // console.error("Error clearing storage:", error);
     }
   };
 
@@ -52,15 +52,15 @@ const AuthPage = () => {
 
     const formattedPhone = phone.replace(/\s/g, "");
     const formattedPhoneNumber = `+233${formattedPhone}`;
-    console.log(formattedPhoneNumber);
+    // console.log(formattedPhoneNumber);
 
     // Save number to AsyncStorage
 
     try {
       await AsyncStorage.setItem("@phoneNumber", formattedPhoneNumber);
-      console.log("Phone number saved successfully.");
+      // console.log("Phone number saved successfully.");
     } catch (error) {
-      console.error("Error saving phone number:", error);
+      // console.error("Error saving phone number:", error);
     }
 
     setLoading(true); // Start loading
@@ -85,7 +85,7 @@ const AuthPage = () => {
 
       const data = await response.json();
       if (data.success) {
-        console.log("OTP sent successfully:", data);
+        // console.log("OTP sent successfully:", data);
         Alert.alert(
           "Success",
           "OTP sent successfully. Please check your phone."
@@ -95,7 +95,7 @@ const AuthPage = () => {
         Alert.alert("Error", data.message || "Failed to send OTP");
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
+      // console.error("Error sending OTP:", error);
       Alert.alert(
         "Error",
         error instanceof Error

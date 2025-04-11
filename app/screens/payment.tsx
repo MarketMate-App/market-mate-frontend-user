@@ -121,7 +121,7 @@ const Payment = () => {
       const totalData: TotalData = await response.json();
       setData(totalData);
     } catch (error: any) {
-      console.error("Error fetching total:", error);
+      // console.error("Error fetching total:", error);
       setTotalError(error.message || "An unknown error occurred");
       Alert.alert(
         "Oops!",
@@ -148,10 +148,10 @@ const Payment = () => {
       if (userDetails) {
         setUser(JSON.parse(userDetails));
       } else {
-        console.warn("No user details found in storage.");
+        // console.warn("No user details found in storage.");
       }
     } catch (error) {
-      console.error("Error fetching user details:", error);
+      // console.error("Error fetching user details:", error);
     }
   };
   const createOrder = async () => {
@@ -230,10 +230,10 @@ const Payment = () => {
       }
 
       const orderData = await response.json();
-      console.log(orderData);
-      console.log("Order created successfully:", orderData);
+      // console.log(orderData);
+      // console.log("Order created successfully:", orderData);
     } catch (error) {
-      console.error("Error creating order:", error);
+      // console.error("Error creating order:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
@@ -364,7 +364,7 @@ const Payment = () => {
               // handle response here
               createOrder();
               router.replace("/screens/payment_processing");
-              console.log(res);
+              // console.log(res);
             }}
             ref={paystackWebViewRef}
           />

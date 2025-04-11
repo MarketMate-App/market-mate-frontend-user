@@ -199,12 +199,12 @@ const ProfilePage = () => {
       const token = await SecureStore.getItemAsync("jwtToken");
       if (token) {
         setToken(token);
-        console.log("Token fetched:", token);
+        // console.log("Token fetched:", token);
       } else {
-        console.log("No token found");
+        // console.log("No token found");
       }
     } catch (error) {
-      console.error("Failed to fetch token from secure storage", error);
+      // console.error("Failed to fetch token from secure storage", error);
     }
   };
 
@@ -214,7 +214,7 @@ const ProfilePage = () => {
       const phone = await AsyncStorage.getItem("@phoneNumber");
       if (phone) {
         setPhoneNumber(phone);
-        console.log("Phone number fetched:", phone);
+        // console.log("Phone number fetched:", phone);
       }
       const parsedDetails = userDetails ? JSON.parse(userDetails) : {};
       setUser({
@@ -223,9 +223,9 @@ const ProfilePage = () => {
         phoneNumber:
           parsedDetails.phoneNumber?.trim() || "Phone number not available",
       });
-      console.log("User details fetched:", parsedDetails);
+      // console.log("User details fetched:", parsedDetails);
     } catch (error) {
-      console.error("Failed to fetch user details from local storage", error);
+      // console.error("Failed to fetch user details from local storage", error);
     }
   };
 

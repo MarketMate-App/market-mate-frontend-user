@@ -150,12 +150,12 @@ const CartComponent = () => {
           const location = await SecureStore.getItemAsync("userLocation");
           if (location) {
             setHasLocation(true);
-            console.log(location);
+            // console.log(location);
           } else {
             setHasLocation(false);
           }
         } catch (error) {
-          console.error("Error fetching location:", error);
+          // console.error("Error fetching location:", error);
         }
       };
       fetchLocation();
