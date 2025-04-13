@@ -17,7 +17,7 @@
         "foregroundImage": "./assets/images/ico.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.aceslice.marketmatefrontenduser"
+      "package": "com.aceslice.marketmate"
     },
     "web": {
       "bundler": "metro",
@@ -26,6 +26,7 @@
     },
     "plugins": [
       [
+        
         "expo-secure-store",
         {
           "configureAndroidBackup": true,

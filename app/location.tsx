@@ -2,13 +2,10 @@ import React, { useState, useEffect, FC } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Button,
-  StyleSheet,
   ActivityIndicator,
   Alert,
-  Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
@@ -29,9 +26,8 @@ const LocationScreen: FC<LocationScreenProps> = () => {
     null
   );
   const [region, setRegion] = useState<Region>(INITIAL_REGION);
-  const [inputLocation, setInputLocation] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  // Removed unused errorMsg state
 
   useEffect(() => {
     getUserLocation();
@@ -40,8 +36,23 @@ const LocationScreen: FC<LocationScreenProps> = () => {
   const getUserLocation = async () => {
     setLoading(true);
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds
+      let { status: accessFineLocation } =
+        await Location.requestForegroundPermissionsAsync();
+      let { status: accessCoarseLocation } =
+        await Location.requestBackgroundPermissionsAsync();
+
+      if (accessFineLocation == null) {
+        accessFineLocation = Location.PermissionStatus.DENIED;
+      }
+      if (accessCoarseLocation == null) {
+        accessCoarseLocation = Location.PermissionStatus.DENIED;
+      }
+
+      if (
+        accessFineLocation !== "granted" ||
+        accessCoarseLocation !== "granted"
+      ) {
         setErrorMsg("Permission to access location was denied");
         setLoading(false);
         Alert.alert(
@@ -52,6 +63,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       }
 
       try {
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds
         const currentLocation = await Location.getCurrentPositionAsync({});
         setLocation(currentLocation);
         setRegion({
@@ -73,20 +85,6 @@ const LocationScreen: FC<LocationScreenProps> = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLocationInput = () => {
-    // Placeholder for geocoding logic:
-    if (!inputLocation.trim()) {
-      Alert.alert("Input Error", "Please enter a valid location");
-      return;
-    }
-    console.log("Location input:", inputLocation);
-    // Simulate geocoding success
-    // In a real application, integrate a geocoding service (e.g., Google, Mapbox, etc.)
-    // and update `region` accordingly.
-    // For now, we'll simply alert the user.
-    Alert.alert("Location Input", `Searching for "${inputLocation}"...`);
   };
 
   const handleUseCurrentLocation = async () => {
@@ -121,10 +119,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-      // Screen options can be adjusted as needed:
-      // options={{ headerShown: false, presentation: "modal" }}
-      />
+      <Stack.Screen />
       {loading ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color={"#2BCC5A"} />
@@ -150,16 +145,6 @@ const LocationScreen: FC<LocationScreenProps> = () => {
             )}
           </MapView>
           <View style={styles.inputContainer}>
-            {/* {errorMsg ? <Text style={styles.errorText}>{errorMsg}</Text> : null}
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your location"
-              value={inputLocation}
-              onChangeText={setInputLocation}
-            />
-            <View style={styles.buttonRow}>
-              <Button title="Search Location" onPress={handleLocationInput} />
-            </View> */}
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
@@ -197,21 +182,8 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
   },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 4,
-  },
   buttonRow: {
     marginVertical: 5,
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 5,
-    textAlign: "center",
   },
   infoText: {
     marginTop: 10,
