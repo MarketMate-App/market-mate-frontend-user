@@ -23,6 +23,18 @@ const OtpPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const checkUserDetails = async () => {
+      try {
+        const userDetails = await SecureStore.getItemAsync("jwtToken");
+        if (userDetails) {
+          router.push("/(tabs)/shop");
+        }
+      } catch (error) {
+        // console.error("Error retrieving user details:", error);
+      }
+    };
+
+    checkUserDetails();
     const fetchPhoneNumber = async () => {
       try {
         const storedPhoneNumber = await AsyncStorage.getItem("@phoneNumber");

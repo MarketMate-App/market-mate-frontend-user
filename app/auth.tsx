@@ -120,12 +120,19 @@ const AuthPage = () => {
     return () => backHandler.remove(); // Cleanup on unmount
   }, []);
   useEffect(() => {
-    const initialize = async () => {
-      await clearStorage();
+    const checkUserDetails = async () => {
+      try {
+        const userDetails = await SecureStore.getItemAsync("jwtToken");
+        if (userDetails) {
+          router.push("/(tabs)/shop");
+        }
+      } catch (error) {
+        // console.error("Error retrieving user details:", error);
+      }
     };
-    initialize();
-  }, []);
 
+    checkUserDetails();
+  }, []);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
