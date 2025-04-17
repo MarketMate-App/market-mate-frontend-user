@@ -53,7 +53,8 @@ const LocationScreen: FC<LocationScreenProps> = () => {
         accessFineLocation !== "granted" ||
         accessCoarseLocation !== "granted"
       ) {
-        setErrorMsg("Permission to access location was denied");
+        // Log the error instead of using undefined setErrorMsg
+        console.error("Permission to access location was denied");
         setLoading(false);
         Alert.alert(
           "Permission Error",
@@ -63,8 +64,11 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       }
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds
+        // Add null checks to handle potential null values
         const currentLocation = await Location.getCurrentPositionAsync({});
+        if (!currentLocation || !currentLocation.coords) {
+          throw new Error("Location data is null or undefined");
+        }
         setLocation(currentLocation);
         setRegion({
           latitude: currentLocation.coords.latitude,
@@ -73,14 +77,12 @@ const LocationScreen: FC<LocationScreenProps> = () => {
           longitudeDelta: INITIAL_REGION.longitudeDelta,
         });
       } catch (error) {
-        Alert.alert(
-          "Error",
-          "Failed to acquire current location. Please ensure location services are enabled."
-        );
+        console.error("Failed to get current location");
+        Alert.alert("Error", "Failed to get current location");
         console.error("Error fetching current location:", error);
       }
     } catch (error) {
-      setErrorMsg("Failed to get current location");
+      // Removed undefined setErrorMsg call
       Alert.alert("Error", "Failed to get current location");
     } finally {
       setLoading(false);
