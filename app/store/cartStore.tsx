@@ -19,22 +19,23 @@ export const useCartStore = create<CartState>((set) => ({
   cart: [],
   addToCart: (item: CartItem) =>
     set((state) => {
-      const index = state.cart.findIndex((cartItem) => cartItem.id === item.id);
-      if (index !== -1) {
-        const updatedCart = [...state.cart];
-        const existingItem = updatedCart[index];
+      const cartMap = new Map(
+        state.cart.map((cartItem) => [cartItem.id, cartItem])
+      );
+      const existingItem = cartMap.get(item.id);
+
+      if (existingItem) {
         const newQuantity = existingItem.quantity + item.quantity;
-        updatedCart[index] = {
+        cartMap.set(item.id, {
           ...existingItem,
           quantity: newQuantity,
           total: existingItem.price * newQuantity,
-        };
-        return { cart: updatedCart };
+        });
       } else {
-        return {
-          cart: [...state.cart, { ...item, total: item.price * item.quantity }],
-        };
+        cartMap.set(item.id, { ...item, total: item.price * item.quantity });
       }
+
+      return { cart: Array.from(cartMap.values()) };
     }),
   removeFromCart: (itemId: string) =>
     set((state) => ({
@@ -42,16 +43,22 @@ export const useCartStore = create<CartState>((set) => ({
     })),
   updateQuantity: (itemId: string, quantity: number) =>
     set((state) => {
-      const updatedCart = state.cart.map((item) =>
-        item.id === itemId
-          ? { ...item, quantity, total: item.price * quantity }
-          : item
+      const cartMap = new Map(
+        state.cart.map((cartItem) => [cartItem.id, cartItem])
       );
-      return { cart: updatedCart };
+      const existingItem = cartMap.get(itemId);
+
+      if (existingItem) {
+        cartMap.set(itemId, {
+          ...existingItem,
+          quantity,
+          total: existingItem.price * quantity,
+        });
+      }
+
+      return { cart: Array.from(cartMap.values()) };
     }),
-  clearCart: () => {
-    set({ cart: [] });
-  },
+  clearCart: () => set({ cart: [] }),
 }));
 
 export default useCartStore;

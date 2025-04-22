@@ -9,7 +9,7 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import { Stack, useGlobalSearchParams } from "expo-router";
+import { router, Stack, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import GridcardComponent from "../components/gridcard";
@@ -180,7 +180,7 @@ const DetailsPage = () => {
           </TouchableOpacity>
         </View>
       ) : product ? (
-        <SafeAreaView>
+        <SafeAreaView className="flex-1">
           <ScrollView
             className="flex-1"
             horizontal={false}
@@ -295,8 +295,8 @@ const DetailsPage = () => {
             </View>
           </ScrollView>
           <View
-            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-10 left-0 right-0"
-            style={{ paddingBottom: Platform.OS === "ios" ? 20 : 12 }}
+            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-5 left-0 right-0"
+            style={{}}
           >
             {quantity === 0 ? (
               <TouchableOpacity
@@ -354,6 +354,9 @@ const DetailsPage = () => {
             )}
 
             <TouchableOpacity
+              onPress={() => {
+                router.push("/cart");
+              }}
               hitSlop={20}
               className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center "
             >

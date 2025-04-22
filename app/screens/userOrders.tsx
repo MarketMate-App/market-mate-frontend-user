@@ -158,11 +158,11 @@ const UserOrdersScreen: React.FC = () => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="px-5 py-3 bg-white"
+      className="px-5 py-1 bg-white"
     >
       {TABS.map((tab) => (
         <TouchableOpacity
-          className="px-3 py-2 rounded-full mr-3 mb-2 text-center border-hairline"
+          className="px-3 min-h-8 items-center justify-center rounded-full mr-3 mb-2 text-center border-hairline"
           key={tab.value}
           onPress={() => setSelectedFilter(tab.value)}
           style={{
@@ -175,8 +175,8 @@ const UserOrdersScreen: React.FC = () => {
           <Text
             className="text-xs"
             style={{
-              color: selectedFilter === tab.value ? "#2BCC5A" : "#000",
-              fontFamily: "Unbounded SemiBold",
+              color: selectedFilter === tab.value ? "#2BCC5A" : "#374151",
+              fontFamily: "Unbounded Regular",
             }}
           >
             {tab.label}

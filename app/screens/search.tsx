@@ -161,7 +161,7 @@ const SearchScreen = () => {
               <TouchableOpacity
                 onPress={() => setSelectedCategory(tag)}
                 key={tag}
-                className={`px-3 py-1 mr-2 mb-2 rounded-full h-6 ${
+                className={`px-3 min-h-8 items-center justify-center mr-2 mb-2 rounded-full h-6 ${
                   selectedCategory === tag ? "bg-opacity-100" : "bg-opacity-10"
                 }`}
                 style={{

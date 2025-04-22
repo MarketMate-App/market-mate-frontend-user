@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "MarketMate",
-    "slug": "market-mate-frontend-user",
+    "slug": "marketmate",
+    "description": "MarketMate is a grocery shopping app that allows users to shop for fresh produce with ease and convenience. Its intuitive interface and advanced features make it simple to find and purchase high-quality products.",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/ico.png",
@@ -26,7 +27,6 @@
     },
     "plugins": [
       [
-        
         "expo-secure-store",
         {
           "configureAndroidBackup": true,
@@ -37,7 +37,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash.png",
+          "image": "./assets/images/ico.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -53,7 +53,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "ad4c6020-630e-44ac-9cff-cba305855660"
+        "projectId": "87753e7b-e1f9-4243-a8da-4d4dfe6087fb"
       }
     }
   }

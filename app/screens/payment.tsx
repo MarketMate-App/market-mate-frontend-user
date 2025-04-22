@@ -294,6 +294,7 @@ const Payment = () => {
     };
 
     initialize();
+    console.log(process.env.EXPO_PUBLIC_API);
   }, []);
   // ... Keep all type definitions and state declarations ...
   const [expanded, setExpanded] = useState(false);
@@ -348,10 +349,10 @@ const Payment = () => {
       >
         <View style={{ flex: 1 }}>
           <Paystack
-            paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
-            paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
-            // paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_SECRET_KEY}`}
-            // paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY}`}
+            // paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
+            // paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
+            paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY}`}
+            paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK__SECRET_KEY}`}
             billingName="MarketMate"
             channels={["mobile_money"]}
             currency="GHS"
