@@ -171,34 +171,35 @@ const DeliveryAddressScreen = () => {
                 title: "",
                 headerShadowVisible: false,
                 headerTitleStyle: {
-                  fontFamily: "WorkSans Regular",
+                  fontFamily: "Unbounded Regular",
                   fontSize: 14,
                 },
               }}
             />
             <Text
               className="text-3xl mb-3"
-              style={{ fontFamily: "WorkSans Regular" }}
+              style={{ fontFamily: "Unbounded Regular" }}
             >
               Tell us about yourself.
             </Text>
             <Text
-              className="text-gray-500 text-xs mb-8"
-              style={{ fontFamily: "WorkSans Regular" }}
+              className="text-gray-500 mb-8"
+              style={{ fontFamily: "WorkSans Medium" }}
             >
-              Please enter your details below.
+              We prioritize your privacy. Your details are encrypted and handled
+              with the utmost care to ensure your security.
             </Text>
             <KeyboardAvoidingView className="bg-white border-hairline items-center gap-2 border-gray-200 mb-4 rounded-xl">
               <FloatingLabelInput
                 label="Full name"
                 labelStyles={{
-                  fontFamily: "WorkSans Light",
+                  fontFamily: "WorkSans SemiBold",
                   color: "#e5e7eb",
                   paddingHorizontal: 3,
                   fontSize: 12,
                 }}
                 inputStyles={{
-                  fontFamily: "WorkSans Regular",
+                  fontFamily: "Unbounded Regular",
                   color: "#4b5563",
                   fontSize: 13,
                 }}
@@ -213,9 +214,8 @@ const DeliveryAddressScreen = () => {
                 animationDuration={50}
                 onChangeText={(value) => setName(value)}
                 containerStyles={{
-                  paddingLeft: Platform.OS === "ios" ? 20 : 10,
-                  paddingTop: Platform.OS === "ios" ? 20 : 15,
-                  paddingBottom: Platform.OS === "ios" ? 20 : 15,
+                  paddingVertical: 20,
+                  paddingLeft: 10,
                   borderWidth: 0,
                   borderBottomWidth: 0.5,
                   borderBottomColor: "#e5e7eb",
@@ -227,13 +227,13 @@ const DeliveryAddressScreen = () => {
               <FloatingLabelInput
                 label="Region"
                 labelStyles={{
-                  fontFamily: "WorkSans Light",
+                  fontFamily: "WorkSans SemiBold",
                   color: "#e5e7eb",
                   paddingHorizontal: 3,
                   fontSize: 12,
                 }}
                 inputStyles={{
-                  fontFamily: "WorkSans Regular",
+                  fontFamily: "Unbounded Regular",
                   color: "#4b5563",
                   fontSize: 13,
                 }}
@@ -244,9 +244,8 @@ const DeliveryAddressScreen = () => {
                 hintTextColor="#9ca3af"
                 onChangeText={(value) => setCountry(value)}
                 containerStyles={{
-                  paddingLeft: Platform.OS === "ios" ? 20 : 10,
-                  paddingTop: Platform.OS === "ios" ? 20 : 15,
-                  paddingBottom: Platform.OS === "ios" ? 20 : 15,
+                  paddingVertical: 20,
+                  paddingLeft: 10,
                   borderWidth: 0,
                   borderBottomWidth: 0.5,
                   borderBottomColor: "#e5e7eb",
@@ -259,13 +258,13 @@ const DeliveryAddressScreen = () => {
                 label="Street Address"
                 animationDuration={50}
                 labelStyles={{
-                  fontFamily: "WorkSans Light",
+                  fontFamily: "WorkSans SemiBold",
                   color: "#e5e7eb",
                   paddingHorizontal: 3,
                   fontSize: 12,
                 }}
                 inputStyles={{
-                  fontFamily: "WorkSans Regular",
+                  fontFamily: "Unbounded Regular",
                   color: "#4b5563",
                   fontSize: 13,
                 }}
@@ -275,9 +274,8 @@ const DeliveryAddressScreen = () => {
                 hintTextColor="#9ca3af"
                 onChangeText={(value) => setAddress(value)}
                 containerStyles={{
-                  paddingLeft: Platform.OS === "ios" ? 20 : 10,
-                  paddingTop: Platform.OS === "ios" ? 20 : 15,
-                  paddingBottom: Platform.OS === "ios" ? 20 : 15,
+                  paddingVertical: 20,
+                  paddingLeft: 10,
                   borderWidth: 0,
                   borderBottomWidth: 0.5,
                   borderBottomColor: "#e5e7eb",
@@ -291,7 +289,7 @@ const DeliveryAddressScreen = () => {
                 <FloatingLabelInput
                   label="Phone"
                   labelStyles={{
-                    fontFamily: "WorkSans Light",
+                    fontFamily: "WorkSans SemiBold",
                     color: "#e5e7eb",
                     paddingHorizontal: 3,
                     fontSize: 12,
@@ -305,14 +303,14 @@ const DeliveryAddressScreen = () => {
                       />
                       <Text
                         className="text-xs text-gray-500"
-                        style={{ fontFamily: "WorkSans Regular" }}
+                        style={{ fontFamily: "Unbounded Regular" }}
                       >
                         +233
                       </Text>
                     </View>
                   }
                   inputStyles={{
-                    fontFamily: "WorkSans Regular",
+                    fontFamily: "Unbounded Regular",
                     color: "#4b5563",
                     fontSize: 13,
                   }}
@@ -354,9 +352,9 @@ const DeliveryAddressScreen = () => {
               ) : (
                 <Text
                   className="text-white text-xs text-center"
-                  style={{ fontFamily: "WorkSans SemiBold" }}
+                  style={{ fontFamily: "Unbounded SemiBold" }}
                 >
-                  Save My Details
+                  Save my information
                 </Text>
               )}
             </Pressable>

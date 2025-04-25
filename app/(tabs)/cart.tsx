@@ -72,7 +72,7 @@ const CartItemComponent = memo(
           <View>
             <Text
               className="text-sm text-gray-700 mb-2"
-              style={{ fontFamily: "WorkSans Medium" }}
+              style={{ fontFamily: "WorkSans Bold" }}
             >
               {item.name.length > 10
                 ? `${item.name.substring(0, 16)}...`
@@ -89,7 +89,7 @@ const CartItemComponent = memo(
         <View className="items-center justify-between">
           <Text
             className="text-sm relative mb-2 text-gray-700"
-            style={{ fontFamily: "WorkSans Regular" }}
+            style={{ fontFamily: "Unbounded Regular" }}
           >
             ₵{formattedPrice}
           </Text>
@@ -102,7 +102,7 @@ const CartItemComponent = memo(
             </TouchableOpacity>
             <Text
               className="mx-2 text-gray-500 text-sm"
-              style={{ fontFamily: "WorkSans Regular" }}
+              style={{ fontFamily: "Unbounded Regular" }}
             >
               {item.quantity}
             </Text>
@@ -227,14 +227,19 @@ const CartComponent = () => {
             <View className="mb-2 bg-white flex-row items-center justify-between sticky top-0 left-0 right-0">
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "WorkSans Medium" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 Estimated:{" "}
-                <Text className="text-gray-700">₵{calculateTotal()}</Text>
+                <Text
+                  className="text-gray-700"
+                  style={{ fontFamily: "Unbounded Regular" }}
+                >
+                  ₵{calculateTotal()}
+                </Text>
               </Text>
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "WorkSans Light" }}
+                style={{ fontFamily: "Unbounded Light" }}
               >
                 <Text className="text-gray-700">{cart.length}</Text> items
               </Text>
@@ -276,13 +281,13 @@ const CartComponent = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "WorkSans Medium" }}
+              style={{ fontFamily: "WorkSans Bold" }}
             >
               Your cart is empty
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "WorkSans Light" }}
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Fill up your cart with fresh groceries and everyday essentials.
               Start shopping now!
@@ -293,7 +298,7 @@ const CartComponent = () => {
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "WorkSans SemiBold" }}
+                style={{ fontFamily: "WorkSans Bold" }}
               >
                 View trending items
               </Text>
@@ -303,7 +308,7 @@ const CartComponent = () => {
         {cart.length > 0 && (
           <View className="mb-4">
             <Text
-              className="text-xs text-gray-500 mt-4 mb-2"
+              className="text-gray-500 mt-4 mb-2"
               style={{ fontFamily: "WorkSans Regular" }}
             >
               Have Coupon?
@@ -315,26 +320,24 @@ const CartComponent = () => {
                   value={coupon}
                   onChangeText={setCoupon}
                   labelStyles={{
-                    fontFamily: "WorkSans Light",
+                    fontFamily: "WorkSans SemiBold",
                     color: "#e5e7eb",
-                    paddingHorizontal: 3,
                     fontSize: 12,
                   }}
                   inputStyles={{
-                    fontFamily: "WorkSans Regular",
+                    fontFamily: "Unbounded Regular",
                     color: "#4b5563",
                     fontSize: 13,
                   }}
                   customLabelStyles={{
                     colorFocused: "#9ca3af",
                     topFocused: -18,
-                    leftFocused: Platform.OS === "ios" ? 15 : 10,
                   }}
                   hint="ex: FREESHIPPING15"
                   hintTextColor="#9ca3af"
                   containerStyles={{
                     flex: 1,
-                    paddingLeft: Platform.OS === "ios" ? 15 : 0,
+                    paddingVertical: 15,
                   }}
                 />
                 {coupon.length > 0 && (
@@ -370,8 +373,8 @@ const CartComponent = () => {
             </View>
             <View className="bg-white p-3 border-hairline border-gray-200 mb-4 rounded-xl">
               <Text
-                className="text-xs text-gray-500 mb-2"
-                style={{ fontFamily: "WorkSans Regular" }}
+                className="text-gray-500 mb-2"
+                style={{ fontFamily: "WorkSans Medium" }}
               >
                 Enjoy free delivery in Takoradi
               </Text>
@@ -386,18 +389,18 @@ const CartComponent = () => {
               </View>
               {totalPrice >= 500 ? (
                 <Text
-                  className="text-green-600 text-xs"
-                  style={{ fontFamily: "WorkSans Regular" }}
+                  className="text-green-600"
+                  style={{ fontFamily: "WorkSans SemiBold" }}
                 >
                   Congratulations! You qualify for free delivery.
                 </Text>
               ) : (
                 <Text
-                  className="text-gray-600 text-xs"
-                  style={{ fontFamily: "WorkSans Regular" }}
+                  className="text-gray-600"
+                  style={{ fontFamily: "WorkSans Medium" }}
                 >
-                  You are just {(500 - totalPrice).toFixed(2)} away from free
-                  delivery.
+                  You are just GHS {(500 - totalPrice).toFixed(2)} away from
+                  free delivery.
                 </Text>
               )}
             </View>
@@ -406,7 +409,7 @@ const CartComponent = () => {
       </ScrollView>
       <View className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0">
         <TouchableOpacity
-          className={`bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white ${
+          className={`bg-[#2BCC5A] w-full py-6 rounded-full border-hairline border-white ${
             cart.length === 0 ? "opacity-50" : ""
           }`}
           onPress={() => {
@@ -421,8 +424,8 @@ const CartComponent = () => {
           disabled={cart.length === 0}
         >
           <Text
-            className="text-white text-xs text-center"
-            style={{ fontFamily: "WorkSans SemiBold" }}
+            className="text-white text-center text-xs"
+            style={{ fontFamily: "Unbounded SemiBold" }}
           >
             Go to Checkout
           </Text>

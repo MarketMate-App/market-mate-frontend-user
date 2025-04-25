@@ -15,6 +15,12 @@ export default function RootLayout() {
     "WorkSans Bold": require("../assets/fonts/Syne-Bold.ttf"),
     "WorkSans SemiBold": require("../assets/fonts/Syne-SemiBold.ttf"),
     "WorkSans Light": require("../assets/fonts/Syne-Medium.ttf"),
+    "WorkSans ExtraBold": require("../assets/fonts/Syne-ExtraBold.ttf"),
+    "Unbounded Regular": require("../assets/fonts/Unbounded-Regular.ttf"),
+    "Unbounded Medium": require("../assets/fonts/Unbounded-Medium.ttf"),
+    "Unbounded Bold": require("../assets/fonts/Unbounded-Bold.ttf"),
+    "Unbounded SemiBold": require("../assets/fonts/Unbounded-SemiBold.ttf"),
+    "Unbounded Light": require("../assets/fonts/Unbounded-Light.ttf"),
   });
 
   useEffect(() => {

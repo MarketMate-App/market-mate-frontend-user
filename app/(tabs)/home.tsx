@@ -254,7 +254,7 @@ const HomePage = () => {
           }
         >
           <View className="mb-4">
-            <Text style={{ fontFamily: "WorkSans Regular" }}>
+            <Text style={{ fontFamily: "WorkSans Bold" }}>
               {greetingMessage}
             </Text>
           </View>

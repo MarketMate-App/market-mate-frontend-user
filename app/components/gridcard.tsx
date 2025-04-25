@@ -99,9 +99,9 @@ const GridcardComponent: React.FC<GridcardProps> = ({
 
   const renderPriceDisplay = () => (
     <View className={`${isFull ? "text-xl" : "text-lg"} relative`}>
-      <Text style={{ fontFamily: "WorkSans SemiBold" }}>
+      <Text style={{ fontFamily: "Unbounded SemiBold" }}>
         ₵{Math.floor(price)}
-        <Text style={{ fontSize: 12, fontFamily: "WorkSans Regular" }}>
+        <Text style={{ fontSize: 12, fontFamily: "Unbounded Light" }}>
           .{price.toFixed(2).split(".")[1]}
         </Text>
       </Text>
@@ -115,7 +115,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
     return (
       <Text
         className="text-red-500 text-xs line-through"
-        style={{ fontFamily: "WorkSans Light" }}
+        style={{ fontFamily: "Unbounded Light" }}
       >
         ₵{originalPrice.toFixed(2)}
       </Text>
@@ -200,7 +200,7 @@ const GridcardComponent: React.FC<GridcardProps> = ({
         <Link href={`/products/${productId}`} asChild>
           <Text
             className={`text-black ${isFull ? "text-lg" : "text-base"} mb-1`}
-            style={{ fontFamily: "WorkSans Regular" }}
+            style={{ fontFamily: "WorkSans Bold" }}
             numberOfLines={isFull ? 2 : 1}
           >
             {name}
@@ -247,8 +247,8 @@ const GridcardComponent: React.FC<GridcardProps> = ({
           {quantity > 0 && (
             <View className="mt-2">
               <Text
-                className="text-gray-500"
-                style={{ fontFamily: "Gilroy Medium" }}
+                className="text-gray-500 text-xs"
+                style={{ fontFamily: "Unbounded Light" }}
               >
                 Total: ₵{(price * quantity).toFixed(2)}
               </Text>

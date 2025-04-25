@@ -123,29 +123,16 @@ const UserOrdersScreen: React.FC = () => {
     }
   }, []);
   useEffect(() => {
-    const preventBackNavigation = () => {
-      router.replace("/profile");
-    };
-
-    const handleBeforeRemove = (e: any) => {
-      e.preventDefault();
-      preventBackNavigation();
-    };
-
-    const backHandler = () => {
-      preventBackNavigation();
-      return true;
-    };
-
-    const subscription = BackHandler.addEventListener(
+    fetchOrders();
+    const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
-      backHandler
+      () => {
+        router.back();
+        return true;
+      }
     );
 
-    return () => subscription.remove();
-  }, [router]);
-  useEffect(() => {
-    fetchOrders();
+    return () => backHandler.remove();
   }, [fetchOrders]);
 
   const onRefresh = () => {
@@ -176,7 +163,7 @@ const UserOrdersScreen: React.FC = () => {
             className="text-xs"
             style={{
               color: selectedFilter === tab.value ? "#2BCC5A" : "#374151",
-              fontFamily: "WorkSans Regular",
+              fontFamily: "WorkSans SemiBold",
             }}
           >
             {tab.label}
@@ -210,7 +197,7 @@ const UserOrdersScreen: React.FC = () => {
             marginRight: 4,
           }}
         />
-        <Text style={{ fontSize: 10, color, fontFamily: "WorkSans Regular" }}>
+        <Text style={{ fontSize: 10, color, fontFamily: "WorkSans SemiBold" }}>
           {label}
         </Text>
       </View>
@@ -251,7 +238,7 @@ const UserOrdersScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: 14,
-                fontFamily: "WorkSans Medium",
+                fontFamily: "WorkSans Bold",
                 color: "#1F2937",
               }}
             >
@@ -260,7 +247,7 @@ const UserOrdersScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: 10,
-                fontFamily: "WorkSans Regular",
+                fontFamily: "Unbounded Regular",
                 color: "#6B7280",
               }}
             >
@@ -272,7 +259,7 @@ const UserOrdersScreen: React.FC = () => {
               <Text
                 style={{
                   fontSize: 12,
-                  fontFamily: "WorkSans Regular",
+                  fontFamily: "Unbounded Regular",
                   color: "#4B5563",
                 }}
               >
@@ -283,8 +270,8 @@ const UserOrdersScreen: React.FC = () => {
               <MaterialIcons name="shopping-basket" size={16} color="#4B5563" />
               <Text
                 style={{
-                  fontSize: 12,
-                  fontFamily: "WorkSans Regular",
+                  fontSize: 14,
+                  fontFamily: "WorkSans Medium",
                   color: "#4B5563",
                   marginLeft: 4,
                 }}
@@ -311,7 +298,7 @@ const UserOrdersScreen: React.FC = () => {
                   <Text
                     key={index}
                     style={{
-                      fontFamily: "WorkSans Regular",
+                      fontFamily: "WorkSans SemiBold",
                       fontSize: 12,
                       color: "#4B5563",
                       marginBottom: 4,
@@ -359,7 +346,7 @@ const UserOrdersScreen: React.FC = () => {
                 <View style={{ marginLeft: 8 }}>
                   <Text
                     style={{
-                      fontFamily: "WorkSans Regular",
+                      fontFamily: "WorkSans Bold",
                       fontSize: 12,
                       color: "#4B5563",
                     }}
@@ -491,30 +478,50 @@ const UserOrdersScreen: React.FC = () => {
               source={require("@/assets/images/empty-cart.png")}
               className="w-64 h-64 mb-8"
             />
-            <Text
-              className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "WorkSans Medium" }}
-            >
-              No orders yet?
-            </Text>
-            <Text
-              className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "WorkSans Light" }}
-            >
-              Explore our wide range of products and find something you love.
-              Start shopping now and make your first order today!
-            </Text>
-            <TouchableOpacity
-              className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
-              onPress={() => router.push("/home")}
-            >
-              <Text
-                className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "WorkSans SemiBold" }}
-              >
-                Browse popular products
-              </Text>
-            </TouchableOpacity>
+            {orders.length === 0 ? (
+              <>
+                <Text
+                  className="text-lg text-gray-700 mb-4"
+                  style={{ fontFamily: "WorkSans Medium" }}
+                >
+                  No orders yet?
+                </Text>
+                <Text
+                  className="text-center w-80 text-gray-500 mb-8 text-xs"
+                  style={{ fontFamily: "WorkSans Light" }}
+                >
+                  Explore our wide range of products and find something you
+                  love. Start shopping now and make your first order today!
+                </Text>
+                <TouchableOpacity
+                  className="w-[56%] px-8 py-5 rounded-full border-hairline border-[#014E3C]"
+                  onPress={() => router.push("/home")}
+                >
+                  <Text
+                    className="text-[#014E3C] text-xs text-center"
+                    style={{ fontFamily: "WorkSans SemiBold" }}
+                  >
+                    Browse popular products
+                  </Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <Text
+                  className="text-lg text-gray-700 mb-4"
+                  style={{ fontFamily: "WorkSans Medium" }}
+                >
+                  No {selectedFilter.toUpperCase()} orders found.
+                </Text>
+                <Text
+                  className="text-center w-80 text-gray-500 mb-8 text-xs"
+                  style={{ fontFamily: "WorkSans Light" }}
+                >
+                  Try selecting a different filter or refresh the page to check
+                  for updates.
+                </Text>
+              </>
+            )}
           </View>
         }
         refreshControl={

@@ -57,7 +57,7 @@ const HeaderComponent = () => {
       <Link href={"/location"}>
         <View>
           <Text
-            style={{ fontFamily: "Gilroy Medium" }}
+            style={{ fontFamily: "WorkSans SemiBold" }}
             className="text-gray-500"
           >
             Deliver now
@@ -72,7 +72,7 @@ const HeaderComponent = () => {
               ) : (
                 <Text
                   className="text-sm"
-                  style={{ fontFamily: "WorkSans Regular" }}
+                  style={{ fontFamily: "WorkSans Bold" }}
                 >
                   {location}
                 </Text>

@@ -142,13 +142,13 @@ const AuthPage = () => {
         <View>
           <Text
             className="text-3xl mb-3"
-            style={{ fontFamily: "WorkSans Regular" }}
+            style={{ fontFamily: "Unbounded Regular" }}
           >
             Akwaaba!
           </Text>
           <Text
-            className="text-gray-500 text-xs mb-8"
-            style={{ fontFamily: "WorkSans Regular" }}
+            className="text-gray-500 mb-8"
+            style={{ fontFamily: "WorkSans Medium" }}
           >
             Welcome to Market Mate – your local hub for grocery deals,
             handpicked selections, unbeatable prices, and fast delivery.
@@ -158,9 +158,9 @@ const AuthPage = () => {
             <FloatingLabelInput
               label="Phone Number"
               labelStyles={{
-                fontFamily: "WorkSans Light",
+                fontFamily: "WorkSans SemiBold",
                 color: "#e5e7eb",
-                paddingHorizontal: 3,
+                paddingHorizontal: 10,
                 fontSize: 12,
               }}
               leftComponent={
@@ -172,14 +172,14 @@ const AuthPage = () => {
                   />
                   <Text
                     className="text-xs text-gray-500"
-                    style={{ fontFamily: "WorkSans Regular" }}
+                    style={{ fontFamily: "Unbounded Regular" }}
                   >
                     +233
                   </Text>
                 </View>
               }
               inputStyles={{
-                fontFamily: "WorkSans Regular",
+                fontFamily: "Unbounded Regular",
                 color: "#4b5563",
                 fontSize: 13,
                 paddingLeft: 10,
@@ -194,7 +194,7 @@ const AuthPage = () => {
               keyboardType="numeric"
               onChangeText={setPhone}
               containerStyles={{
-                paddingVertical: Platform.OS === "ios" ? 20 : 15,
+                paddingVertical: 20,
               }}
               returnKeyType="done"
             />
@@ -211,7 +211,7 @@ const AuthPage = () => {
             ) : (
               <Text
                 className="text-white text-xs text-center"
-                style={{ fontFamily: "WorkSans SemiBold" }}
+                style={{ fontFamily: "Unbounded SemiBold" }}
               >
                 Continue
               </Text>

@@ -171,12 +171,12 @@ const PaymentProcessingScreen: React.FC = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "WorkSans Medium" }}
+              style={{ fontFamily: "WorkSans SemiBold" }}
             >
               Packing your order...
             </Text>
             <Text
-              className="text-center w-80 text-gray-500 mb-8 text-xs"
+              className="text-center w-80 text-gray-500 mb-8 text-sm"
               style={{ fontFamily: "WorkSans Regular" }}
             >
               Your order has been confirmed. You will receive an SMS
@@ -213,7 +213,7 @@ const PaymentProcessingScreen: React.FC = () => {
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "WorkSans SemiBold" }}
+                style={{ fontFamily: "WorkSans Bold" }}
               >
                 View my orders
               </Text>
@@ -235,7 +235,7 @@ const PaymentProcessingScreen: React.FC = () => {
           ) : (
             <Text
               className="text-white text-xs text-center"
-              style={{ fontFamily: "WorkSans SemiBold" }}
+              style={{ fontFamily: "Unbounded SemiBold" }}
             >
               Continue Shopping
             </Text>

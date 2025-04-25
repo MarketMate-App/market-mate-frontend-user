@@ -200,19 +200,19 @@ const OtpPage = () => {
         <View>
           <Text
             className="text-3xl mb-3"
-            style={{ fontFamily: "WorkSans Regular" }}
+            style={{ fontFamily: "Unbounded Regular" }}
           >
             Verify Your Identity
           </Text>
           <Text
-            className="text-gray-500 text-xs mb-8"
-            style={{ fontFamily: "WorkSans Regular" }}
+            className="text-gray-500 mb-8"
+            style={{ fontFamily: "WorkSans Medium" }}
           >
             To keep your account secure, please enter the one-time password we
             sent to{" "}
             <Text
               className="text-black text-xs"
-              style={{ fontFamily: "WorkSans SemiBold" }}
+              style={{ fontFamily: "Unbounded SemiBold" }}
             >
               {phoneNumber}
             </Text>
@@ -223,13 +223,13 @@ const OtpPage = () => {
             <FloatingLabelInput
               label="OTP"
               labelStyles={{
-                fontFamily: "WorkSans Light",
+                fontFamily: "WorkSans SemiBold",
                 color: "#e5e7eb",
-                paddingHorizontal: 3,
+                paddingHorizontal: 10,
                 fontSize: 12,
               }}
               inputStyles={{
-                fontFamily: "WorkSans Regular",
+                fontFamily: "Unbounded Regular",
                 color: "#4b5563",
                 fontSize: 13,
                 paddingLeft: 10,
@@ -243,7 +243,7 @@ const OtpPage = () => {
               keyboardType="numeric"
               onChangeText={setOtp}
               containerStyles={{
-                paddingVertical: Platform.OS === "ios" ? 20 : 15,
+                paddingVertical: 20,
               }}
               returnKeyType="done"
             />
@@ -251,29 +251,29 @@ const OtpPage = () => {
 
           <TouchableOpacity
             onPress={handleContinue}
-            className="w-full mt-4 bg-[#2BCC5A] py-5 rounded-full border border-white"
+            className="w-full mt-4 bg-[#2BCC5A] py-6 rounded-full border border-white"
             style={{ backgroundColor: "#2BCC5A" }}
           >
             <Text
               className="text-white text-xs text-center"
-              style={{ fontFamily: "WorkSans SemiBold" }}
+              style={{ fontFamily: "Unbounded SemiBold" }}
             >
-              Verify
+              Verify OTP
             </Text>
           </TouchableOpacity>
         </View>
 
         <View className="w-full">
           <Text
-            className="text-center text-gray-500 text-xs mb-3"
-            style={{ fontFamily: "WorkSans Regular" }}
+            className="text-center text-gray-500 mb-3"
+            style={{ fontFamily: "WorkSans Medium" }}
           >
-            Didn't receive your OTP?
+            Didn't receive OTP?
           </Text>
           <TouchableOpacity
             onPress={handleResendOtp}
             disabled={resendDisabled || loading}
-            className="flex-row items-center justify-center py-4 rounded-full border border-gray-200"
+            className="flex-row items-center justify-center py-5 rounded-full border border-gray-200"
             style={{ opacity: resendDisabled || loading ? 0.5 : 1 }}
           >
             {loading ? (
@@ -281,7 +281,7 @@ const OtpPage = () => {
             ) : (
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "WorkSans SemiBold" }}
+                style={{ fontFamily: "Unbounded SemiBold" }}
               >
                 Resend OTP {resendDisabled && `(${counter})`}
               </Text>

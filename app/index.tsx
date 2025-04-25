@@ -41,13 +41,13 @@ export default function Index() {
           <View className="flex-1 justify-end">
             <Text
               className="text-4xl mb-2"
-              style={{ fontFamily: "WorkSans Regular", color: "#fff" }}
+              style={{ fontFamily: "Unbounded Regular", color: "#fff" }}
             >
               Welcome to Market Mate
             </Text>
             <Text
               className="text-gray-400 text-sm mb-10"
-              style={{ fontFamily: "WorkSans Regular", lineHeight: 22 }}
+              style={{ fontFamily: "Unbounded Regular", lineHeight: 22 }}
             >
               Discover unbeatable deals on fresh produce and everyday
               essentials. Enjoy a seamless shopping experience tailored for you.
@@ -59,7 +59,7 @@ export default function Index() {
             >
               <Text
                 className="text-center text-xs text-white"
-                style={{ fontFamily: "WorkSans SemiBold" }}
+                style={{ fontFamily: "Unbounded SemiBold" }}
               >
                 Shop Now & Save!
               </Text>

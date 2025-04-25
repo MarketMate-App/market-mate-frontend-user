@@ -131,7 +131,7 @@ const DetailsPage = () => {
           headerTitleAlign: "center",
           title: product ? product.name : "Product Details",
           headerShadowVisible: false,
-          headerTitleStyle: { fontFamily: "WorkSans Regular", fontSize: 14 },
+          headerTitleStyle: { fontFamily: "WorkSans SemiBold", fontSize: 14 },
           headerRight: () => (
             <AntDesign
               name={heartFilled ? "heart" : "hearto"}
@@ -172,7 +172,7 @@ const DetailsPage = () => {
             onPress={handleRetry}
           >
             <Text
-              style={{ fontFamily: "WorkSans Regular" }}
+              style={{ fontFamily: "WorkSans Bold" }}
               className="text-xs text-white"
             >
               Try Again
@@ -227,7 +227,7 @@ const DetailsPage = () => {
                       <Text
                         style={{
                           color,
-                          fontFamily: "WorkSans Light",
+                          fontFamily: "WorkSans SemiBold",
                         }}
                         className="text-xs"
                       >
@@ -241,13 +241,13 @@ const DetailsPage = () => {
                 <View className="flex-row justify-between items-center">
                   <Text
                     className="text-black text-xl mb-4"
-                    style={{ fontFamily: "WorkSans Regular" }}
+                    style={{ fontFamily: "WorkSans SemiBold" }}
                   >
                     {product.name}
                   </Text>
                   <Text
                     className="text-black text-2xl mb-4"
-                    style={{ fontFamily: "WorkSans Regular" }}
+                    style={{ fontFamily: "Unbounded Regular" }}
                   >
                     ₵{product.price}
                     <Text className="text-sm text-gray-500">
@@ -256,7 +256,7 @@ const DetailsPage = () => {
                   </Text>
                 </View>
                 <Text
-                  className="text-gray-500 text-sm mb-4"
+                  className="text-gray-500 mb-4"
                   style={{ fontFamily: "WorkSans Light" }}
                 >
                   {product.description}
@@ -306,7 +306,7 @@ const DetailsPage = () => {
               >
                 <Ionicons name="basket-outline" size={24} color={"black"} />
                 <Text
-                  style={{ fontFamily: "WorkSans Regular" }}
+                  style={{ fontFamily: "WorkSans Bold" }}
                   className="text-xs text-black"
                 >
                   Add to cart
@@ -338,13 +338,13 @@ const DetailsPage = () => {
                 </View>
                 <Text>
                   <Text
-                    style={{ fontFamily: "WorkSans Regular" }}
+                    style={{ fontFamily: "Unbounded Light" }}
                     className="text-xs text-black"
                   >
                     Total:{" "}
                   </Text>
                   <Text
-                    style={{ fontFamily: "WorkSans Regular" }}
+                    style={{ fontFamily: "Unbounded Regular" }}
                     className="text-xs text-black"
                   >
                     ₵{(product.price * quantity).toFixed(2)}
@@ -361,7 +361,7 @@ const DetailsPage = () => {
               className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center "
             >
               <Text
-                style={{ fontFamily: "WorkSans Regular" }}
+                style={{ fontFamily: "WorkSans Bold" }}
                 className="text-xs text-white"
               >
                 Buy now

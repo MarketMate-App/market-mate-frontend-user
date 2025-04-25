@@ -44,7 +44,7 @@ const Payment = () => {
   const [loading, setLoading] = useState(false);
   const [totalError, setTotalError] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<"cash" | "online">(
-    "cash"
+    "online"
   );
   const cart = useCartStore((state) => (state as unknown as CartState).cart);
   const [data, setData] = useState<TotalData | null>(null);
@@ -314,13 +314,13 @@ const Payment = () => {
   });
 
   return (
-    <SafeAreaView className="bg-[#f8fafc]">
+    <SafeAreaView className="bg-[#f8fafc] relative flex-1">
       <Stack.Screen
         options={{
           headerTitleAlign: "center",
           title: "Order Summary",
           headerShadowVisible: false,
-          headerTitleStyle: { fontFamily: "WorkSans Regular", fontSize: 14 },
+          headerTitleStyle: { fontFamily: "WorkSans Bold", fontSize: 14 },
         }}
       />
       {/* Delivery Progress Banner */}
@@ -395,13 +395,13 @@ const Payment = () => {
                   </Text>
                   <View className="flex-row items-center mt-1">
                     <Text
-                      style={{ fontFamily: "WorkSans Light" }}
+                      style={{ fontFamily: "Unbounded Light" }}
                       className="text-gray-500 text-xs mr-2"
                     >
                       ×{item.quantity}
                     </Text>
                     <Text
-                      style={{ fontFamily: "WorkSans Light" }}
+                      style={{ fontFamily: "Unbounded Light" }}
                       className="text-[#2BCC5A] text-xs"
                     >
                       {item.unitOfMeasure}
@@ -425,7 +425,7 @@ const Payment = () => {
                 ) : (
                   <Text
                     className="text-gray-900"
-                    style={{ fontFamily: "WorkSans Medium" }}
+                    style={{ fontFamily: "Unbounded Medium" }}
                   >
                     GHS {data?.subtotal?.toFixed(2) || "0.00"}
                   </Text>
@@ -446,7 +446,7 @@ const Payment = () => {
                     </View>
                     <Text
                       className="text-gray-900"
-                      style={{ fontFamily: "WorkSans Medium" }}
+                      style={{ fontFamily: "Unbounded Medium" }}
                     >
                       GHS{" "}
                       {(
@@ -472,7 +472,7 @@ const Payment = () => {
                       </View>
                       <Text
                         className="text-red-600"
-                        style={{ fontFamily: "WorkSans Medium" }}
+                        style={{ fontFamily: "Unbounded Medium" }}
                       >
                         +GHS {data?.peakSurcharge?.toFixed(2) || "0.00"}
                       </Text>
@@ -495,7 +495,7 @@ const Payment = () => {
                     </View>
                     <Text
                       className="text-gray-900"
-                      style={{ fontFamily: "WorkSans Medium" }}
+                      style={{ fontFamily: "Unbounded Medium" }}
                     >
                       GHS {data?.platformFee.toFixed(2) || "0.00"}
                     </Text>
@@ -517,7 +517,7 @@ const Payment = () => {
                   ) : (
                     <Text
                       className="text-xl text-[#2BCC5A]"
-                      style={{ fontFamily: "WorkSans SemiBold" }}
+                      style={{ fontFamily: "Unbounded SemiBold" }}
                     >
                       GHS {data?.total?.toFixed(2) || "0.00"}
                     </Text>
@@ -572,7 +572,7 @@ const Payment = () => {
                   color={selectedPayment === "online" ? "#2BCC5A" : "#4b5563"}
                 />
                 <Text
-                  style={{ fontFamily: "WorkSans Regular" }}
+                  style={{ fontFamily: "WorkSans Medium" }}
                   className={`text-sm ${
                     selectedPayment === "online"
                       ? "text-[#2BCC5A]"
@@ -582,7 +582,7 @@ const Payment = () => {
                   Mobile Money
                 </Text>
                 <Text
-                  className=" text-gray-500 text-[9px] text-center"
+                  className=" text-gray-500 text-xs text-center"
                   style={{ fontFamily: "WorkSans Light" }}
                 >
                   Instant payment via Momo.
@@ -606,7 +606,7 @@ const Payment = () => {
                   color={selectedPayment === "cash" ? "#2BCC5A" : "#4b5563"}
                 />
                 <Text
-                  style={{ fontFamily: "WorkSans Regular" }}
+                  style={{ fontFamily: "WorkSans Medium" }}
                   className={` text-sm ${
                     selectedPayment === "cash"
                       ? "text-[#2BCC5A]"
@@ -617,7 +617,7 @@ const Payment = () => {
                 </Text>
                 <Text
                   style={{ fontFamily: "WorkSans Light" }}
-                  className=" text-gray-500 text-[9px] text-center"
+                  className=" text-gray-500 text-xs text-center"
                 >
                   Pay when you receive items
                 </Text>
@@ -628,7 +628,7 @@ const Payment = () => {
       </ScrollView>
 
       {/* Sticky Confirm Button */}
-      <View className="bg-white pt-4 fixed bottom-0 px-4 pb-10 border-t border-gray-100">
+      <View className="bg-white pt-4 p-4 border-t border-gray-100">
         <TouchableOpacity
           onPress={handlePayment}
           className={`w-full py-5 rounded-full ${
@@ -641,7 +641,7 @@ const Payment = () => {
             <>
               <Text
                 className="text-white text-xs"
-                style={{ fontFamily: "WorkSans SemiBold" }}
+                style={{ fontFamily: "Unbounded SemiBold" }}
               >
                 Continue to order
               </Text>

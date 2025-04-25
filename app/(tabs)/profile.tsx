@@ -163,7 +163,7 @@ const ProfilePage = () => {
                 }}
               />
               <Text
-                style={[style.fontLight, { fontSize: 14, color: "#4B5563" }]}
+                style={[style.fontLight, { fontSize: 16, color: "#4B5563" }]}
               >
                 {item.title}
               </Text>
@@ -252,7 +252,7 @@ const ProfilePage = () => {
       <ScrollView
         horizontal={false}
         showsVerticalScrollIndicator={false}
-        className="bg-[#ffffff90] flex-1"
+        className="bg-[#ffffff90]"
       >
         {token ? (
           <View
@@ -273,7 +273,7 @@ const ProfilePage = () => {
             <Text
               style={[
                 { marginBottom: 8, fontSize: 20 },
-                { fontFamily: "WorkSans Regular" },
+                { fontFamily: "WorkSans Bold" },
               ]}
             >
               {user.fullName}
@@ -281,7 +281,7 @@ const ProfilePage = () => {
             <Text
               style={[
                 { marginBottom: 16, fontSize: 14, color: "#6B7280" },
-                { fontFamily: "WorkSans Light" },
+                { fontFamily: "Unbounded Light" },
               ]}
             >
               {phoneNumber}
@@ -303,7 +303,7 @@ const ProfilePage = () => {
                 className="text-xs"
                 style={[
                   { textAlign: "center", color: "#014E3C" },
-                  { fontFamily: "WorkSans SemiBold" },
+                  { fontFamily: "WorkSans Bold" },
                 ]}
               >
                 Edit Profile
@@ -313,9 +313,9 @@ const ProfilePage = () => {
               style={[
                 {
                   textAlign: "right",
-                  fontSize: 10,
+                  fontSize: 14,
                   color: "#6B7280",
-                  marginBottom: 8,
+                  marginBottom: 14,
                 },
                 { fontFamily: "WorkSans Light" },
               ]}
@@ -327,7 +327,7 @@ const ProfilePage = () => {
               style={[
                 {
                   textAlign: "right",
-                  fontSize: 10,
+                  fontSize: 14,
                   color: "#6B7280",
                   marginBottom: 8,
                 },
@@ -339,16 +339,16 @@ const ProfilePage = () => {
             <ItemList items={preferenceItems} />
           </View>
         ) : (
-          <View className="p-4 flex-1 bg-white">
+          <View className="p-4 bg-white">
             <Text
               className="text-3xl mb-3"
-              style={{ fontFamily: "WorkSans Regular" }}
+              style={{ fontFamily: "Unbounded Regular" }}
             >
               Welcome Back!
             </Text>
             <Text
-              className="text-gray-500 text-xs mb-8"
-              style={{ fontFamily: "WorkSans Regular" }}
+              className="text-gray-500 mb-8"
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Log in to unlock your personalized experience, manage your orders,
               and access exclusive features tailored just for you.
@@ -371,7 +371,7 @@ const ProfilePage = () => {
                 className="text-xs"
                 style={[
                   { textAlign: "center", color: "#014E3C" },
-                  { fontFamily: "WorkSans SemiBold" },
+                  { fontFamily: "WorkSans Bold" },
                 ]}
               >
                 Continue to Login

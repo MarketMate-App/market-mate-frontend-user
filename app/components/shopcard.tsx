@@ -96,9 +96,9 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
 
   const renderPriceDisplay = () => (
     <View className="relative">
-      <Text className="text-2xl" style={{ fontFamily: "WorkSans SemiBold" }}>
+      <Text className="text-2xl" style={{ fontFamily: "Unbounded SemiBold" }}>
         ₵{Math.floor(price)}
-        <Text style={{ fontSize: 12, fontFamily: "WorkSans Regular" }}>
+        <Text style={{ fontSize: 12, fontFamily: "Unbounded Light" }}>
           .{price.toFixed(2).split(".")[1]}
         </Text>
       </Text>
@@ -112,7 +112,7 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
     return (
       <Text
         className="text-red-500 text-xs line-through"
-        style={{ fontFamily: "WorkSans Light" }}
+        style={{ fontFamily: "Unbounded Light" }}
       >
         ₵{originalPrice.toFixed(2)}
       </Text>
@@ -146,7 +146,7 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
       <Link href={`/products/${productId}`} asChild>
         <Text
           className={`text-black ${isFull ? "text-lg" : "text-base"} mb-1`}
-          style={{ fontFamily: "WorkSans Regular" }}
+          style={{ fontFamily: "WorkSans Bold" }}
           numberOfLines={isFull ? 2 : 1}
         >
           {name}
@@ -179,7 +179,7 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
             <Ionicons name="basket" size={24} color="#fff" />
             <Text
               className="text-xs text-white mt-1"
-              style={{ fontFamily: "WorkSans Regular" }}
+              style={{ fontFamily: "WorkSans Bold" }}
             >
               Grab it now
             </Text>
