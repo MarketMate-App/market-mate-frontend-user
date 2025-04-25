@@ -8,7 +8,7 @@ export default function GuestBanner() {
       <View className="flex-row flex-wrap items-center justify-between">
         <Text
           className="text-[#2BCC5A]/90 text-[10px] mr-2"
-          style={{ fontFamily: "Unbounded Regular" }}
+          style={{ fontFamily: "WorkSans Regular" }}
         >
           Use your phone number to unlock exclusive deals, save your cart, and
           track every order with ease. It's fast, secure, and tailored just for
@@ -23,7 +23,7 @@ export default function GuestBanner() {
         >
           <Text
             className="text-[#2BCC5A] text-[11px]"
-            style={{ fontFamily: "Unbounded Medium" }}
+            style={{ fontFamily: "WorkSans Medium" }}
           >
             Join now!
           </Text>

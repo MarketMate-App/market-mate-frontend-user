@@ -1,34 +1,57 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import { Link, router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
+
 const HeaderComponent = () => {
-  const [location, setLocation] = useState<string | null>(null);
+  const [location, setLocation] = useState<string | null>(
+    "Fetching location..."
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const savedLocation = await AsyncStorage.getItem("userLocation");
-        if (savedLocation !== null) {
+        const savedLocation = await SecureStore.getItemAsync("userLocation");
+
+        if (savedLocation) {
           const coordinates = JSON.parse(savedLocation);
           const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=YOUR_API_KEY`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`
           );
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch location data");
+          }
+
           const data = await response.json();
+
           if (data.results.length > 0) {
             setLocation(data.results[0].formatted_address);
+          } else {
+            setLocation("Location not found");
           }
+        } else {
+          setLocation("No location saved");
         }
       } catch (error) {
-        console.error("Failed to fetch location from AsyncStorage", error);
+        setLocation("No location saved");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchLocation();
   }, []);
+
   return (
     <View className="flex-row items-center justify-between w-full mb-4 px-2">
       <Link href={"/location"}>
@@ -44,12 +67,16 @@ const HeaderComponent = () => {
             onPress={() => router.push("/location")}
           >
             <View className="flex-row items-center gap-1">
-              <Text
-                className="text-sm"
-                style={{ fontFamily: "Unbounded Regular" }}
-              >
-                Set delivery address
-              </Text>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="gray" />
+              ) : (
+                <Text
+                  className="text-sm"
+                  style={{ fontFamily: "WorkSans Regular" }}
+                >
+                  {location}
+                </Text>
+              )}
               <MaterialCommunityIcons
                 name="chevron-down"
                 size={24}

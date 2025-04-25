@@ -252,7 +252,7 @@ const ProfilePage = () => {
       <ScrollView
         horizontal={false}
         showsVerticalScrollIndicator={false}
-        className="bg-[#ffffff90]"
+        className="bg-[#ffffff90] flex-1"
       >
         {token ? (
           <View
@@ -273,7 +273,7 @@ const ProfilePage = () => {
             <Text
               style={[
                 { marginBottom: 8, fontSize: 20 },
-                { fontFamily: "Unbounded Regular" },
+                { fontFamily: "WorkSans Regular" },
               ]}
             >
               {user.fullName}
@@ -281,7 +281,7 @@ const ProfilePage = () => {
             <Text
               style={[
                 { marginBottom: 16, fontSize: 14, color: "#6B7280" },
-                { fontFamily: "Unbounded Light" },
+                { fontFamily: "WorkSans Light" },
               ]}
             >
               {phoneNumber}
@@ -303,7 +303,7 @@ const ProfilePage = () => {
                 className="text-xs"
                 style={[
                   { textAlign: "center", color: "#014E3C" },
-                  { fontFamily: "Unbounded SemiBold" },
+                  { fontFamily: "WorkSans SemiBold" },
                 ]}
               >
                 Edit Profile
@@ -317,7 +317,7 @@ const ProfilePage = () => {
                   color: "#6B7280",
                   marginBottom: 8,
                 },
-                { fontFamily: "Unbounded Light" },
+                { fontFamily: "WorkSans Light" },
               ]}
             >
               My Account
@@ -331,7 +331,7 @@ const ProfilePage = () => {
                   color: "#6B7280",
                   marginBottom: 8,
                 },
-                { fontFamily: "Unbounded Light" },
+                { fontFamily: "WorkSans Light" },
               ]}
             >
               Preference
@@ -342,13 +342,13 @@ const ProfilePage = () => {
           <View className="p-4 flex-1 bg-white">
             <Text
               className="text-3xl mb-3"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Welcome Back!
             </Text>
             <Text
               className="text-gray-500 text-xs mb-8"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Log in to unlock your personalized experience, manage your orders,
               and access exclusive features tailored just for you.
@@ -371,7 +371,7 @@ const ProfilePage = () => {
                 className="text-xs"
                 style={[
                   { textAlign: "center", color: "#014E3C" },
-                  { fontFamily: "Unbounded SemiBold" },
+                  { fontFamily: "WorkSans SemiBold" },
                 ]}
               >
                 Continue to Login
@@ -386,10 +386,10 @@ const ProfilePage = () => {
 
 const style = StyleSheet.create({
   fontRegular: {
-    fontFamily: "Unbounded Regular",
+    fontFamily: "WorkSans Regular",
   },
   fontLight: {
-    fontFamily: "Unbounded Light",
+    fontFamily: "WorkSans Light",
   },
 });
 

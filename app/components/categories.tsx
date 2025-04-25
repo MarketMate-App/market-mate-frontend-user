@@ -129,7 +129,7 @@ const style = StyleSheet.create({
   },
   font: {
     fontSize: 11,
-    fontFamily: "Unbounded Light",
+    fontFamily: "WorkSans Light",
     color: "#333",
   },
 });

@@ -320,7 +320,7 @@ const Payment = () => {
           headerTitleAlign: "center",
           title: "Order Summary",
           headerShadowVisible: false,
-          headerTitleStyle: { fontFamily: "Unbounded Regular", fontSize: 14 },
+          headerTitleStyle: { fontFamily: "WorkSans Regular", fontSize: 14 },
         }}
       />
       {/* Delivery Progress Banner */}
@@ -328,13 +328,13 @@ const Payment = () => {
         <View>
           <Text
             className="text-white"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Delivery Progress
           </Text>
           <Text
             className="text-white/90 text-xs mt-1"
-            style={{ fontFamily: "Unbounded Light" }}
+            style={{ fontFamily: "WorkSans Light" }}
           >
             Next Stop: Your Doorstep • {user?.city || "Takoradi"}
           </Text>
@@ -388,20 +388,20 @@ const Payment = () => {
                   className="bg-[#f1f5f9] px-4 py-2 rounded-xl mr-3"
                 >
                   <Text
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                     className="text-gray-700 text-xs"
                   >
                     {item.name}
                   </Text>
                   <View className="flex-row items-center mt-1">
                     <Text
-                      style={{ fontFamily: "Unbounded Light" }}
+                      style={{ fontFamily: "WorkSans Light" }}
                       className="text-gray-500 text-xs mr-2"
                     >
                       ×{item.quantity}
                     </Text>
                     <Text
-                      style={{ fontFamily: "Unbounded Light" }}
+                      style={{ fontFamily: "WorkSans Light" }}
                       className="text-[#2BCC5A] text-xs"
                     >
                       {item.unitOfMeasure}
@@ -416,7 +416,7 @@ const Payment = () => {
               <View className="flex-row justify-between">
                 <Text
                   className="text-gray-600 text-sm"
-                  style={{ fontFamily: "Unbounded Light" }}
+                  style={{ fontFamily: "WorkSans Light" }}
                 >
                   Subtotal
                 </Text>
@@ -425,7 +425,7 @@ const Payment = () => {
                 ) : (
                   <Text
                     className="text-gray-900"
-                    style={{ fontFamily: "Unbounded Medium" }}
+                    style={{ fontFamily: "WorkSans Medium" }}
                   >
                     GHS {data?.subtotal?.toFixed(2) || "0.00"}
                   </Text>
@@ -438,7 +438,7 @@ const Payment = () => {
                     <View className="flex-row items-center gap-2">
                       <Text
                         className="text-gray-600 text-sm"
-                        style={{ fontFamily: "Unbounded Light" }}
+                        style={{ fontFamily: "WorkSans Light" }}
                       >
                         Delivery
                       </Text>
@@ -446,7 +446,7 @@ const Payment = () => {
                     </View>
                     <Text
                       className="text-gray-900"
-                      style={{ fontFamily: "Unbounded Medium" }}
+                      style={{ fontFamily: "WorkSans Medium" }}
                     >
                       GHS{" "}
                       {(
@@ -460,7 +460,7 @@ const Payment = () => {
                       <View className="flex-row items-center gap-2">
                         <Text
                           className="text-red-600 text-sm"
-                          style={{ fontFamily: "Unbounded Light" }}
+                          style={{ fontFamily: "WorkSans Light" }}
                         >
                           Busy Hour fee
                         </Text>
@@ -472,7 +472,7 @@ const Payment = () => {
                       </View>
                       <Text
                         className="text-red-600"
-                        style={{ fontFamily: "Unbounded Medium" }}
+                        style={{ fontFamily: "WorkSans Medium" }}
                       >
                         +GHS {data?.peakSurcharge?.toFixed(2) || "0.00"}
                       </Text>
@@ -483,7 +483,7 @@ const Payment = () => {
                     <View className="flex-row items-center gap-2">
                       <Text
                         className="text-gray-600 text-sm"
-                        style={{ fontFamily: "Unbounded Light" }}
+                        style={{ fontFamily: "WorkSans Light" }}
                       >
                         Platform Fee
                       </Text>
@@ -495,7 +495,7 @@ const Payment = () => {
                     </View>
                     <Text
                       className="text-gray-900"
-                      style={{ fontFamily: "Unbounded Medium" }}
+                      style={{ fontFamily: "WorkSans Medium" }}
                     >
                       GHS {data?.platformFee.toFixed(2) || "0.00"}
                     </Text>
@@ -508,7 +508,7 @@ const Payment = () => {
                 <View className="flex-row justify-between">
                   <Text
                     className="text-gray-900"
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                   >
                     Total Amount
                   </Text>
@@ -517,7 +517,7 @@ const Payment = () => {
                   ) : (
                     <Text
                       className="text-xl text-[#2BCC5A]"
-                      style={{ fontFamily: "Unbounded SemiBold" }}
+                      style={{ fontFamily: "WorkSans SemiBold" }}
                     >
                       GHS {data?.total?.toFixed(2) || "0.00"}
                     </Text>
@@ -538,7 +538,7 @@ const Payment = () => {
               </Animated.View>
               <Text
                 className="ml-2 text-[#2BCC5A] text-xs"
-                style={{ fontFamily: "Unbounded Light" }}
+                style={{ fontFamily: "WorkSans Light" }}
               >
                 {expanded ? "Show less" : "View cost breakdown"}
               </Text>
@@ -550,7 +550,7 @@ const Payment = () => {
         <View className="mt-2 bg-white rounded-3xl shadow-xs p-6">
           <Text
             className=" text-gray-800 mb-4"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Choose Payment Method
           </Text>
@@ -572,7 +572,7 @@ const Payment = () => {
                   color={selectedPayment === "online" ? "#2BCC5A" : "#4b5563"}
                 />
                 <Text
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  style={{ fontFamily: "WorkSans Regular" }}
                   className={`text-sm ${
                     selectedPayment === "online"
                       ? "text-[#2BCC5A]"
@@ -583,7 +583,7 @@ const Payment = () => {
                 </Text>
                 <Text
                   className=" text-gray-500 text-[9px] text-center"
-                  style={{ fontFamily: "Unbounded Light" }}
+                  style={{ fontFamily: "WorkSans Light" }}
                 >
                   Instant payment via Momo.
                 </Text>
@@ -606,7 +606,7 @@ const Payment = () => {
                   color={selectedPayment === "cash" ? "#2BCC5A" : "#4b5563"}
                 />
                 <Text
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  style={{ fontFamily: "WorkSans Regular" }}
                   className={` text-sm ${
                     selectedPayment === "cash"
                       ? "text-[#2BCC5A]"
@@ -616,7 +616,7 @@ const Payment = () => {
                   Cash on Delivery
                 </Text>
                 <Text
-                  style={{ fontFamily: "Unbounded Light" }}
+                  style={{ fontFamily: "WorkSans Light" }}
                   className=" text-gray-500 text-[9px] text-center"
                 >
                   Pay when you receive items
@@ -641,7 +641,7 @@ const Payment = () => {
             <>
               <Text
                 className="text-white text-xs"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 Continue to order
               </Text>

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   initials: {
-    fontFamily: "Unbounded Regular",
+    fontFamily: "WorkSans Regular",
   },
 });
 

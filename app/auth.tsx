@@ -142,13 +142,13 @@ const AuthPage = () => {
         <View>
           <Text
             className="text-3xl mb-3"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Akwaaba!
           </Text>
           <Text
             className="text-gray-500 text-xs mb-8"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Welcome to Market Mate – your local hub for grocery deals,
             handpicked selections, unbeatable prices, and fast delivery.
@@ -158,7 +158,7 @@ const AuthPage = () => {
             <FloatingLabelInput
               label="Phone Number"
               labelStyles={{
-                fontFamily: "Unbounded Light",
+                fontFamily: "WorkSans Light",
                 color: "#e5e7eb",
                 paddingHorizontal: 3,
                 fontSize: 12,
@@ -172,14 +172,14 @@ const AuthPage = () => {
                   />
                   <Text
                     className="text-xs text-gray-500"
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                   >
                     +233
                   </Text>
                 </View>
               }
               inputStyles={{
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
                 color: "#4b5563",
                 fontSize: 13,
                 paddingLeft: 10,
@@ -211,7 +211,7 @@ const AuthPage = () => {
             ) : (
               <Text
                 className="text-white text-xs text-center"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 Continue
               </Text>
@@ -222,7 +222,7 @@ const AuthPage = () => {
         <View className="w-full">
           {/* <Text
             className="text-center text-gray-500 text-xs mb-3"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Or sign in with
           </Text>
@@ -242,14 +242,14 @@ const AuthPage = () => {
             />
             <Text
               className="text-xs text-gray-500"
-              style={{ fontFamily: "Unbounded SemiBold" }}
+              style={{ fontFamily: "WorkSans SemiBold" }}
             >
               Continue with Google
             </Text>
           </TouchableOpacity> */}
           <Text
             className="text-xs text-gray-500 mt-4 text-center"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             By continuing, you agree to our Terms of Service and Privacy Policy.
           </Text>

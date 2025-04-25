@@ -125,13 +125,13 @@ const DetailsPage = () => {
   };
 
   return (
-    <View className="flex-1 p-3 bg-white">
+    <View className="flex-1 bg-white">
       <Stack.Screen
         options={{
           headerTitleAlign: "center",
           title: product ? product.name : "Product Details",
           headerShadowVisible: false,
-          headerTitleStyle: { fontFamily: "Unbounded Regular", fontSize: 14 },
+          headerTitleStyle: { fontFamily: "WorkSans Regular", fontSize: 14 },
           headerRight: () => (
             <AntDesign
               name={heartFilled ? "heart" : "hearto"}
@@ -147,7 +147,7 @@ const DetailsPage = () => {
           <ActivityIndicator size="large" color="#2BCC5A" />
           <Text
             className="mt-4 text-gray-500 text-xs text-center"
-            style={{ fontFamily: "Unbounded Light" }}
+            style={{ fontFamily: "WorkSans Light" }}
           >
             Hang tight! We're fetching the product details for you...
           </Text>
@@ -156,13 +156,13 @@ const DetailsPage = () => {
         <View className="flex-1 items-center justify-center">
           <Text
             className="text-red-500 text-center"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Oops! Something went wrong.
           </Text>
           <Text
             className="text-gray-500 text-xs text-center mt-2"
-            style={{ fontFamily: "Unbounded Light" }}
+            style={{ fontFamily: "WorkSans Light" }}
           >
             Unable to load product details. Please check your connection and try
             again.
@@ -172,7 +172,7 @@ const DetailsPage = () => {
             onPress={handleRetry}
           >
             <Text
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
               className="text-xs text-white"
             >
               Try Again
@@ -192,7 +192,7 @@ const DetailsPage = () => {
                 className="h-[300px] mt-3 w-full"
                 resizeMode="contain"
               />
-              <View className="flex-row flex-wrap mt-4">
+              <View className="flex-row flex-wrap mt-4 mb-2 px-4">
                 {product.tags.map((tag, index) => {
                   const colors = [
                     "#FF6347",
@@ -227,7 +227,7 @@ const DetailsPage = () => {
                       <Text
                         style={{
                           color,
-                          fontFamily: "Unbounded Light",
+                          fontFamily: "WorkSans Light",
                         }}
                         className="text-xs"
                       >
@@ -241,13 +241,13 @@ const DetailsPage = () => {
                 <View className="flex-row justify-between items-center">
                   <Text
                     className="text-black text-xl mb-4"
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                   >
                     {product.name}
                   </Text>
                   <Text
                     className="text-black text-2xl mb-4"
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                   >
                     ₵{product.price}
                     <Text className="text-sm text-gray-500">
@@ -257,22 +257,22 @@ const DetailsPage = () => {
                 </View>
                 <Text
                   className="text-gray-500 text-sm mb-4"
-                  style={{ fontFamily: "Unbounded Light" }}
+                  style={{ fontFamily: "WorkSans Light" }}
                 >
                   {product.description}
                 </Text>
               </View>
-              <View className="mt-6">
+              <View className="mt-6 px-4 mb-10">
                 <Text
                   className="text-gray-500 text-sm mb-4"
-                  style={{ fontFamily: "Unbounded Light" }}
+                  style={{ fontFamily: "WorkSans Light" }}
                 >
                   You may also like
                 </Text>
                 <ScrollView
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
-                  className="mb-10"
+                  className="mb-10 "
                 >
                   {productsArray
                     .filter(
@@ -295,7 +295,7 @@ const DetailsPage = () => {
             </View>
           </ScrollView>
           <View
-            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-5 left-0 right-0"
+            className="p-3 border-hairline border-gray-200 bg-white flex-row items-center justify-center gap-2 absolute bottom-0 left-0 right-0"
             style={{}}
           >
             {quantity === 0 ? (
@@ -306,7 +306,7 @@ const DetailsPage = () => {
               >
                 <Ionicons name="basket-outline" size={24} color={"black"} />
                 <Text
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  style={{ fontFamily: "WorkSans Regular" }}
                   className="text-xs text-black"
                 >
                   Add to cart
@@ -323,7 +323,7 @@ const DetailsPage = () => {
                     <Ionicons name="remove" size={24} color={"black"} />
                   </TouchableOpacity>
                   <Text
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                     className="text-lg text-black"
                   >
                     {quantity}
@@ -338,13 +338,13 @@ const DetailsPage = () => {
                 </View>
                 <Text>
                   <Text
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                     className="text-xs text-black"
                   >
                     Total:{" "}
                   </Text>
                   <Text
-                    style={{ fontFamily: "Unbounded Regular" }}
+                    style={{ fontFamily: "WorkSans Regular" }}
                     className="text-xs text-black"
                   >
                     ₵{(product.price * quantity).toFixed(2)}
@@ -361,7 +361,7 @@ const DetailsPage = () => {
               className="px-6 flex-1 py-5 rounded-full bg-[#2BCC5A] flex-row items-center justify-center "
             >
               <Text
-                style={{ fontFamily: "Unbounded Regular" }}
+                style={{ fontFamily: "WorkSans Regular" }}
                 className="text-xs text-white"
               >
                 Buy now
@@ -372,7 +372,7 @@ const DetailsPage = () => {
       ) : (
         <Text
           className="text-center text-xs text-gray-500 mt-4"
-          style={{ fontFamily: "Unbounded SemiBold" }}
+          style={{ fontFamily: "WorkSans SemiBold" }}
         >
           404 - Product not found
         </Text>

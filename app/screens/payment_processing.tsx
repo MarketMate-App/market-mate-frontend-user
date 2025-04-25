@@ -149,13 +149,13 @@ const PaymentProcessingScreen: React.FC = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "Unbounded Medium" }}
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Processing Order
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Please wait while we verify your details. This usually takes 30
               seconds.
@@ -171,13 +171,13 @@ const PaymentProcessingScreen: React.FC = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "Unbounded Medium" }}
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Packing your order...
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Your order has been confirmed. You will receive an SMS
               confirmation shortly.
@@ -197,7 +197,7 @@ const PaymentProcessingScreen: React.FC = () => {
                   key="order-item-summary"
                   className="text-[#2BCC5A] p-3 rounded-full text-xs text-center items-center justify-center"
                   style={{
-                    fontFamily: "Unbounded SemiBold",
+                    fontFamily: "WorkSans SemiBold",
                     width: 40,
                     height: 40,
                     backgroundColor: "#2BCC5A20",
@@ -213,7 +213,7 @@ const PaymentProcessingScreen: React.FC = () => {
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 View my orders
               </Text>
@@ -235,7 +235,7 @@ const PaymentProcessingScreen: React.FC = () => {
           ) : (
             <Text
               className="text-white text-xs text-center"
-              style={{ fontFamily: "Unbounded SemiBold" }}
+              style={{ fontFamily: "WorkSans SemiBold" }}
             >
               Continue Shopping
             </Text>

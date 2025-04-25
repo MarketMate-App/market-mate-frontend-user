@@ -10,14 +10,11 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    "Gilroy Regular": require("../assets/fonts/Gilroy-Regular.ttf"),
-    "Gilroy Medium": require("../assets/fonts/Gilroy-Medium.ttf"),
-    "Gilroy Bold": require("../assets/fonts/Gilroy-Bold.ttf"),
-    "Unbounded Bold": require("../assets/fonts/Unbounded-Bold.ttf"),
-    "Unbounded Regular": require("../assets/fonts/Unbounded-Regular.ttf"),
-    "Unbounded Medium": require("../assets/fonts/Unbounded-Medium.ttf"),
-    "Unbounded SemiBold": require("../assets/fonts/Unbounded-SemiBold.ttf"),
-    "Unbounded Light": require("../assets/fonts/Unbounded-Light.ttf"),
+    "WorkSans Regular": require("../assets/fonts/Syne-Regular.ttf"),
+    "WorkSans Medium": require("../assets/fonts/Syne-Medium.ttf"),
+    "WorkSans Bold": require("../assets/fonts/Syne-Bold.ttf"),
+    "WorkSans SemiBold": require("../assets/fonts/Syne-SemiBold.ttf"),
+    "WorkSans Light": require("../assets/fonts/Syne-Medium.ttf"),
   });
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import MapView, { Marker, Region } from "react-native-maps";
+import MapView, { Marker, Region, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -125,9 +125,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       {loading ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color={"#2BCC5A"} />
-          <Text style={styles.infoText}>
-            Fetching your location, please wait...
-          </Text>
+          <Text style={styles.infoText}>Fetching current location...</Text>
         </View>
       ) : (
         <>
@@ -135,6 +133,8 @@ const LocationScreen: FC<LocationScreenProps> = () => {
             style={styles.map}
             region={region}
             showsMyLocationButton={true}
+            provider={PROVIDER_GOOGLE}
+            showsUserLocation={true}
           >
             {location && (
               <Marker
@@ -154,7 +154,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
               >
                 <Text
                   className="text-white text-xs text-center"
-                  style={{ fontFamily: "Unbounded SemiBold" }}
+                  style={{ fontFamily: "WorkSans SemiBold" }}
                 >
                   Use Current Location
                 </Text>
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   infoText: {
     marginTop: 10,
     fontSize: 12,
-    fontFamily: "Unbounded Regular",
+    fontFamily: "WorkSans Regular",
     textAlign: "center",
   },
 });

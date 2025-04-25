@@ -32,7 +32,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 9,
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
               }}
             >
               Home
@@ -47,7 +47,7 @@ const RootLayout = () => {
           ),
           title: "Home",
           headerTitleStyle: {
-            fontFamily: "Unbounded Medium",
+            fontFamily: "WorkSans Medium",
           },
         }}
       />
@@ -60,7 +60,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 9,
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
               }}
             >
               Shop
@@ -77,7 +77,7 @@ const RootLayout = () => {
           ),
           title: "Shop",
           headerTitleStyle: {
-            fontFamily: "Unbounded Medium",
+            fontFamily: "WorkSans Medium",
           },
         }}
       />
@@ -91,7 +91,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 9,
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
               }}
             >
               Cart
@@ -124,7 +124,7 @@ const RootLayout = () => {
                     style={{
                       color: "white",
                       fontSize: 8,
-                      fontFamily: "Unbounded SemiBold",
+                      fontFamily: "WorkSans SemiBold",
                       textAlign: "center",
                     }}
                   >
@@ -136,7 +136,7 @@ const RootLayout = () => {
           ),
           title: "My Cart",
           headerTitleStyle: {
-            fontFamily: "Unbounded Regular",
+            fontFamily: "WorkSans Regular",
             fontSize: 14,
           },
         }}
@@ -152,7 +152,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 8,
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
               }}
             >
               Me
@@ -167,7 +167,7 @@ const RootLayout = () => {
           ),
           title: "My Account",
           headerTitleStyle: {
-            fontFamily: "Unbounded Regular",
+            fontFamily: "WorkSans Regular",
             fontSize: 14,
           },
         }}

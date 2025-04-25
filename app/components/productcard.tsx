@@ -32,13 +32,13 @@ const ProductCard = ({ product }: { product: Product }) => {
         <View>
           <Text
             className="text-sm text-gray-700 mb-2"
-            style={{ fontFamily: "Unbounded Medium" }}
+            style={{ fontFamily: "WorkSans Medium" }}
           >
             {product.name}
           </Text>
           <Text
             className="text-gray-500 text-xs mb-4"
-            style={{ fontFamily: "Unbounded Light" }}
+            style={{ fontFamily: "WorkSans Light" }}
           >
             {product.unitOfMeasure}
           </Text>
@@ -47,7 +47,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       <View className="items-center justify-between">
         <Text
           className="text-sm relative mb-2 text-gray-700"
-          style={{ fontFamily: "Unbounded Regular" }}
+          style={{ fontFamily: "WorkSans Regular" }}
         >
           ₵{Math.floor(product.price)}.{product.price.toFixed(2).split(".")[1]}
         </Text>

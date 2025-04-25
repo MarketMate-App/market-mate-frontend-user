@@ -200,19 +200,19 @@ const OtpPage = () => {
         <View>
           <Text
             className="text-3xl mb-3"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Verify Your Identity
           </Text>
           <Text
             className="text-gray-500 text-xs mb-8"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             To keep your account secure, please enter the one-time password we
             sent to{" "}
             <Text
               className="text-black text-xs"
-              style={{ fontFamily: "Unbounded SemiBold" }}
+              style={{ fontFamily: "WorkSans SemiBold" }}
             >
               {phoneNumber}
             </Text>
@@ -223,13 +223,13 @@ const OtpPage = () => {
             <FloatingLabelInput
               label="OTP"
               labelStyles={{
-                fontFamily: "Unbounded Light",
+                fontFamily: "WorkSans Light",
                 color: "#e5e7eb",
                 paddingHorizontal: 3,
                 fontSize: 12,
               }}
               inputStyles={{
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
                 color: "#4b5563",
                 fontSize: 13,
                 paddingLeft: 10,
@@ -256,7 +256,7 @@ const OtpPage = () => {
           >
             <Text
               className="text-white text-xs text-center"
-              style={{ fontFamily: "Unbounded SemiBold" }}
+              style={{ fontFamily: "WorkSans SemiBold" }}
             >
               Verify
             </Text>
@@ -266,7 +266,7 @@ const OtpPage = () => {
         <View className="w-full">
           <Text
             className="text-center text-gray-500 text-xs mb-3"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             Didn't receive your OTP?
           </Text>
@@ -281,7 +281,7 @@ const OtpPage = () => {
             ) : (
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 Resend OTP {resendDisabled && `(${counter})`}
               </Text>

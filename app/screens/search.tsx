@@ -127,7 +127,7 @@ const SearchScreen = () => {
         <TextInput
           placeholder="Search MarketMate"
           className="flex-1 bg-transparent outline-none text-sm"
-          style={{ fontFamily: "Unbounded Regular" }}
+          style={{ fontFamily: "WorkSans Regular" }}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
@@ -174,7 +174,7 @@ const SearchScreen = () => {
                 <Text
                   style={{
                     color: selectedCategory === tag ? "#fff" : color,
-                    fontFamily: "Unbounded Light",
+                    fontFamily: "WorkSans Light",
                   }}
                   className="text-xs"
                 >
@@ -203,7 +203,7 @@ const SearchScreen = () => {
           />
           <Text
             className="text-gray-500 mt-2 text-sm text-center px-4"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             No products found. Try a different search or category.
           </Text>

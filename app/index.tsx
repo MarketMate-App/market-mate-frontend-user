@@ -13,8 +13,8 @@ import {
 
 export default function Index() {
   const [fontsLoaded] = useFonts({
-    "Unbounded Regular": require("../assets/fonts/Unbounded-Regular.ttf"),
-    "Unbounded SemiBold": require("../assets/fonts/Unbounded-SemiBold.ttf"),
+    "WorkSans Regular": require("../assets/fonts/Syne-Regular.ttf"),
+    "WorkSans SemiBold": require("../assets/fonts/Syne-SemiBold.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -41,13 +41,13 @@ export default function Index() {
           <View className="flex-1 justify-end">
             <Text
               className="text-4xl mb-2"
-              style={{ fontFamily: "Unbounded Regular", color: "#fff" }}
+              style={{ fontFamily: "WorkSans Regular", color: "#fff" }}
             >
               Welcome to Market Mate
             </Text>
             <Text
               className="text-gray-400 text-sm mb-10"
-              style={{ fontFamily: "Unbounded Regular", lineHeight: 22 }}
+              style={{ fontFamily: "WorkSans Regular", lineHeight: 22 }}
             >
               Discover unbeatable deals on fresh produce and everyday
               essentials. Enjoy a seamless shopping experience tailored for you.
@@ -59,7 +59,7 @@ export default function Index() {
             >
               <Text
                 className="text-center text-xs text-white"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 Shop Now & Save!
               </Text>

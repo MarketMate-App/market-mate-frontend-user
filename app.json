@@ -18,7 +18,12 @@
         "foregroundImage": "./assets/images/ico.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.aceslice.marketmate"
+      "package": "com.aceslice.marketmate",
+      "config":{
+        "googleMaps": {
+          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -55,6 +60,7 @@
       "eas": {
         "projectId": "87753e7b-e1f9-4243-a8da-4d4dfe6087fb"
       }
-    }
+    },
+    "owner": "aceslice"
   }
 }

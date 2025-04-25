@@ -113,20 +113,17 @@ const DeliveryAddressScreen = () => {
         console.log(responseData);
 
         await saveUserDetails(responseData.user);
-        Alert.alert(
-          "Success",
-          "Your details have been saved successfully! Thank you for providing your information."
-        );
+        Alert.alert("Success", "Your details have been saved successfully!");
         router.replace("/profile");
       }
     } catch (error) {
       setLoading(false);
-      Alert.alert("Error", "Failed to save details");
+      Alert.alert("Error", "Failed to save details. Please try again.");
     }
   };
   const saveUserDetails = async (details: any) => {
     if (!name || !country || !address) {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert("Error", "Please fill in all fields. ");
       return;
     }
 
@@ -174,20 +171,20 @@ const DeliveryAddressScreen = () => {
                 title: "",
                 headerShadowVisible: false,
                 headerTitleStyle: {
-                  fontFamily: "Unbounded Regular",
+                  fontFamily: "WorkSans Regular",
                   fontSize: 14,
                 },
               }}
             />
             <Text
               className="text-3xl mb-3"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Tell us about yourself.
             </Text>
             <Text
               className="text-gray-500 text-xs mb-8"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Please enter your details below.
             </Text>
@@ -195,13 +192,13 @@ const DeliveryAddressScreen = () => {
               <FloatingLabelInput
                 label="Full name"
                 labelStyles={{
-                  fontFamily: "Unbounded Light",
+                  fontFamily: "WorkSans Light",
                   color: "#e5e7eb",
                   paddingHorizontal: 3,
                   fontSize: 12,
                 }}
                 inputStyles={{
-                  fontFamily: "Unbounded Regular",
+                  fontFamily: "WorkSans Regular",
                   color: "#4b5563",
                   fontSize: 13,
                 }}
@@ -230,13 +227,13 @@ const DeliveryAddressScreen = () => {
               <FloatingLabelInput
                 label="Region"
                 labelStyles={{
-                  fontFamily: "Unbounded Light",
+                  fontFamily: "WorkSans Light",
                   color: "#e5e7eb",
                   paddingHorizontal: 3,
                   fontSize: 12,
                 }}
                 inputStyles={{
-                  fontFamily: "Unbounded Regular",
+                  fontFamily: "WorkSans Regular",
                   color: "#4b5563",
                   fontSize: 13,
                 }}
@@ -262,13 +259,13 @@ const DeliveryAddressScreen = () => {
                 label="Street Address"
                 animationDuration={50}
                 labelStyles={{
-                  fontFamily: "Unbounded Light",
+                  fontFamily: "WorkSans Light",
                   color: "#e5e7eb",
                   paddingHorizontal: 3,
                   fontSize: 12,
                 }}
                 inputStyles={{
-                  fontFamily: "Unbounded Regular",
+                  fontFamily: "WorkSans Regular",
                   color: "#4b5563",
                   fontSize: 13,
                 }}
@@ -294,7 +291,7 @@ const DeliveryAddressScreen = () => {
                 <FloatingLabelInput
                   label="Phone"
                   labelStyles={{
-                    fontFamily: "Unbounded Light",
+                    fontFamily: "WorkSans Light",
                     color: "#e5e7eb",
                     paddingHorizontal: 3,
                     fontSize: 12,
@@ -308,14 +305,14 @@ const DeliveryAddressScreen = () => {
                       />
                       <Text
                         className="text-xs text-gray-500"
-                        style={{ fontFamily: "Unbounded Regular" }}
+                        style={{ fontFamily: "WorkSans Regular" }}
                       >
                         +233
                       </Text>
                     </View>
                   }
                   inputStyles={{
-                    fontFamily: "Unbounded Regular",
+                    fontFamily: "WorkSans Regular",
                     color: "#4b5563",
                     fontSize: 13,
                   }}
@@ -357,7 +354,7 @@ const DeliveryAddressScreen = () => {
               ) : (
                 <Text
                   className="text-white text-xs text-center"
-                  style={{ fontFamily: "Unbounded SemiBold" }}
+                  style={{ fontFamily: "WorkSans SemiBold" }}
                 >
                   Save My Details
                 </Text>

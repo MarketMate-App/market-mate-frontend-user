@@ -254,7 +254,7 @@ const HomePage = () => {
           }
         >
           <View className="mb-4">
-            <Text style={{ fontFamily: "Unbounded Regular" }}>
+            <Text style={{ fontFamily: "WorkSans Regular" }}>
               {greetingMessage}
             </Text>
           </View>
@@ -270,6 +270,7 @@ const HomePage = () => {
             </View>
           ) : (
             <>
+              {/* <CategoriesComponent /> */}
               {/* Render sections dynamically */}
               {Object.entries(filteredProducts).map(
                 ([key, products]) =>
@@ -277,7 +278,7 @@ const HomePage = () => {
                     <View key={key}>
                       <Text
                         className="text-lg mb-4 text-[#014E3C]"
-                        style={{ fontFamily: "Unbounded Medium" }}
+                        style={{ fontFamily: "WorkSans Medium" }}
                       >
                         {key.charAt(0).toUpperCase() +
                           key.slice(1).replace(/s$/, "")}
@@ -288,14 +289,17 @@ const HomePage = () => {
                         className="mb-4"
                       >
                         {products.map(
-                          (product: {
-                            _id: React.Key | null | undefined;
-                            name: string;
-                            price: number;
-                            imageUrl: string;
-                            discount: number | undefined;
-                            unitOfMeasure: string | undefined;
-                          }) => (
+                          (
+                            product: {
+                              _id: React.Key | null | undefined;
+                              name: string;
+                              price: number;
+                              imageUrl: string;
+                              discount: number | undefined;
+                              unitOfMeasure: string | undefined;
+                            },
+                            index: number
+                          ) => (
                             <GridcardComponent
                               key={product._id}
                               productId={
@@ -306,6 +310,11 @@ const HomePage = () => {
                               imageUrl={product.imageUrl}
                               discount={product.discount}
                               unitOfMeasure={product.unitOfMeasure}
+                              layout={
+                                products.length % 2 === 0
+                                  ? "horizontal"
+                                  : "vertical"
+                              } // Alternate layout
                             />
                           )
                         )}
@@ -313,7 +322,6 @@ const HomePage = () => {
                     </View>
                   )
               )}
-              <CategoriesComponent />
             </>
           )}
         </ScrollView>

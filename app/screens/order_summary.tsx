@@ -66,24 +66,24 @@ const OrderSummaryScreen = () => {
           headerTitleAlign: "center",
           title: "Order Summary",
           headerShadowVisible: false,
-          headerTitleStyle: { fontFamily: "Unbounded Regular", fontSize: 14 },
+          headerTitleStyle: { fontFamily: "WorkSans Regular", fontSize: 14 },
         }}
       />
       <Text
         className="text-xs text-gray-500 mb-2"
-        style={{ fontFamily: "Unbounded Regular" }}
+        style={{ fontFamily: "WorkSans Regular" }}
       >
         Order Summary
       </Text>
       <Text
         className="text-xs text-gray-500 mb-2"
-        style={{ fontFamily: "Unbounded Regular" }}
+        style={{ fontFamily: "WorkSans Regular" }}
       >
         Delivery Fees
       </Text>
       <Text
         className="text-xs text-gray-500 mb-2"
-        style={{ fontFamily: "Unbounded Regular" }}
+        style={{ fontFamily: "WorkSans Regular" }}
       >
         Total Amount Payable (GHS) {data?.total ?? 0}
       </Text>

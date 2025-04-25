@@ -176,7 +176,7 @@ const UserOrdersScreen: React.FC = () => {
             className="text-xs"
             style={{
               color: selectedFilter === tab.value ? "#2BCC5A" : "#374151",
-              fontFamily: "Unbounded Regular",
+              fontFamily: "WorkSans Regular",
             }}
           >
             {tab.label}
@@ -210,7 +210,7 @@ const UserOrdersScreen: React.FC = () => {
             marginRight: 4,
           }}
         />
-        <Text style={{ fontSize: 10, color, fontFamily: "Unbounded Regular" }}>
+        <Text style={{ fontSize: 10, color, fontFamily: "WorkSans Regular" }}>
           {label}
         </Text>
       </View>
@@ -251,7 +251,7 @@ const UserOrdersScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: 14,
-                fontFamily: "Unbounded Medium",
+                fontFamily: "WorkSans Medium",
                 color: "#1F2937",
               }}
             >
@@ -260,7 +260,7 @@ const UserOrdersScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: 10,
-                fontFamily: "Unbounded Regular",
+                fontFamily: "WorkSans Regular",
                 color: "#6B7280",
               }}
             >
@@ -272,7 +272,7 @@ const UserOrdersScreen: React.FC = () => {
               <Text
                 style={{
                   fontSize: 12,
-                  fontFamily: "Unbounded Regular",
+                  fontFamily: "WorkSans Regular",
                   color: "#4B5563",
                 }}
               >
@@ -284,7 +284,7 @@ const UserOrdersScreen: React.FC = () => {
               <Text
                 style={{
                   fontSize: 12,
-                  fontFamily: "Unbounded Regular",
+                  fontFamily: "WorkSans Regular",
                   color: "#4B5563",
                   marginLeft: 4,
                 }}
@@ -298,7 +298,7 @@ const UserOrdersScreen: React.FC = () => {
             <View style={{ marginTop: 12 }}>
               <Text
                 style={{
-                  fontFamily: "Unbounded Medium",
+                  fontFamily: "WorkSans Medium",
                   fontSize: 14,
                   marginBottom: 8,
                   color: "#1F2937",
@@ -311,7 +311,7 @@ const UserOrdersScreen: React.FC = () => {
                   <Text
                     key={index}
                     style={{
-                      fontFamily: "Unbounded Regular",
+                      fontFamily: "WorkSans Regular",
                       fontSize: 12,
                       color: "#4B5563",
                       marginBottom: 4,
@@ -323,7 +323,7 @@ const UserOrdersScreen: React.FC = () => {
               ) : (
                 <Text
                   style={{
-                    fontFamily: "Unbounded Regular",
+                    fontFamily: "WorkSans Regular",
                     fontSize: 12,
                     color: "#4B5563",
                   }}
@@ -359,7 +359,7 @@ const UserOrdersScreen: React.FC = () => {
                 <View style={{ marginLeft: 8 }}>
                   <Text
                     style={{
-                      fontFamily: "Unbounded Regular",
+                      fontFamily: "WorkSans Regular",
                       fontSize: 12,
                       color: "#4B5563",
                     }}
@@ -369,7 +369,7 @@ const UserOrdersScreen: React.FC = () => {
                   {item.courier.vehicle.registrationNumber ? (
                     <Text
                       style={{
-                        fontFamily: "Unbounded SemiBold",
+                        fontFamily: "WorkSans SemiBold",
                         fontSize: 10,
                         color: "#374151",
                         marginBottom: 4,
@@ -380,7 +380,7 @@ const UserOrdersScreen: React.FC = () => {
                   ) : (
                     <Text
                       style={{
-                        fontFamily: "Unbounded Regular",
+                        fontFamily: "WorkSans Regular",
                         fontSize: 10,
                         color: "#6B7280",
                         marginBottom: 4,
@@ -389,7 +389,7 @@ const UserOrdersScreen: React.FC = () => {
                       Registration Number:{" "}
                       <Text
                         style={{
-                          fontFamily: "Unbounded SemiBold",
+                          fontFamily: "WorkSans SemiBold",
                           color: "#374151",
                         }}
                       >
@@ -399,7 +399,7 @@ const UserOrdersScreen: React.FC = () => {
                   )}
                   <Text
                     style={{
-                      fontFamily: "Unbounded Regular",
+                      fontFamily: "WorkSans Regular",
                       fontSize: 10,
                       color: "#6B7280",
                     }}
@@ -443,58 +443,6 @@ const UserOrdersScreen: React.FC = () => {
                 </TouchableOpacity> */}
               </View>
             </View>
-            {/* {(() => {
-                const getCourierStatusStyle = (status: string) => {
-                  // Customize these cases as needed
-                  switch (status.toLowerCase()) {
-                    case "available":
-                      return { color: "#4CAF50", label: "Online" };
-                    case "offline":
-                      return { color: "#F44336", label: "Offline" };
-                    case "on-delivery":
-                      return { color: "#FFC107", label: "On Delivery" };
-                    default:
-                      return {
-                        color: "#9E9E9E",
-                        label: status.charAt(0).toUpperCase() + status.slice(1),
-                      };
-                  }
-                };
-                const { color, label } = getCourierStatusStyle(
-                  item.courier.status
-                );
-                return (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      backgroundColor: `${color}10`,
-                      padding: 8,
-                      borderRadius: 999,
-                      alignSelf: "flex-start",
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor: color,
-                        marginRight: 4,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: "Unbounded Regular",
-                        fontSize: 10,
-                        color: color,
-                      }}
-                    >
-                      {label.toLowerCase()}
-                    </Text>
-                  </View>
-                );
-              })()} */}
           </View>
         )}
       </>
@@ -521,7 +469,7 @@ const UserOrdersScreen: React.FC = () => {
           headerTitleAlign: "center",
           title: "My Orders",
           headerShadowVisible: false,
-          headerTitleStyle: { fontFamily: "Unbounded Medium", fontSize: 14 },
+          headerTitleStyle: { fontFamily: "WorkSans Medium", fontSize: 14 },
         }}
       />
       {renderTabs()}
@@ -545,13 +493,13 @@ const UserOrdersScreen: React.FC = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "Unbounded Medium" }}
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               No orders yet?
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Light" }}
+              style={{ fontFamily: "WorkSans Light" }}
             >
               Explore our wide range of products and find something you love.
               Start shopping now and make your first order today!
@@ -562,7 +510,7 @@ const UserOrdersScreen: React.FC = () => {
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 Browse popular products
               </Text>

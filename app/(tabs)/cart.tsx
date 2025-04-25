@@ -72,7 +72,7 @@ const CartItemComponent = memo(
           <View>
             <Text
               className="text-sm text-gray-700 mb-2"
-              style={{ fontFamily: "Unbounded Medium" }}
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               {item.name.length > 10
                 ? `${item.name.substring(0, 16)}...`
@@ -80,7 +80,7 @@ const CartItemComponent = memo(
             </Text>
             <Text
               className="text-gray-500 text-xs mb-4 capitalize"
-              style={{ fontFamily: "Unbounded Light" }}
+              style={{ fontFamily: "WorkSans Light" }}
             >
               {item.unitOfMeasure}
             </Text>
@@ -89,7 +89,7 @@ const CartItemComponent = memo(
         <View className="items-center justify-between">
           <Text
             className="text-sm relative mb-2 text-gray-700"
-            style={{ fontFamily: "Unbounded Regular" }}
+            style={{ fontFamily: "WorkSans Regular" }}
           >
             ₵{formattedPrice}
           </Text>
@@ -102,7 +102,7 @@ const CartItemComponent = memo(
             </TouchableOpacity>
             <Text
               className="mx-2 text-gray-500 text-sm"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               {item.quantity}
             </Text>
@@ -227,14 +227,14 @@ const CartComponent = () => {
             <View className="mb-2 bg-white flex-row items-center justify-between sticky top-0 left-0 right-0">
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "Unbounded Medium" }}
+                style={{ fontFamily: "WorkSans Medium" }}
               >
                 Estimated:{" "}
                 <Text className="text-gray-700">₵{calculateTotal()}</Text>
               </Text>
               <Text
                 className="text-xs text-gray-500"
-                style={{ fontFamily: "Unbounded Light" }}
+                style={{ fontFamily: "WorkSans Light" }}
               >
                 <Text className="text-gray-700">{cart.length}</Text> items
               </Text>
@@ -252,7 +252,7 @@ const CartComponent = () => {
                 />
                 <Text
                   className="text-white text-xs text-center"
-                  style={{ fontFamily: "Unbounded SemiBold" }}
+                  style={{ fontFamily: "WorkSans SemiBold" }}
                 >
                   Remove all items
                 </Text>
@@ -276,13 +276,13 @@ const CartComponent = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "Unbounded Medium" }}
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Your cart is empty
             </Text>
             <Text
               className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "Unbounded Light" }}
+              style={{ fontFamily: "WorkSans Light" }}
             >
               Fill up your cart with fresh groceries and everyday essentials.
               Start shopping now!
@@ -293,7 +293,7 @@ const CartComponent = () => {
             >
               <Text
                 className="text-[#014E3C] text-xs text-center"
-                style={{ fontFamily: "Unbounded SemiBold" }}
+                style={{ fontFamily: "WorkSans SemiBold" }}
               >
                 View trending items
               </Text>
@@ -304,7 +304,7 @@ const CartComponent = () => {
           <View className="mb-4">
             <Text
               className="text-xs text-gray-500 mt-4 mb-2"
-              style={{ fontFamily: "Unbounded Regular" }}
+              style={{ fontFamily: "WorkSans Regular" }}
             >
               Have Coupon?
             </Text>
@@ -315,13 +315,13 @@ const CartComponent = () => {
                   value={coupon}
                   onChangeText={setCoupon}
                   labelStyles={{
-                    fontFamily: "Unbounded Light",
+                    fontFamily: "WorkSans Light",
                     color: "#e5e7eb",
                     paddingHorizontal: 3,
                     fontSize: 12,
                   }}
                   inputStyles={{
-                    fontFamily: "Unbounded Regular",
+                    fontFamily: "WorkSans Regular",
                     color: "#4b5563",
                     fontSize: 13,
                   }}
@@ -347,7 +347,7 @@ const CartComponent = () => {
                   >
                     <Text
                       className="text-white text-xs"
-                      style={{ fontFamily: "Unbounded SemiBold" }}
+                      style={{ fontFamily: "WorkSans SemiBold" }}
                     >
                       {couponDetails ? "Remove" : "Apply"}
                     </Text>
@@ -358,7 +358,7 @@ const CartComponent = () => {
                 <View className="bg-green-100 p-3 mt-2 rounded-xl flex-row items-center justify-between">
                   <Text
                     className="text-green-800 text-xs"
-                    style={{ fontFamily: "Unbounded Medium" }}
+                    style={{ fontFamily: "WorkSans Medium" }}
                   >
                     {coupon} applied. {couponDetails?.discount}% off
                   </Text>
@@ -371,7 +371,7 @@ const CartComponent = () => {
             <View className="bg-white p-3 border-hairline border-gray-200 mb-4 rounded-xl">
               <Text
                 className="text-xs text-gray-500 mb-2"
-                style={{ fontFamily: "Unbounded Regular" }}
+                style={{ fontFamily: "WorkSans Regular" }}
               >
                 Enjoy free delivery in Takoradi
               </Text>
@@ -387,14 +387,14 @@ const CartComponent = () => {
               {totalPrice >= 500 ? (
                 <Text
                   className="text-green-600 text-xs"
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  style={{ fontFamily: "WorkSans Regular" }}
                 >
                   Congratulations! You qualify for free delivery.
                 </Text>
               ) : (
                 <Text
                   className="text-gray-600 text-xs"
-                  style={{ fontFamily: "Unbounded Regular" }}
+                  style={{ fontFamily: "WorkSans Regular" }}
                 >
                   You are just {(500 - totalPrice).toFixed(2)} away from free
                   delivery.
@@ -422,7 +422,7 @@ const CartComponent = () => {
         >
           <Text
             className="text-white text-xs text-center"
-            style={{ fontFamily: "Unbounded SemiBold" }}
+            style={{ fontFamily: "WorkSans SemiBold" }}
           >
             Go to Checkout
           </Text>
