@@ -82,6 +82,15 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="screens/userOrders"
+        options={{
+          headerTitleAlign: "center",
+          title: "My Orders",
+          headerShadowVisible: false,
+          headerTitleStyle: { fontFamily: "WorkSans Medium", fontSize: 14 },
+        }}
+      />
     </Stack>
   );
 }

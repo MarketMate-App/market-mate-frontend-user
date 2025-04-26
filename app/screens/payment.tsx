@@ -150,16 +150,6 @@ const Payment = () => {
           isBelowThreshold || exceedsMaxAllowed;
 
         setCashOnDeliveryDisabled(shouldDisableCashOnDelivery);
-
-        console.log({
-          cashOnDeliveryDisabled: shouldDisableCashOnDelivery,
-          totalOrderAmount,
-          threshold,
-          maxAllowedAmount,
-          isBelowThreshold,
-          exceedsMaxAllowed,
-        });
-        console.log(data?.total, "Total Amount");
       } else {
         // console.warn("No user details found in storage.");
       }
@@ -334,7 +324,6 @@ const Payment = () => {
     };
 
     initialize();
-    console.log(process.env.EXPO_PUBLIC_API);
   }, []);
   // ... Keep all type definitions and state declarations ...
   const [expanded, setExpanded] = useState(false);
