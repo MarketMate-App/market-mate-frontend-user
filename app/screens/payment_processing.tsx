@@ -149,13 +149,13 @@ const PaymentProcessingScreen: React.FC = () => {
             />
             <Text
               className="text-lg text-gray-700 mb-4"
-              style={{ fontFamily: "WorkSans Medium" }}
+              style={{ fontFamily: "WorkSans SemiBold" }}
             >
               Processing Order
             </Text>
             <Text
-              className="text-center w-80 text-gray-500 mb-8 text-xs"
-              style={{ fontFamily: "WorkSans Regular" }}
+              className="text-center w-80 text-gray-500 mb-8"
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Please wait while we verify your details. This usually takes 30
               seconds.
@@ -176,8 +176,8 @@ const PaymentProcessingScreen: React.FC = () => {
               Packing your order...
             </Text>
             <Text
-              className="text-center w-80 text-gray-500 mb-8 text-sm"
-              style={{ fontFamily: "WorkSans Regular" }}
+              className="text-center w-80 text-gray-500 mb-8"
+              style={{ fontFamily: "WorkSans Medium" }}
             >
               Your order has been confirmed. You will receive an SMS
               confirmation shortly.

@@ -91,6 +91,7 @@ const App = () => {
       <FlatList
         data={products}
         renderItem={renderItem}
+        initialNumToRender={10}
         keyExtractor={(item) => item._id.toString()}
         numColumns={2}
         contentContainerStyle={styles.productList}

@@ -106,8 +106,8 @@ const ProfilePage = () => {
 
   const ItemList = ({
     items,
-    isSecurity = false,
-  }: {
+  }: // Removed unused 'isSecurity' parameter to fix the error.
+  {
     items: {
       title: string;
       icon: FeatherIconName;
@@ -116,7 +116,7 @@ const ProfilePage = () => {
     }[];
     isSecurity?: boolean;
   }) => {
-    const navigation = useNavigation<any>();
+    // Removed unused 'navigation' variable to fix the error.
     return (
       <View
         style={{
@@ -142,10 +142,25 @@ const ProfilePage = () => {
               borderBottomColor: "#E5E7EB",
             }}
             onPress={() => {
-              if (item.type === "toggle") {
-                handleToggle(item.title);
-              } else if (item.navigateTo) {
-                router.replace(item.navigateTo as any);
+              try {
+                if (item.type === "toggle") {
+                  handleToggle(item.title);
+                } else if (item.navigateTo) {
+                  if (item.navigateTo === "logout") {
+                    router.push(item.navigateTo as any);
+                  } else {
+                    router.push(item.navigateTo as any);
+                  }
+                } else {
+                  console.warn(
+                    `No navigation or action defined for ${item.title}`
+                  );
+                }
+              } catch (error) {
+                console.error(
+                  `Error handling item action for ${item.title}:`,
+                  error
+                );
               }
             }}
           >

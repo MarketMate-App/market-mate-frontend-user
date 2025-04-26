@@ -71,7 +71,7 @@ const CartItemComponent = memo(
           />
           <View>
             <Text
-              className="text-sm text-gray-700 mb-2"
+              className=" text-gray-700 mb-2"
               style={{ fontFamily: "WorkSans Bold" }}
             >
               {item.name.length > 10
@@ -80,7 +80,7 @@ const CartItemComponent = memo(
             </Text>
             <Text
               className="text-gray-500 text-xs mb-4 capitalize"
-              style={{ fontFamily: "WorkSans Light" }}
+              style={{ fontFamily: "Unbounded Light" }}
             >
               {item.unitOfMeasure}
             </Text>
@@ -286,7 +286,7 @@ const CartComponent = () => {
               Your cart is empty
             </Text>
             <Text
-              className="text-center w-80 text-gray-500 mb-8 text-xs"
+              className="text-center w-80 text-gray-500 mb-8"
               style={{ fontFamily: "WorkSans Medium" }}
             >
               Fill up your cart with fresh groceries and everyday essentials.

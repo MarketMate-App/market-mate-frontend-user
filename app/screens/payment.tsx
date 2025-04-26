@@ -7,6 +7,7 @@ import {
   Animated,
   TouchableOpacity,
   SafeAreaView,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { router, Stack } from "expo-router";
@@ -53,23 +54,8 @@ const Payment = () => {
   } | null>(null);
   const [user, setUser] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<CartItem[]>([]);
-
-  const body = {
-    isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
-    location: userLocation
-      ? {
-          latitude: userLocation.coords.latitude,
-          longitude: userLocation.coords.longitude,
-        }
-      : { latitude: 0, longitude: 0 }, // Default to 0,0 if userLocation is null
-    promoCode: "",
-    items: cart.map((item) => ({
-      id: item.id,
-      quantity: item.quantity,
-      price: item.price,
-    })),
-  };
-
+  const [cashOnDeliveryDisabled, setCashOnDeliveryDisabled] = useState(false);
+  const [specialInstructions, setSpecialInstructions] = useState<string>("");
   const fetchTotal = async () => {
     setLoading(true);
     setTotalError(null);
@@ -129,6 +115,7 @@ const Payment = () => {
       );
     } finally {
       setLoading(false);
+      fetchUser();
     }
   };
 
@@ -141,12 +128,38 @@ const Payment = () => {
       setUserLocation(null);
     }
   };
-
   const fetchUser = async () => {
     try {
       const userDetails = await AsyncStorage.getItem("@userDetails");
       if (userDetails) {
         setUser(JSON.parse(userDetails));
+        const totalOrderAmount = JSON.parse(userDetails).totalOrderAmount || 0;
+
+        // Disable cash on delivery based on user order history and total amount
+        const threshold = parseFloat(
+          process.env.EXPO_PUBLIC_USER_AMOUNT_THRESHOLD || "500"
+        ); // Minimum order history threshold
+        const maxAllowedAmount = parseFloat(
+          process.env.EXPO_PUBLIC_MAX_CASH_ON_DELIVERY_AMOUNT || "2000"
+        ); // Maximum allowed amount for cash on delivery
+
+        const isBelowThreshold = totalOrderAmount < threshold;
+        const exceedsMaxAllowed = (data?.total ?? 0) > maxAllowedAmount;
+
+        const shouldDisableCashOnDelivery =
+          isBelowThreshold || exceedsMaxAllowed;
+
+        setCashOnDeliveryDisabled(shouldDisableCashOnDelivery);
+
+        console.log({
+          cashOnDeliveryDisabled: shouldDisableCashOnDelivery,
+          totalOrderAmount,
+          threshold,
+          maxAllowedAmount,
+          isBelowThreshold,
+          exceedsMaxAllowed,
+        });
+        console.log(data?.total, "Total Amount");
       } else {
         // console.warn("No user details found in storage.");
       }
@@ -215,8 +228,7 @@ const Payment = () => {
               status: selectedPayment === "cash" ? "pending" : "completed",
               transactionId: null, // Replace with actual transaction ID if available
             },
-            specialInstructions:
-              user?.specialInstructions || "Leave at the front door.", // Replace with actual instructions
+            specialInstructions: specialInstructions || "NA",
             status: "confirmed",
             packagingType: "standard",
             orderType: "instant",
@@ -242,6 +254,34 @@ const Payment = () => {
     }
   };
   const handlePayment = async () => {
+    if (loading) return; // Prevent multiple clicks
+    setLoading(true);
+
+    if (selectedPayment === "cash" && cashOnDeliveryDisabled) {
+      Alert.alert(
+        "Cash on Delivery Unavailable",
+        "Cash on delivery is not available for users with insufficient order history. Please use Mobile Money."
+      );
+      setLoading(false);
+      return;
+    }
+    if (selectedPayment === "cash" && (data?.total ?? 0) > 2000) {
+      Alert.alert(
+        "Cash on Delivery Unavailable",
+        "Cash on delivery is not available for orders exceeding GHS 2000. Please use Mobile Money."
+      );
+      setLoading(false);
+      return;
+    }
+    if (selectedPayment === "online" && !data) {
+      Alert.alert(
+        "Payment Error",
+        "Unable to process payment. Please check your order details."
+      );
+      setLoading(false);
+      return;
+    }
+
     if (!data?.total || data.total <= 0) {
       Alert.alert(
         "Invalid Total",
@@ -324,59 +364,67 @@ const Payment = () => {
         }}
       />
       {/* Delivery Progress Banner */}
-      {/* <View className="bg-[#2BCC5A] px-4 py-3 flex-row items-center justify-between">
-        <View>
+      <View className="bg-[#2BCC5A] px-4 py-3 flex-row items-center justify-between">
+        <View className="flex-1">
           <Text
-            className="text-white"
+            className="text-white text-sm"
+            style={{ fontFamily: "WorkSans Bold" }}
+          >
+            Next Stop: Your Doorstep
+          </Text>
+          <Text
+            className="text-white/80 text-xs mt-1"
             style={{ fontFamily: "WorkSans Regular" }}
           >
-            Delivery Progress
-          </Text>
-          <Text
-            className="text-white/90 text-xs mt-1"
-            style={{ fontFamily: "WorkSans Light" }}
-          >
-            Next Stop: Your Doorstep • {user?.city || "Takoradi"}
+            {userLocation
+              ? `Current Location: ${userLocation.coords.latitude.toFixed(
+                  4
+                )}, ${userLocation.coords.longitude.toFixed(4)}`
+              : "Fetching your location..."}
           </Text>
         </View>
-        <Ionicons name="location" size={20} color="white" />
-      </View> */}
+        <TouchableOpacity
+          onPress={() => router.push("/location")}
+          className="flex-row items-center space-x-2"
+        >
+          <Ionicons name="location" size={20} color="white" />
+          <Text
+            className="text-white text-xs"
+            style={{ fontFamily: "WorkSans Medium" }}
+          >
+            Update Location
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <ScrollView
         className="px-4 pt-4"
-        contentContainerStyle={{ paddingBottom: 50, position: "relative" }}
+        contentContainerStyle={{ paddingBottom: 50 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={{ flex: 1 }}>
           <Paystack
-            // paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
-            // paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY_TEST}`}
             paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY}`}
-            paystackSecretKey={`${process.env.EXPO_PUBLIC_PAYSTACK__SECRET_KEY}`}
             billingName="MarketMate"
             channels={["mobile_money"]}
             currency="GHS"
             billingEmail="customer@marketmate.com"
-            amount={data?.total ?? 0} // Amount in GHS
-            onCancel={(e) => {
-              // handle response here
-            }}
-            onSuccess={(res) => {
-              // handle response here
+            amount={data?.total ?? 0}
+            onCancel={() =>
+              Alert.alert("Payment Cancelled", "Transaction was cancelled.")
+            }
+            onSuccess={() => {
               createOrder();
               router.replace("/screens/payment_processing");
-              // console.log(res);
             }}
             ref={paystackWebViewRef}
           />
         </View>
-        {/* Order Summary Section */}
-        <View className=" bg-white rounded-3xl shadow-xs">
-          {/* Ticket Notch */}
-          <View className="absolute -top-3 left-8 right-8 h-3 bg-white rounded-t-full" />
 
+        {/* Order Summary Section */}
+        <View className="bg-white rounded-3xl shadow-xs">
+          <View className="absolute -top-3 left-8 right-8 h-3 bg-white rounded-t-full" />
           <View className="p-6">
-            {/* Items Preview */}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -411,8 +459,7 @@ const Payment = () => {
               ))}
             </ScrollView>
 
-            {/* Pricing Breakdown */}
-            <View className="">
+            <View>
               <View className="flex-row justify-between">
                 <Text
                   className="text-gray-600 text-sm"
@@ -435,15 +482,12 @@ const Payment = () => {
               {expanded && (
                 <>
                   <View className="flex-row justify-between">
-                    <View className="flex-row items-center gap-2">
-                      <Text
-                        className="text-gray-600 text-sm"
-                        style={{ fontFamily: "WorkSans Light" }}
-                      >
-                        Delivery
-                      </Text>
-                      <Ionicons name="bicycle" size={16} color="#4b5563" />
-                    </View>
+                    <Text
+                      className="text-gray-600 text-sm"
+                      style={{ fontFamily: "WorkSans Light" }}
+                    >
+                      Delivery
+                    </Text>
                     <Text
                       className="text-gray-900"
                       style={{ fontFamily: "Unbounded Medium" }}
@@ -457,19 +501,12 @@ const Payment = () => {
 
                   {(data?.peakSurcharge ?? 0) > 0 && (
                     <View className="flex-row justify-between">
-                      <View className="flex-row items-center gap-2">
-                        <Text
-                          className="text-red-600 text-sm"
-                          style={{ fontFamily: "WorkSans Light" }}
-                        >
-                          Busy Hour fee
-                        </Text>
-                        <Ionicons
-                          name="alert-circle"
-                          size={16}
-                          color="#ef4444"
-                        />
-                      </View>
+                      <Text
+                        className="text-red-600 text-sm"
+                        style={{ fontFamily: "WorkSans Light" }}
+                      >
+                        Busy Hour Fee
+                      </Text>
                       <Text
                         className="text-red-600"
                         style={{ fontFamily: "Unbounded Medium" }}
@@ -480,19 +517,12 @@ const Payment = () => {
                   )}
 
                   <View className="flex-row justify-between">
-                    <View className="flex-row items-center gap-2">
-                      <Text
-                        className="text-gray-600 text-sm"
-                        style={{ fontFamily: "WorkSans Light" }}
-                      >
-                        Platform Fee
-                      </Text>
-                      <Ionicons
-                        name="shield-checkmark"
-                        size={16}
-                        color="#4b5563"
-                      />
-                    </View>
+                    <Text
+                      className="text-gray-600 text-sm"
+                      style={{ fontFamily: "WorkSans Light" }}
+                    >
+                      Platform Fee
+                    </Text>
                     <Text
                       className="text-gray-900"
                       style={{ fontFamily: "Unbounded Medium" }}
@@ -503,7 +533,6 @@ const Payment = () => {
                 </>
               )}
 
-              {/* Total Amount */}
               <View className="pt-4 mt-4 border-t border-dashed border-gray-200">
                 <View className="flex-row justify-between">
                   <Text
@@ -526,7 +555,6 @@ const Payment = () => {
               </View>
             </View>
 
-            {/* Expand Button */}
             <TouchableOpacity
               onPress={toggleDetails}
               className="flex-row items-center justify-center mt-6"
@@ -549,14 +577,13 @@ const Payment = () => {
         {/* Payment Methods Section */}
         <View className="mt-2 bg-white rounded-3xl shadow-xs p-6">
           <Text
-            className=" text-gray-800 mb-4"
+            className="text-gray-800 mb-4"
             style={{ fontFamily: "WorkSans Regular" }}
           >
             Choose Payment Method
           </Text>
 
-          <View className=" gap-3">
-            {/* Mobile Money Option */}
+          <View className="gap-3">
             <TouchableOpacity
               onPress={() => setSelectedPayment("online")}
               className={`flex-1 p-4 rounded-2xl border-hairline ${
@@ -582,7 +609,7 @@ const Payment = () => {
                   Mobile Money
                 </Text>
                 <Text
-                  className=" text-gray-500 text-xs text-center"
+                  className="text-gray-500 text-xs text-center"
                   style={{ fontFamily: "WorkSans Light" }}
                 >
                   Instant payment via Momo.
@@ -590,25 +617,41 @@ const Payment = () => {
               </View>
             </TouchableOpacity>
 
-            {/* Cash on Delivery Option */}
             <TouchableOpacity
-              onPress={() => setSelectedPayment("cash")}
+              onPress={() => {
+                if (!cashOnDeliveryDisabled) {
+                  setSelectedPayment("cash");
+                } else {
+                  Alert.alert(
+                    "Cash on Delivery Unavailable",
+                    "Cash on delivery is not available for users with insufficient order history. Please use Mobile Money."
+                  );
+                }
+              }}
               className={`flex-1 p-4 rounded-2xl border-hairline ${
-                selectedPayment === "cash"
+                selectedPayment === "cash" && !cashOnDeliveryDisabled
                   ? "border-[#2BCC5A] bg-[#2BCC5A]/10"
                   : "border-gray-200 bg-white"
               }`}
+              style={{
+                opacity: cashOnDeliveryDisabled ? 0.5 : 1,
+              }}
+              disabled={cashOnDeliveryDisabled}
             >
               <View className="items-center space-y-2">
                 <MaterialIcons
                   name="wallet"
                   size={24}
-                  color={selectedPayment === "cash" ? "#2BCC5A" : "#4b5563"}
+                  color={
+                    selectedPayment === "cash" && !cashOnDeliveryDisabled
+                      ? "#2BCC5A"
+                      : "#4b5563"
+                  }
                 />
                 <Text
                   style={{ fontFamily: "WorkSans Medium" }}
-                  className={` text-sm ${
-                    selectedPayment === "cash"
+                  className={`text-sm ${
+                    selectedPayment === "cash" && !cashOnDeliveryDisabled
                       ? "text-[#2BCC5A]"
                       : "text-gray-700"
                   }`}
@@ -617,7 +660,7 @@ const Payment = () => {
                 </Text>
                 <Text
                   style={{ fontFamily: "WorkSans Light" }}
-                  className=" text-gray-500 text-xs text-center"
+                  className="text-gray-500 text-xs text-center"
                 >
                   Pay when you receive items
                 </Text>
@@ -625,9 +668,70 @@ const Payment = () => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {totalError && (
+          <View className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg mt-4">
+            <View className="flex-row items-center">
+              <Ionicons name="alert-circle" size={20} color="#DC2626" />
+              <Text
+                className="text-red-700 text-sm ml-2 flex-1"
+                style={{ fontFamily: "WorkSans Regular" }}
+              >
+                {totalError}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={fetchTotal}
+              className="mt-3 bg-red-500/10 py-2 px-4 rounded-full self-start"
+            >
+              <Text
+                className="text-red-600 text-xs"
+                style={{ fontFamily: "WorkSans Medium" }}
+              >
+                Retry
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* Add special instructions */}
+        <View className="bg-white rounded-3xl shadow-xs mt-4 p-6">
+          <Text
+            className="text-gray-800 mb-4"
+            style={{ fontFamily: "WorkSans Regular" }}
+          >
+            Special Instructions (Optional)
+          </Text>
+          <Text
+            className="text-gray-500 text-xs"
+            style={{ fontFamily: "WorkSans Light" }}
+          >
+            Provide any specific instructions for the delivery to make it more
+            convenient for you.
+          </Text>
+          <View className="mt-4">
+            <TextInput
+              placeholder="e.g., Leave at the front door or call upon arrival."
+              multiline
+              numberOfLines={4}
+              className="border border-gray-300 rounded-lg p-4 h-20 bg-gray-50 focus:border-[#2BCC5A] focus:bg-white"
+              style={{
+                fontFamily: "WorkSans Light",
+                textAlignVertical: "top",
+              }}
+              value={specialInstructions}
+              onChangeText={setSpecialInstructions}
+              placeholderTextColor="#9CA3AF"
+            />
+          </View>
+          <Text
+            className="text-gray-400 text-xs mt-2"
+            style={{ fontFamily: "WorkSans Light" }}
+          >
+            Keep it short and clear (max 200 characters).
+          </Text>
+        </View>
       </ScrollView>
 
-      {/* Sticky Confirm Button */}
       <View className="bg-white pt-4 p-4 border-t border-gray-100">
         <TouchableOpacity
           onPress={handlePayment}
@@ -638,14 +742,12 @@ const Payment = () => {
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <>
-              <Text
-                className="text-white text-xs"
-                style={{ fontFamily: "Unbounded SemiBold" }}
-              >
-                Continue to order
-              </Text>
-            </>
+            <Text
+              className="text-white text-xs"
+              style={{ fontFamily: "Unbounded SemiBold" }}
+            >
+              Continue to order
+            </Text>
           )}
         </TouchableOpacity>
       </View>

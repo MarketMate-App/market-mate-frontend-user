@@ -126,7 +126,7 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
       </TouchableOpacity>
       <Text
         className="mx-2 text-sm text-gray-600"
-        style={{ fontFamily: "WorkSans Regular" }}
+        style={{ fontFamily: "Unbounded Regular" }}
       >
         {quantity}
       </Text>
@@ -154,7 +154,7 @@ const ShopcardComponent: React.FC<GridcardProps> = ({
       </Link>
       <Text
         className="text-gray-500 text-sm"
-        style={{ fontFamily: "WorkSans Light" }}
+        style={{ fontFamily: "Unbounded Light" }}
       >
         {unitOfMeasure}
       </Text>
