@@ -254,8 +254,14 @@ const HomePage = () => {
           }
         >
           <View className="mb-4">
-            <Text style={{ fontFamily: "WorkSans Bold" }}>
+            <Text style={{ fontFamily: "WorkSans Bold" }} className="text-2xl">
               {greetingMessage}
+            </Text>
+            <Text
+              style={{ fontFamily: "WorkSans Regular" }}
+              className="text-base text-gray-500"
+            >
+              Explore our latest products and offers tailored just for you.
             </Text>
           </View>
           {user.fullName.trim().length === 0 && <GuestBanner />}

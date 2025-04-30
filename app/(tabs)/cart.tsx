@@ -300,7 +300,7 @@ const CartComponent = () => {
                 className="text-[#014E3C] text-xs text-center"
                 style={{ fontFamily: "WorkSans Bold" }}
               >
-                View trending items
+                Shop groceries now
               </Text>
             </TouchableOpacity>
           </View>

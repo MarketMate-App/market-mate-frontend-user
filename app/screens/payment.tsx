@@ -187,7 +187,8 @@ const Payment = () => {
             Authorization: `Bearer ${jwtToken}`,
           },
           body: JSON.stringify({
-            courier: "67dbf39b18342fc23a061fee",
+            // courier: "67dbf39b18342fc23a061fee",
+
             items: cart.map((item) => ({
               name: item.name,
               price: item.price,
@@ -658,30 +659,6 @@ const Payment = () => {
           </View>
         </View>
 
-        {totalError && (
-          <View className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg mt-4">
-            <View className="flex-row items-center">
-              <Ionicons name="alert-circle" size={20} color="#DC2626" />
-              <Text
-                className="text-red-700 text-sm ml-2 flex-1"
-                style={{ fontFamily: "WorkSans Regular" }}
-              >
-                {totalError}
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={fetchTotal}
-              className="mt-3 bg-red-500/10 py-2 px-4 rounded-full self-start"
-            >
-              <Text
-                className="text-red-600 text-xs"
-                style={{ fontFamily: "WorkSans Medium" }}
-              >
-                Retry
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
         {/* Add special instructions */}
         <View className="bg-white rounded-3xl shadow-xs mt-4 p-6">
           <Text
@@ -719,6 +696,30 @@ const Payment = () => {
             Keep it short and clear (max 200 characters).
           </Text>
         </View>
+        {totalError && (
+          <View className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg mt-4">
+            <View className="flex-row items-center">
+              <Ionicons name="alert-circle" size={20} color="#DC2626" />
+              <Text
+                className="text-red-700 text-sm ml-2 flex-1"
+                style={{ fontFamily: "WorkSans Regular" }}
+              >
+                {totalError}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={fetchTotal}
+              className="mt-3 bg-red-500/10 py-2 px-4 rounded-full self-start"
+            >
+              <Text
+                className="text-red-600 text-xs"
+                style={{ fontFamily: "WorkSans Medium" }}
+              >
+                Retry
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
 
       <View className="bg-white pt-4 p-4 border-t border-gray-100">

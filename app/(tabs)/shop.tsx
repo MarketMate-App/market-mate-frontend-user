@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -60,16 +60,21 @@ const App = () => {
     await fetchProducts();
   };
 
-  const renderItem = ({ item }) => (
-    <ProductCard
-      key={item._id}
-      name={item.name}
-      price={item.price}
-      imageUrl={item.imageUrl}
-      discount={item.discount}
-      unitOfMeasure={item.unitOfMeasure}
-      productId={item._id}
-    />
+  const renderItem = useMemo(
+    () =>
+      ({ item }) =>
+        (
+          <ProductCard
+            key={item._id}
+            name={item.name}
+            price={item.price}
+            imageUrl={item.imageUrl}
+            discount={item.discount}
+            unitOfMeasure={item.unitOfMeasure}
+            productId={item._id}
+          />
+        ),
+    [products]
   );
 
   if (loading) {
@@ -89,6 +94,9 @@ const App = () => {
     <View style={styles.container}>
       <HeaderComponent />
       <FlatList
+        renderToHardwareTextureAndroid={true}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
         data={products}
         renderItem={renderItem}
         initialNumToRender={10}
