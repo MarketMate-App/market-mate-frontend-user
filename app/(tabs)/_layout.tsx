@@ -32,7 +32,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 9,
-                fontFamily: "WorkSans Regular",
+                fontFamily: "WorkSans SemiBold",
               }}
             >
               Home
@@ -47,7 +47,7 @@ const RootLayout = () => {
           ),
           title: "Home",
           headerTitleStyle: {
-            fontFamily: "WorkSans Medium",
+            fontFamily: "WorkSans SemiBold",
           },
         }}
       />
@@ -60,7 +60,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 9,
-                fontFamily: "WorkSans Regular",
+                fontFamily: "WorkSans SemiBold",
               }}
             >
               Shop
@@ -77,7 +77,7 @@ const RootLayout = () => {
           ),
           title: "Shop",
           headerTitleStyle: {
-            fontFamily: "WorkSans Medium",
+            fontFamily: "WorkSans SemiBold",
           },
         }}
       />
@@ -91,7 +91,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 9,
-                fontFamily: "WorkSans Regular",
+                fontFamily: "WorkSans SemiBold",
               }}
             >
               Cart
@@ -136,7 +136,7 @@ const RootLayout = () => {
           ),
           title: "My Cart",
           headerTitleStyle: {
-            fontFamily: "WorkSans Regular",
+            fontFamily: "WorkSans SemiBold",
             fontSize: 14,
           },
         }}
@@ -152,7 +152,7 @@ const RootLayout = () => {
               style={{
                 color: focused ? "#014E3C" : "gray",
                 fontSize: 8,
-                fontFamily: "WorkSans Regular",
+                fontFamily: "WorkSans SemiBold",
               }}
             >
               Me
@@ -167,7 +167,7 @@ const RootLayout = () => {
           ),
           title: "My Account",
           headerTitleStyle: {
-            fontFamily: "WorkSans Regular",
+            fontFamily: "WorkSans SemiBold",
             fontSize: 14,
           },
         }}

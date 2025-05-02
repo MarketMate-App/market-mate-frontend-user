@@ -43,13 +43,19 @@ const OrderSummaryScreen = () => {
         price: item.price,
       })),
     };
-    fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/calculate-total`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
+    fetch(
+      `${
+        process.env.EXPO_PUBLIC_API_URL ||
+        "https://marketmate-backend.onrender.com"
+      }/api/calculate-total`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

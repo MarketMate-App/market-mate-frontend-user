@@ -66,7 +66,10 @@ const AuthPage = () => {
     setLoading(true); // Start loading
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/auth/send-otp`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/auth/send-otp`,
         {
           method: "POST",
           headers: {

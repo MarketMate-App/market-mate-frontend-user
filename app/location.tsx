@@ -12,8 +12,6 @@ import * as Location from "expo-location";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
-interface LocationScreenProps {}
-
 const INITIAL_REGION: Region = {
   latitude: 4.927,
   longitude: -1.777,
@@ -21,88 +19,62 @@ const INITIAL_REGION: Region = {
   longitudeDelta: 0.0421,
 };
 
-const LocationScreen: FC<LocationScreenProps> = () => {
+const LocationScreen: FC = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null
   );
   const [region, setRegion] = useState<Region>(INITIAL_REGION);
-  const [loading, setLoading] = useState<boolean>(false);
-  // Removed unused errorMsg state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getUserLocation();
+    fetchUserLocation();
   }, []);
 
-  const getUserLocation = async () => {
+  const fetchUserLocation = async () => {
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds
-      let { status: accessFineLocation } =
+      const { status: fineStatus } =
         await Location.requestForegroundPermissionsAsync();
-      let { status: accessCoarseLocation } =
+      const { status: coarseStatus } =
         await Location.requestBackgroundPermissionsAsync();
 
-      if (accessFineLocation == null) {
-        accessFineLocation = Location.PermissionStatus.DENIED;
-      }
-      if (accessCoarseLocation == null) {
-        accessCoarseLocation = Location.PermissionStatus.DENIED;
-      }
-
-      if (
-        accessFineLocation !== "granted" ||
-        accessCoarseLocation !== "granted"
-      ) {
-        // Log the error instead of using undefined setErrorMsg
-        console.error("Permission to access location was denied");
-        setLoading(false);
-        Alert.alert(
-          "Permission Error",
-          "Permission to access location was denied"
-        );
+      if (fineStatus !== "granted" || coarseStatus !== "granted") {
+        Alert.alert("Permission Error", "Location permissions are required.");
         return;
       }
 
-      try {
-        // Add null checks to handle potential null values
-        const currentLocation = await Location.getCurrentPositionAsync({});
-        if (!currentLocation || !currentLocation.coords) {
-          throw new Error("Location data is null or undefined");
-        }
-        setLocation(currentLocation);
-        setRegion({
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-          latitudeDelta: INITIAL_REGION.latitudeDelta,
-          longitudeDelta: INITIAL_REGION.longitudeDelta,
-        });
-      } catch (error) {
-        console.error("Failed to get current location");
-        Alert.alert("Error", "Failed to get current location");
-        console.error("Error fetching current location:", error);
-      }
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      updateLocationState(currentLocation);
     } catch (error) {
-      // Removed undefined setErrorMsg call
-      Alert.alert("Error", "Failed to get current location");
+      console.error("Error fetching location:", error);
+      Alert.alert("Error", "Unable to fetch location.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const updateLocationState = (currentLocation: Location.LocationObject) => {
+    if (!currentLocation?.coords) {
+      throw new Error("Invalid location data.");
+    }
+    setLocation(currentLocation);
+    setRegion({
+      latitude: currentLocation.coords.latitude,
+      longitude: currentLocation.coords.longitude,
+      latitudeDelta: INITIAL_REGION.latitudeDelta,
+      longitudeDelta: INITIAL_REGION.longitudeDelta,
+    });
   };
 
   const handleUseCurrentLocation = async () => {
     setLoading(true);
     try {
       const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      setRegion({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-        latitudeDelta: INITIAL_REGION.latitudeDelta,
-        longitudeDelta: INITIAL_REGION.longitudeDelta,
-      });
+      updateLocationState(currentLocation);
       await saveLocation(currentLocation);
     } catch (error) {
-      Alert.alert("Error", "Failed to acquire current location");
+      console.error("Error using current location:", error);
+      Alert.alert("Error", "Unable to use current location.");
     } finally {
       setLoading(false);
     }
@@ -111,11 +83,11 @@ const LocationScreen: FC<LocationScreenProps> = () => {
   const saveLocation = async (loc: Location.LocationObject) => {
     try {
       await SecureStore.setItemAsync("userLocation", JSON.stringify(loc));
-      console.log("Location saved", loc);
-      alert("Location saved successfully");
+      Alert.alert("Success", "Location saved successfully.");
       router.back();
     } catch (error) {
-      Alert.alert("Error", "Failed to save location");
+      console.error("Error saving location:", error);
+      Alert.alert("Error", "Failed to save location.");
     }
   };
 
@@ -124,7 +96,7 @@ const LocationScreen: FC<LocationScreenProps> = () => {
       <Stack.Screen />
       {loading ? (
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={"#2BCC5A"} />
+          <ActivityIndicator size="large" color="#2BCC5A" />
           <Text style={styles.infoText}>Fetching current location...</Text>
         </View>
       ) : (
@@ -132,9 +104,9 @@ const LocationScreen: FC<LocationScreenProps> = () => {
           <MapView
             style={styles.map}
             region={region}
-            showsMyLocationButton={true}
             provider={PROVIDER_GOOGLE}
-            showsUserLocation={true}
+            showsUserLocation
+            showsMyLocationButton
           >
             {location && (
               <Marker
@@ -147,19 +119,12 @@ const LocationScreen: FC<LocationScreenProps> = () => {
             )}
           </MapView>
           <View style={styles.inputContainer}>
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                className="bg-[#2BCC5A] w-full py-5 rounded-full border-hairline border-white"
-                onPress={() => handleUseCurrentLocation()}
-              >
-                <Text
-                  className="text-white text-xs text-center"
-                  style={{ fontFamily: "WorkSans SemiBold" }}
-                >
-                  Use Current Location
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleUseCurrentLocation}
+            >
+              <Text style={styles.buttonText}>Use Current Location</Text>
+            </TouchableOpacity>
           </View>
         </>
       )}
@@ -184,12 +149,20 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
   },
-  buttonRow: {
-    marginVertical: 5,
+  button: {
+    backgroundColor: "#2BCC5A",
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 12,
+    fontFamily: "WorkSans Bold",
   },
   infoText: {
     marginTop: 10,
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: "WorkSans Regular",
     textAlign: "center",
   },

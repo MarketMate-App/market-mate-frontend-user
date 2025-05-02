@@ -32,10 +32,15 @@ export default function RootLayout() {
       if (isFirstTime === null) {
         // First time user
         await AsyncStorage.setItem("isFirstTimeUser", "false");
+        SplashScreen.preventAutoHideAsync();
+
         router.replace("/");
       } else {
         // Not first time user
+        SplashScreen.preventAutoHideAsync();
+
         router.replace("/(tabs)/shop");
+        SplashScreen.hideAsync();
       }
     };
 

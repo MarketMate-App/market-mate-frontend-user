@@ -84,7 +84,10 @@ const DeliveryAddressScreen = () => {
         }
       }
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/auth/profile`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/auth/profile`,
         {
           method: "POST",
           headers: {

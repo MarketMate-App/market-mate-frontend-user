@@ -9,6 +9,7 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 
 export default function Index() {

@@ -21,7 +21,7 @@
       "package": "com.aceslice.marketmate",
       "config":{
         "googleMaps": {
-          "apiKey": "AIzaSyCUgJkMiraPAXlkSNeyA3wVFW0amffBkHo"
+          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
         }
       }
     },

@@ -358,7 +358,10 @@ const userOrders = () => {
         const token = await SecureStore.getItemAsync("jwtToken");
         if (token) {
           const response = await fetch(
-            `${process.env.EXPO_PUBLIC_API_URL}/api/orders/user`,
+            `${
+              process.env.EXPO_PUBLIC_API_URL ||
+              "https://marketmate-backend.onrender.com"
+            }/api/orders/user`,
             {
               method: "GET",
               headers: {
@@ -404,7 +407,7 @@ const userOrders = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{
-          paddingHorizontal: 16,
+          paddingHorizontal: 4,
           paddingVertical: 8,
           backgroundColor: "#fff",
         }}
@@ -454,7 +457,7 @@ const userOrders = () => {
     <View style={{ flex: 1, backgroundColor: "#F3F4F6" }}>
       <View
         style={{
-          paddingHorizontal: 16,
+          paddingHorizontal: 8,
           paddingVertical: 8,
           backgroundColor: "#fff",
         }}

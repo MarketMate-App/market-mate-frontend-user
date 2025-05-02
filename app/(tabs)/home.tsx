@@ -61,7 +61,10 @@ const HomePage = () => {
   const fetchFromAPI = useCallback(async (): Promise<Product[] | null> => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/products`
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/products`
       );
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);

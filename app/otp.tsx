@@ -89,7 +89,10 @@ const OtpPage = () => {
       }
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/auth/verify-otp`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/auth/verify-otp`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -164,7 +167,10 @@ const OtpPage = () => {
       }
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/auth/send-otp`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/auth/send-otp`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

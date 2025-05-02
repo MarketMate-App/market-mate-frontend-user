@@ -89,7 +89,10 @@ const Payment = () => {
       };
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/calculate-total`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/calculate-total`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -179,7 +182,10 @@ const Payment = () => {
       }
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/orders`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://marketmate-backend.onrender.com"
+        }/api/orders`,
         {
           method: "POST",
           headers: {
