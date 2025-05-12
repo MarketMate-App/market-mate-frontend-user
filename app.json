@@ -14,14 +14,16 @@
       "bundleIdentifier": "com.aceslice.marketmate"
     },
     "android": {
+    "usesCleartextTraffic": true,
+
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ico.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.aceslice.marketmate",
-      "config":{
+      "config": {
         "googleMaps": {
-          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+          "apiKey": "AIzaSyCUgJkMiraPAXlkSNeyA3wVFW0amffBkHo"
         }
       }
     },

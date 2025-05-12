@@ -18,8 +18,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const url = `${
-    process.env.EXPO_PUBLIC_API_URL ||
-    "https://marketmate-backend.onrender.com/"
+    process.env.EXPO_PUBLIC_API_URL || "https://marketmate-backend.onrender.com"
   }/api/products`;
 
   const fetchProducts = async () => {

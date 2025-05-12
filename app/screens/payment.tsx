@@ -70,10 +70,6 @@ const Payment = () => {
       const coordinates = JSON.parse(savedLocation);
       setUserLocation(coordinates);
 
-      if (!process.env.EXPO_PUBLIC_API_URL) {
-        throw new Error("API URL is not defined in environment variables.");
-      }
-
       const requestBody = {
         isPeakHour: new Date().getHours() >= 14 && new Date().getHours() <= 18,
         location: {
@@ -368,16 +364,6 @@ const Payment = () => {
           >
             Next Stop: Your Doorstep
           </Text>
-          <Text
-            className="text-white/80 text-xs mt-1"
-            style={{ fontFamily: "WorkSans Regular" }}
-          >
-            {userLocation
-              ? `Current Location: ${userLocation.coords.latitude.toFixed(
-                  4
-                )}, ${userLocation.coords.longitude.toFixed(4)}`
-              : "Fetching your location..."}
-          </Text>
         </View>
         <TouchableOpacity
           onPress={() => router.push("/location")}
@@ -400,7 +386,14 @@ const Payment = () => {
       >
         <View style={{ flex: 1 }}>
           <Paystack
-            paystackKey={`${process.env.EXPO_PUBLIC_PAYSTACK_KEY}`}
+            paystackKey={`${
+              process.env.EXPO_PUBLIC_PAYSTACK_KEY ||
+              "pk_live_a01465c40ffb49e70308bc7109ad5ffb054163ab"
+            }`}
+            paystackSecretKey={`${
+              process.env.EXPO_PUBLIC_PAYSTACK_SECRET_KEY ||
+              "sk_live_99e1351b4c69b9ffba5f262e81fa338809d94369"
+            }`}
             billingName="MarketMate"
             channels={["mobile_money"]}
             currency="GHS"
